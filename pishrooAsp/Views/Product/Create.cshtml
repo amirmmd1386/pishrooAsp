@@ -1,0 +1,146 @@
+﻿@model pishrooAsp.Models.Products.Product
+@{
+    ViewData["Title"] = "افزودن محصول جدید";
+    var languages = ViewBag.Languages as List<pishrooAsp.Models.Lang>;
+}
+
+<div class="container mx-auto px-4 py-8">
+    <h1 class="text-2xl font-bold text-gray-800 mb-6">افزودن محصول جدید</h1>
+
+    <form asp-action="Create" enctype="multipart/form-data" class="bg-white shadow-md rounded-lg p-6">
+        <!-- بخش سئو -->
+        <div class="mb-6">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4">تنظیمات سئو (SEO)</h2>
+            <div class="grid grid-cols-1 gap-4">
+                <div>
+                    <label class="block text-gray-700 text-sm font-bold mb-2">کلمه کلیدی سئو</label>
+                    <input name="SeoWord" class="w-full px-3 py-2 border border-gray-300 rounded-md"
+                           placeholder="مثال: پلیمر صنعتی، محصولات پلیمری" />
+                    <p class="text-gray-500 text-xs mt-1">کلمات کلیدی مهم برای سئو را وارد کنید (حداکثر 100 کاراکتر)</p>
+                </div>
+
+                <div>
+                    <label class="block text-gray-700 text-sm font-bold mb-2">توضیحات متا سئو</label>
+                    <textarea name="SeoDescription" rows="2" class="w-full px-3 py-2 border border-gray-300 rounded-md"
+                              placeholder="توضیحات مختصر و جذاب برای موتورهای جستجو"></textarea>
+                    <p class="text-gray-500 text-xs mt-1">توضیحات متا برای بهبود سئو (حداکثر 300 کاراکتر)</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+                <label class="block text-gray-700 text-sm font-bold mb-2">تصویر اصلی محصول</label>
+                <input type="file" name="ImageFile" accept="image/*" class="w-full px-3 py-2 border border-gray-300 rounded-md" />
+            </div>
+
+            <div>
+                <label class="block text-gray-700 text-sm font-bold mb-2">فایل ضمیمه</label>
+                <input type="file" name="AttachmentFile" class="w-full px-3 py-2 border border-gray-300 rounded-md" />
+            </div>
+        </div>
+
+        <!-- بخش کاربردهای محصول -->
+        <div class="mt-8">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4">کاربردهای محصول</h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- کاربرد 1 -->
+                <div class="border border-gray-200 rounded-lg p-4">
+                    <h3 class="text-lg font-medium text-gray-800 mb-3">کاربرد 1</h3>
+                    <div class="mb-3">
+                        <label class="block text-gray-700 text-sm font-bold mb-2">عنوان کاربرد</label>
+                        <input name="Usage1Title" class="w-full px-3 py-2 border border-gray-300 rounded-md" />
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 text-sm font-bold mb-2">فایل کاربرد (عکس یا PDF)</label>
+                        <input type="file" name="Usage1File" accept="image/*,.pdf" class="w-full px-3 py-2 border border-gray-300 rounded-md" />
+                    </div>
+                </div>
+
+                <!-- کاربرد 2 -->
+                <div class="border border-gray-200 rounded-lg p-4">
+                    <h3 class="text-lg font-medium text-gray-800 mb-3">کاربرد 2</h3>
+                    <div class="mb-3">
+                        <label class="block text-gray-700 text-sm font-bold mb-2">عنوان کاربرد</label>
+                        <input name="Usage2Title" class="w-full px-3 py-2 border border-gray-300 rounded-md" />
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 text-sm font-bold mb-2">فایل کاربرد (عکس или PDF)</label>
+                        <input type="file" name="Usage2File" accept="image/*,.pdf" class="w-full px-3 py-2 border border-gray-300 rounded-md" />
+                    </div>
+                </div>
+
+                <!-- کاربرد 3 -->
+                <div class="border border-gray-200 rounded-lg p-4">
+                    <h3 class="text-lg font-medium text-gray-800 mb-3">کاربرد 3</h3>
+                    <div class="mb-3">
+                        <label class="block text-gray-700 text-sm font-bold mb-2">عنوان کاربرد</label>
+                        <input name="Usage3Title" class="w-full px-3 py-2 border border-gray-300 rounded-md" />
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 text-sm font-bold mb-2">فایل کاربرد (عکس یا PDF)</label>
+                        <input type="file" name="Usage3File" accept="image/*,.pdf" class="w-full px-3 py-2 border border-gray-300 rounded-md" />
+                    </div>
+                </div>
+
+                <!-- کاربرد 4 -->
+                <div class="border border-gray-200 rounded-lg p-4">
+                    <h3 class="text-lg font-medium text-gray-800 mb-3">کاربرد 4</h3>
+                    <div class="mb-3">
+                        <label class="block text-gray-700 text-sm font-bold mb-2">عنوان کاربرد</label>
+                        <input name="Usage4Title" class="w-full px-3 py-2 border border-gray-300 rounded-md" />
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 text-sm font-bold mb-2">فایل کاربرد (عکس یا PDF)</label>
+                        <input type="file" name="Usage4File" accept="image/*,.pdf" class="w-full px-3 py-2 border border-gray-300 rounded-md" />
+                    </div>
+                </div>
+
+                <!-- کاربرد 5 (اختیاری) -->
+                <div class="border border-gray-200 rounded-lg p-4">
+                    <h3 class="text-lg font-medium text-gray-800 mb-3">کاربرد 5 (اختیاری)</h3>
+                    <div class="mb-3">
+                        <label class="block text-gray-700 text-sm font-bold mb-2">عنوان کاربرد</label>
+                        <input name="Usage5Title" class="w-full px-3 py-2 border border-gray-300 rounded-md" />
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 text-sm font-bold mb-2">فایل کاربرد (عکس یا PDF)</label>
+                        <input type="file" name="Usage5File" accept="image/*,.pdf" class="w-full px-3 py-2 border border-gray-300 rounded-md" />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- بخش ترجمه‌ها -->
+        <div class="mt-8">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4">ترجمه‌ها</h2>
+            <div class="space-y-6">
+                @for (int i = 0; i < languages.Count; i++)
+                {
+                    <div class="border border-gray-200 rounded-lg p-4">
+                        <input type="hidden" name="Translations[@i].LangId" value="@languages[i].Id" />
+                        <h3 class="text-lg font-medium text-gray-800 mb-3">@languages[i].Name</h3>
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-sm font-bold mb-2">عنوان</label>
+                            <input name="Translations[@i].Title" class="w-full px-3 py-2 border border-gray-300 rounded-md" required />
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 text-sm font-bold mb-2">توضیحات</label>
+                            <textarea name="Translations[@i].Description" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-md"></textarea>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <div class="mt-8 flex justify-end space-x-4 space-x-reverse">
+            <a asp-action="Index" class="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded-lg">
+                انصراف
+            </a>
+            <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">
+                ذخیره محصول
+            </button>
+        </div>
+    </form>
+</div>

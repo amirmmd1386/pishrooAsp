@@ -1,0 +1,36 @@
+﻿@model IEnumerable<dynamic>  
+
+@{
+    var news = Model?.FirstOrDefault();
+    if (news == null)
+    {
+        <p>هیچ خبری یافت نشد.</p>
+        return;
+    }
+}
+@{
+    string TitleChanger = ViewBag.lang;
+    bool isPersian = TitleChanger == "fa";
+}
+
+<div class="lg:col-span-2 bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition duration-300">
+    <div class="h-full flex flex-col">
+        <div class="h-64 overflow-hidden">
+            <img src="@news.ImageUrl" alt="@news.Title" class="w-full h-full object-cover" />
+        </div>
+        <div class="p-6 flex-grow">
+            <div class="flex justify-between items-center mb-3">
+                <span class="text-sm text-blue-600 font-medium">@news.PublishDate.ToString("dd MMM yyyy", new System.Globalization.CultureInfo("fa-IR"))</span>
+                <span class="bg-red-100 text-red-800 text-xs px-2 py-1 rounded-full">@(isPersian ? "ویژه":"Best")</span>
+            </div>
+            <h3 class="text-2xl font-bold text-gray-800 mb-3">@news.Title</h3>
+            <p class="text-gray-600 mb-4 leading-relaxed">@news.Summary</p>
+            <a href="@Url.Action("Details", "News", new { id = news.Id })" class="inline-flex items-center text-blue-600 font-medium hover:text-blue-800">
+                @(isPersian ? "ادامه مطلب":"Follow Summary")
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                </svg>
+            </a>
+        </div>
+    </div>
+</div>

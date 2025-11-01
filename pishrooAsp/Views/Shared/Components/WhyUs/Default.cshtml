@@ -1,0 +1,18 @@
+﻿@model IEnumerable<dynamic>
+@{
+    bool isPersian = ViewBag.Culture == "fa";
+}
+<div class="custom-white rounded-xl shadow-lg p-8">
+    <h3 class="text-3xl font-bold text-custom-blue mb-6">@(isPersian ? "چرا آروین پلیمر انتخاب برتر است؟":"Why Us")</h3>
+    <ul class="space-y-6 text-lg">
+        @foreach (var item in Model)
+        {
+            <li class="flex items-start">
+                <i class="@item.Icon text-custom-yellow text-2xl mt-1 ml-3"></i>
+                <p class="text-custom-dark-gray">
+                    <span class="font-semibold">@item.Title:</span> @item.Description
+                </p>
+            </li>
+        }
+    </ul>
+</div>

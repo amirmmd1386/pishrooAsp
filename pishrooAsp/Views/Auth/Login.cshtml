@@ -1,0 +1,58 @@
+﻿@{
+    ViewData["Title"] = "ورود به پنل مدیریت";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html dir="rtl" lang="fa">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+    <div class="min-h-screen flex items-center justify-center">
+        <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
+            <div class="text-center mb-8">
+                <h1 class="text-2xl font-bold text-gray-800">ورود به پنل مدیریت</h1>
+                <p class="text-gray-600 mt-2">لطفا اطلاعات ورود را وارد کنید</p>
+            </div>
+
+            @if (ViewBag.Error != null)
+            {
+                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+                    @ViewBag.Error
+                </div>
+            }
+
+            <form method="post">
+                <div class="mb-4">
+                    <label for="username" class="block text-gray-700 text-sm font-bold mb-2">نام کاربری</label>
+                    <input type="text" id="username" name="username"
+                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                           required>
+                </div>
+
+                <div class="mb-6">
+                    <label for="password" class="block text-gray-700 text-sm font-bold mb-2">رمز عبور</label>
+                    <input type="password" id="password" name="password"
+                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                           required>
+                </div>
+
+                <div class="mb-6 flex items-center">
+                    <input type="checkbox" id="rememberMe" name="rememberMe"
+                           class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded">
+                    <label for="rememberMe" class="mr-2 block text-sm text-gray-700">مرا به خاطر بسپار</label>
+                </div>
+
+                <button type="submit"
+                        class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition duration-150">
+                    ورود
+                </button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

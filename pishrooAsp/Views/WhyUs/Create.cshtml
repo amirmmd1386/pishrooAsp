@@ -1,0 +1,152 @@
+﻿@model pishrooAsp.Models.WhyUss.WhyUsItem
+
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "ایجاد مورد جدید";
+
+    var langs = ViewBag.Langs as List<pishrooAsp.Models.Lang>;
+
+    // لیست کامل آیکون‌های FontAwesome
+    var iconOptions = new List<(string CssClass, string Title, string Description)>
+    {
+        ("fas fa-check-circle", "تیک دایره", "برای موارد تأیید شده و موفقیت"),
+        ("fas fa-times-circle", "ضربدر دایره", "برای انصراف یا بستن"),
+        ("fas fa-star", "ستاره", "برای امتیازدهی و برجسته کردن"),
+        ("fas fa-heart", "قلب", "برای علاقه‌مندی و پسندیدن"),
+        ("fas fa-thumbs-up", "لایک", "برای رضایت و موافقت"),
+        ("fas fa-thumbs-down", "دیسلایک", "برای عدم رضایت"),
+        ("fas fa-flag", "پرچم", "برای گزارش یا علامت‌گذاری"),
+        ("fas fa-bell", "زنگ", "برای اعلان‌ها و هشدارها"),
+        ("fas fa-envelope", "پاکت نامه", "برای پیام و ایمیل"),
+        ("fas fa-comment", "حرف گفتگو", "برای نظرات و چت"),
+        ("fas fa-user", "کاربر", "برای پروفایل و حساب کاربری"),
+        ("fas fa-users", "کاربران", "برای گروه و تیم"),
+        ("fas fa-cog", "چرخ دنده", "برای تنظیمات"),
+        ("fas fa-wrench", "آچار", "برای ابزارها و تعمیرات"),
+        ("fas fa-search", "ذره بین", "برای جستجو"),
+        ("fas fa-home", "خانه", "برای صفحه اصلی"),
+        ("fas fa-info-circle", "اطلاعات دایره", "برای اطلاعات بیشتر"),
+        ("fas fa-exclamation-circle", "تعجب دایره", "برای هشدار مهم"),
+        ("fas fa-question-circle", "سوال دایره", "برای راهنمایی و سوال"),
+        ("fas fa-lock", "قفل", "برای امنیت و حریم خصوصی"),
+        ("fas fa-unlock", "قفل باز", "برای دسترسی آزاد"),
+        ("fas fa-shield-alt", "سپر", "برای محافظت و امنیت"),
+        ("fas fa-globe", "جهان", "برای بین‌المللی و وب"),
+        ("fas fa-clock", "ساعت", "برای زمان و برنامه‌ریزی"),
+        ("fas fa-calendar", "تقویم", "برای رویدادها و تاریخ"),
+        ("fas fa-book", "کتاب", "برای آموزش و مستندات"),
+        ("fas fa-graduation-cap", "کلاه فارغ التحصیلی", "برای آموزش و تحصیل"),
+        ("fas fa-briefcase", "کیف", "برای کسب و کار و کار"),
+        ("fas fa-rocket", "موشک", "برای راه‌اندازی و سرعت"),
+        ("fas fa-lightbulb", "لامپ", "برای ایده و نوآوری"),
+        ("fas fa-chart-line", "چارت خطی", "برای آمار و رشد"),
+        ("fas fa-chart-bar", "چارت میله‌ای", "برای آمار و مقایسه"),
+        ("fas fa-database", "دیتابیس", "برای ذخیره اطلاعات"),
+        ("fas fa-server", "سرور", "برای هاست و زیرساخت"),
+        ("fas fa-mobile-alt", "موبایل", "برای اپلیکیشن موبایل"),
+        ("fas fa-desktop", "دسکتاپ", "برای نسخه کامپیوتر"),
+        ("fas fa-laptop", "لپ تاپ", "برای دستگاه‌های قابل حمل"),
+        ("fas fa-tablet-alt", "تبلت", "برای دستگاه‌های تبلت"),
+        ("fas fa-headphones", "هدست", "برای پشتیبانی و صدا"),
+        ("fas fa-camera", "دوربین", "برای عکس و تصویر"),
+        ("fas fa-film", "فیلم", "برای ویدیو و رسانه"),
+        ("fas fa-music", "موسیقی", "برای صدا و پادکست"),
+        ("fas fa-shopping-cart", "سبد خرید", "برای فروشگاه و خرید"),
+        ("fas fa-credit-card", "کارت اعتباری", "برای پرداخت"),
+        ("fas fa-truck", "کامیون", "برای ارسال و تحویل"),
+        ("fas fa-box", "جعبه", "برای محصول و بسته"),
+        ("fas fa-gift", "هدیه", "برای جوایز و هدایا"),
+        ("fas fa-trophy", "جام", "برای موفقیت و برنده"),
+        ("fas fa-medal", "مدال", "برای رتبه و جایزه"),
+        ("fas fa-crown", "تاج", "برای برتری و رهبری"),
+        ("fas fa-handshake", "دست دادن", "برای همکاری و توافق"),
+        ("fas fa-award", "جایزه", "برای دستاورد و موفقیت"),
+        ("fas fa-certificate", "گواهی", "برای تأییدیه و مدرک")
+    };
+}
+
+<div class="container mx-auto px-4 py-8 bg-gray-50">
+    <h1 class="text-2xl font-bold mb-6">@ViewData["Title"]</h1>
+
+    <form asp-action="Create" method="post">
+        <div class="mb-6">
+            <label class="block mb-2 font-semibold text-lg">انتخاب آیکون</label>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
+                @foreach (var icon in iconOptions)
+                {
+                    <div class="border border-gray-300 rounded-lg p-3 flex items-center hover:bg-blue-50 transition cursor-pointer" onclick="selectIcon('@icon.CssClass')">
+                        <div class="w-10 h-10 flex items-center justify-center bg-gray-100 rounded-lg mr-3">
+                            <i class="@icon.CssClass text-blue-600 text-xl"></i>
+                        </div>
+                        <div>
+                            <div class="font-medium">@icon.Title</div>
+                            <div class="text-sm text-gray-500">@icon.Description</div>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <input type="hidden" id="selectedIcon" name="Icon" value="" />
+            <div id="selectedIconPreview" class="hidden mt-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                <div class="flex items-center">
+                    <span class="text-2xl mr-3 text-blue-600" id="previewIcon"></span>
+                    <span id="previewText">هیچ آیکونی انتخاب نشده است</span>
+                </div>
+            </div>
+        </div>
+
+        <h2 class="text-xl font-semibold mb-3 mt-6">ترجمه‌ها</h2>
+
+        <div class="space-y-6">
+            @for (int i = 0; i < langs.Count; i++)
+            {
+                <div class="border border-gray-300 rounded p-4">
+                    <input type="hidden" name="translations[@i].LangId" value="@langs[i].Id" />
+                    <h3 class="text-lg font-medium mb-3">@langs[i].Name</h3>
+
+                    <label class="block mb-1 font-semibold">عنوان</label>
+                    <input name="translations[@i].Title" class="w-full border border-gray-300 rounded px-3 py-2" />
+
+                    <label class="block mt-3 mb-1 font-semibold">توضیحات</label>
+                    <textarea name="translations[@i].Description" rows="3" class="w-full border border-gray-300 rounded px-3 py-2"></textarea>
+                </div>
+            }
+        </div>
+
+        <div class="mt-6 flex justify-end space-x-4 space-x-reverse">
+            <a href="@Url.Action("Index")" class="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded-lg transition duration-200">
+                انصراف
+            </a>
+            <button type="submit" class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg transition duration-200">
+                ذخیره
+            </button>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <script>
+        function selectIcon(iconClass) {
+            document.getElementById('selectedIcon').value = iconClass;
+
+            // پیدا کردن عنوان آیکون انتخاب شده
+            const iconTitles = {
+        @foreach (var icon in iconOptions)
+        {
+            @: '@icon.CssClass': '@icon.Title',
+        }
+            };
+
+            const previewIcon = document.getElementById('previewIcon');
+            const previewText = document.getElementById('previewText');
+            const previewContainer = document.getElementById('selectedIconPreview');
+
+            previewIcon.className = iconClass + ' text-blue-600';
+            previewText.textContent = 'آیکون انتخاب شده: ' + (iconTitles[iconClass] || iconClass);
+            previewContainer.classList.remove('hidden');
+
+            // اسکرول به بخش پیش‌نمایش
+            previewContainer.scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+}

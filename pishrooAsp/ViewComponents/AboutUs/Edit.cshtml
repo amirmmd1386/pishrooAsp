@@ -1,0 +1,58 @@
+﻿@model pishrooAsp.Models.AboutUsItem
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "ویرایش درباره ما";
+    var langs = ViewBag.Langs as List<pishrooAsp.Models.Lang>;
+    var translations = ViewBag.translations as List<pishrooAsp.Models.AboutUsTranslation>;
+}
+@(translations.FirstOrDefault())
+<div class="container mx-auto px-4 py-8">
+    <h1 class="text-2xl font-bold mb-6">@ViewData["Title"]</h1>
+
+    <form asp-action="Edit" method="post" class="space-y-6">
+        <input type="hidden" asp-for="Id" />
+
+        <!-- اطلاعات تماس -->
+        <div class="grid grid-cols-2 gap-4">
+            <input name="Phone1" value="@Model.Phone1" placeholder="تلفن ۱" class="border p-2 rounded" />
+            <input name="Phone2" value="@Model.Phone2" placeholder="تلفن ۲" class="border p-2 rounded" />
+            <input name="Fax1" value="@Model.Fax1" placeholder="فکس ۱" class="border p-2 rounded" />
+            <input name="Fax2" value="@Model.Fax2" placeholder="فکس ۲" class="border p-2 rounded" />
+            <input name="Email1" value="@Model.Email1" placeholder="ایمیل ۱" class="border p-2 rounded" />
+            <input name="Email2" value="@Model.Email2" placeholder="ایمیل ۲" class="border p-2 rounded" />
+        </div>
+
+        <!-- شبکه‌های اجتماعی -->
+        <div class="grid grid-cols-3 gap-4">
+            <input name="Instagram" value="@Model.Instagram" placeholder="اینستاگرام" class="border p-2 rounded" />
+            <input name="Telegram" value="@Model.Telegram" placeholder="تلگرام" class="border p-2 rounded" />
+            <input name="LinkedIn" value="@Model.LinkedIn" placeholder="لینکدین" class="border p-2 rounded" />
+        </div>
+
+        <h2 class="text-xl font-semibold mt-8">ترجمه‌ها</h2>
+        <div class="space-y-6">
+            
+            @for (int i = 0; i < langs.Count; i++)
+            {
+                var tr = translations.FirstOrDefault(t => t.LangId == langs[i].Id) ?? new pishrooAsp.Models.AboutUsTranslation();
+                <div class="border rounded p-4">
+                    <input type="hidden" name="translations[@i].LangId" value="@langs[i].Id" />
+                    <h3 class="text-lg font-medium mb-3">@langs[i].Name</h3>
+
+                    <input name="translations[@i].CompanyName" value="@tr.CompanyName" placeholder="نام شرکت" class="border p-2 rounded w-full mb-3" />
+                    <input name="translations[@i].Slogan" value="@tr.Slogan" placeholder="شعار" class="border p-2 rounded w-full mb-3" />
+                    <input name="translations[@i].Title" value="@tr.Title" placeholder="عنوان" class="border p-2 rounded w-full mb-3" />
+                    <textarea name="translations[@i].Description" placeholder="توضیحات" rows="3" class="border p-2 rounded w-full mb-3">@tr.Description</textarea>
+                    <input name="translations[@i].Address" value="@tr.Address" placeholder="آدرس" class="border p-2 rounded w-full mb-3" />
+                    <input name="translations[@i].Address2" value="@tr.Address2" placeholder="آدرس ۲" class="border p-2 rounded w-full mb-3" />
+                    <input name="translations[@i].CEOName" value="@tr.CEOName" placeholder="نام مدیرعامل" class="border p-2 rounded w-full" />
+                </div>
+            }
+        </div>
+
+        <div class="flex justify-end gap-4 mt-6">
+            <a href="@Url.Action("Index")" class="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded-lg">انصراف</a>
+            <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg">ذخیره تغییرات</button>
+        </div>
+    </form>
+</div>

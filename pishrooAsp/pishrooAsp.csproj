@@ -1,0 +1,54 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="wwwroot\Admin\public\**" />
+    <Content Remove="wwwroot\Admin\public\**" />
+    <EmbeddedResource Remove="wwwroot\Admin\public\**" />
+    <None Remove="wwwroot\Admin\public\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="wwwroot\Admin\api\news.js" />
+    <Content Remove="wwwroot\Admin\server.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\Admin\api\news.js" />
+    <None Include="wwwroot\Admin\server.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Kavenegar" Version="1.2.5" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.8" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.8">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.8" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="wwwroot\Admin\package-lock.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\Admin\package.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="ViewComponents\gallery\" />
+    <Folder Include="Views\Shared\Components\Home\" />
+    <Folder Include="Views\Shared\Components\Lang\" />
+    <Folder Include="Views\Shared\Components\AboutUs\" />
+    <Folder Include="wwwroot\Admin\css\" />
+    <Folder Include="wwwroot\Admin\js\" />
+  </ItemGroup>
+
+</Project>

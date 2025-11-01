@@ -1,0 +1,48 @@
+﻿@model IEnumerable<pishrooAsp.Models.AboutUsItem>
+
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "لیست درباره ما";
+}
+
+<div class="container mx-auto px-4 py-8">
+    <h1 class="text-2xl font-bold mb-6">@ViewData["Title"]</h1>
+
+    <a href="@Url.Action("Create")"
+       class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg mb-4 inline-block">
+        + مورد جدید
+    </a>
+
+    <table class="w-full border border-gray-300 text-sm">
+        <thead class="bg-gray-100">
+            <tr>
+                <th class="border px-3 py-2">شناسه</th>
+                <th class="border px-3 py-2">تلفن</th>
+                <th class="border px-3 py-2">ایمیل</th>
+                <th class="border px-3 py-2">شبکه‌های اجتماعی</th>
+                <th class="border px-3 py-2">عملیات</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td class="border px-3 py-2">@item.Id</td>
+                    <td class="border px-3 py-2">@item.Phone1</td>
+                    <td class="border px-3 py-2">@item.Email1</td>
+                    <td class="border px-3 py-2">
+                        @item.Instagram / @item.Telegram
+                    </td>
+                    <td class="border px-3 py-2">
+                        <a href="@Url.Action("Edit", new { id = item.Id })" class="text-blue-600 hover:underline">ویرایش</a> |
+                        <a asp-action="Delete" asp-route-id="@item.Id"
+                           onclick="return confirm('آیا مطمئنید می‌خواهید حذف کنید؟');"
+                           class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-lg">
+                            حذف
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

@@ -1,0 +1,37 @@
+﻿@model IEnumerable<pishrooAsp.Models.WhyUss.WhyUsItem>
+
+@{
+    ViewData["Title"] = "مدیریت WhyUs Items";
+    Layout = "_AdminLayout";
+
+}
+<div class="container mx-auto px-4 py-8 bg-gray-50">
+<h1 class="text-2xl font-bold mb-6">@ViewData["Title"]</h1>
+
+<a href="@Url.Action("Create")" class="inline-block mb-4 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">افزودن مورد جدید</a>
+
+<table class="min-w-full border border-gray-300 rounded overflow-hidden">
+    <thead class="bg-gray-100">
+        <tr>
+            <th class="p-3 border-b border-gray-300 text-right">شناسه</th>
+            <th class="p-3 border-b border-gray-300 text-right">آیکون</th>
+            <th class="p-3 border-b border-gray-300 text-right">تعداد ترجمه‌ها</th>
+            <th class="p-3 border-b border-gray-300 text-center">عملیات</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr class="hover:bg-gray-50">
+                <td class="p-3 border-b border-gray-300 text-right">@item.Id</td>
+                <td class="p-3 border-b border-gray-300 text-right">@item.Icon</td>
+                <td class="p-3 border-b border-gray-300 text-right">@(item.Translations?.Count ?? 0)</td>
+                <td class="p-3 border-b border-gray-300 text-center space-x-2">
+                    <a href="@Url.Action("Edit", new { id = item.Id })" class="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700">ویرایش</a>
+                    <a href="@Url.Action("Delete", new { id = item.Id })" class="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700">حذف</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+</div>

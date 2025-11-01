@@ -1,0 +1,156 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@model List<GalleryImage>
+@{
+    ViewData["Title"] = "گالری تصاویر - اروین پلیمر";
+    ViewData["MetaDescription"] = "گالری تصاویر شرکت اروین پلیمر - مشاهده نمونه کارها، محصولات پلیمری، پروژه‌های اجرا شده و تصاویر کارخانه";
+    ViewData["MetaKeywords"] = "گالری تصاویر, نمونه کار پلیمری, محصولات پلیمری, پروژه‌های اروین پلیمر, تصاویر کارخانه";
+    ViewData["OgTitle"] = "گالری تصاویر اروین پلیمر";
+    ViewData["OgDescription"] = "مشاهده گالری تصاویر شرکت اروین پلیمر شامل محصولات، پروژه‌ها و تصاویر کارخانه";
+    ViewData["CanonicalUrl"] = "https://ervinpolymer.com/gallery";
+}
+
+@section Styles {
+    <style>
+        @@import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;700&display=swap');
+        
+
+        .gallery-item {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+            .gallery-item:hover {
+                transform: translateY(-5px);
+            }
+
+        .modal {
+            transition: opacity 0.3s ease;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s;
+        }
+        @@keyframes fadeIn {
+            from
+
+        {
+            opacity: 0;
+        }
+
+        to {
+            opacity: 1;
+        }
+
+        }
+    </style>
+}
+
+<div class=" bg-white pt-20">
+    <!-- هدر صفحه -->
+    <div class="container mx-auto px-4 py-12">
+        <header class="text-center mb-16">
+            <h1 class="text-4xl md:text-5xl font-bold mb-4">گالری تصاویر من</h1>
+            <p class="text-xl ">بهترین لحظات ثبت شده در قاب تصویر</p>
+            <div class="w-24 h-1 mx-auto mt-6 rounded-full"></div>
+        </header>
+
+        <!-- گالری -->
+           
+
+        <!-- گالری تصاویر -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                @if (Model != null && Model.Any())
+            {
+                foreach (var image in Model)
+                {
+                        <div class="gallery-item rounded-xl overflow-hidden shadow-lg bg-gray-800" onclick="openModal('@image.FilePath', '@image.Title', '@image.Description', '@image.UploadDate.ToString("yyyy/MM/dd")')">
+                            <div class="relative">
+                                <img src="@image.FilePath" alt="@image.Title" class="w-full h-64 object-cover">
+                                <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-4">
+                                    <h3 class="text-white font-bold text-lg">@image.Title</h3>
+                                    <p class="text-blue-200 text-sm"> @image.UploadDate.ToString("yyyy/MM/dd")</p>
+                                </div>
+                            </div>
+                            <div class="p-4">
+                                <p class="text-gray-300">@image.Description</p>
+                            </div>
+                        </div>
+                    
+                }
+            }
+            else
+            {
+                <div class="col-span-full text-center py-16">
+                    <i class="fas fa-image text-6xl text-gray-300 mb-6"></i>
+                    <h3 class="text-2xl font-semibold text-gray-500 mb-4">تصویری یافت نشد</h3>
+                    <p class="text-gray-400">هیچ تصویری در گالری موجود نیست.</p>
+                </div>
+            }
+        </div>
+
+       
+    </div>
+</div>
+
+<!-- مودال نمایش تصویر -->
+<div id="imageModal" class="fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center z-50 hidden modal-overlay">
+    <div class="relative max-w-6xl w-full mx-4 animate-zoom">
+        <button id="closeModal" class="absolute top-4 left-4 bg-white text-gray-800 p-3 rounded-full shadow-lg z-10 hover:bg-gray-200 transition transform hover:scale-110">
+            <i class="fas fa-times text-lg"></i>
+        </button>
+        <button id="prevBtn" class="absolute top-1/2 right-6 bg-white text-gray-800 p-4 rounded-full shadow-lg transform -translate-y-1/2 z-10 hover:bg-gray-200 transition">
+            <i class="fas fa-chevron-right"></i>
+        </button>
+        <button id="nextBtn" class="absolute top-1/2 left-6 bg-white text-gray-800 p-4 rounded-full shadow-lg transform -translate-y-1/2 z-10 hover:bg-gray-200 transition">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+
+        <div class="bg-white rounded-xl overflow-hidden shadow-2xl modal-content">
+            <img id="modalImage" src="" alt="" class="w-full h-auto max-h-[70vh] object-contain">
+            <div class="p-6 bg-white">
+                <h3 id="modalTitle" class="text-2xl font-bold text-gray-800 mb-3"></h3>
+                <p id="modalDescription" class="text-gray-600 text-lg"></p>
+                <div class="flex justify-between items-center mt-4 pt-4 border-t border-gray-200">
+                    <span id="modalFileSize" class="text-sm text-gray-500"></span>
+                    <span id="modalDate" class="text-sm text-gray-500"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function openModal(imageSrc, title, description, date) {
+               document.getElementById('modalImage').src = imageSrc;
+               document.getElementById('modalTitle').textContent = title;
+               document.getElementById('modalDescription').textContent = description;
+               document.getElementById('modalDate').textContent = date;
+               document.getElementById('imageModal').classList.remove('hidden');
+               document.body.style.overflow = 'hidden';
+           }
+
+           function closeModal() {
+               document.getElementById('imageModal').classList.add('hidden');
+               document.body.style.overflow = 'auto';
+           }
+
+           // بستن مدال با کلید ESC
+           document.addEventListener('keydown', function(event) {
+               if (event.key === 'Escape') {
+                   closeModal();
+               }
+           });
+
+           // بستن مدال با کلیک خارج از محتوا
+           document.getElementById('imageModal').addEventListener('click', function(event) {
+               if (event.target === this) {
+                   closeModal();
+               }
+           });
+    </script>
+}

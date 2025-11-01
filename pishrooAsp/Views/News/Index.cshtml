@@ -1,0 +1,80 @@
+﻿@model List<pishrooAsp.Models.Newses.News>
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    ViewData["Title"] = "مدیریت اخبار";
+}
+
+<div class="max-w-7xl mx-auto mt-8 bg-white p-6 rounded-lg shadow-lg">
+    <div class="flex items-center justify-between mb-6">
+        <h2 class="text-2xl font-bold">مدیریت اخبار</h2>
+        <a href="@Url.Action("Create", "News")"
+           class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded shadow">
+            ➕ ثبت خبر جدید
+        </a>
+    </div>
+
+    <div class="overflow-x-auto">
+        <table class="min-w-full border border-gray-200 rounded-lg overflow-hidden">
+            <thead class="bg-gray-100 text-sm">
+                <tr>
+                    <th class="p-3 border">#</th>
+                    <th class="p-3 border">تصویر</th>
+                    <th class="p-3 border">عنوان</th>
+                    <th class="p-3 border">اخبار یا مقاله؟</th>
+                    <th class="p-3 border">تاریخ</th>
+                    <th class="p-3 border">عملیات</th>
+                </tr>
+            </thead>
+            <tbody class="text-sm">
+                @if (Model.Any())
+                {
+                    foreach (var item in Model)
+                    {
+                        <tr class="hover:bg-gray-50">
+                            <td class="p-3 border text-center">@item.Id</td>
+                            <td class="p-3 border text-center">
+                                @if (!string.IsNullOrEmpty(item.DefaultImageUrl))
+                                {
+                                    <img src="@item.DefaultImageUrl" class="w-16 h-16 object-cover rounded" />
+                                }
+                                else
+                                {
+                                    <span class="text-gray-400 italic">ندارد</span>
+                                }
+                            </td>
+                            <td class="p-3 border">@item.Translations?.FirstOrDefault()?.Title</td>
+                            <td class="p-3 border text-center">
+                                @if (item.IsPublished)
+                                {
+                                    <span class="text-green-600 font-bold">✅</span>
+                                }
+                                else
+                                {
+                                    <span class="text-red-500 font-bold">❌</span>
+                                }
+                            </td>
+                            <td class="p-3 border text-center">@item.PublishDate.ToString("yyyy/MM/dd")</td>
+                            <td class="p-3 border text-center space-x-2">
+                                <a href="@Url.Action("Edit", "News", new { id = item.Id })"
+                                   class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded">ویرایش</a>
+                                <a asp-action="Details" asp-route-id="@item.Id" class="text-blue-600 hover:underline">مشاهده جزئیات</a>
+
+                                <a href="@Url.Action("Delete", "News", new { id = item.Id })"
+                                   onclick="return confirm('آیا از حذف این خبر مطمئن هستید؟');"
+                                   class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded">حذف</a>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="6" class="p-4 text-center text-gray-500">
+                            هیچ خبری ثبت نشده است.
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

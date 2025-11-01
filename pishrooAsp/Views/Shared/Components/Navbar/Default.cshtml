@@ -1,0 +1,183 @@
+﻿@using Microsoft.EntityFrameworkCore
+@model pishrooAsp.Models.Navbar.NavbarViewModel
+@inject pishrooAsp.Data.AppDbContext _context
+@{
+    var langs = _context.Langs.ToList();
+    var products = _context.Products.Take(6)
+        .Include(p => p.Translations)
+        .ThenInclude(t => t.Lang)
+        .ToList();
+
+    bool isPersian = Model.CurrentCulture == "fa";
+}
+
+<header class="sticky top-0 z-50 custom-blue shadow-lg border-b-4 border-custom-yellow">
+    <nav class="container mx-auto px-4 py-4 flex justify-between items-center">
+        <!-- Logo -->
+        <a href="/@Model.CurrentCulture" class="text-custom-white text-2xl md:text-3xl font-bold flex items-center">
+            <div class="flex items-center justify-center h-12 md:h-16 ml-2">
+                <img src="~/image/companyLogo.png" alt="Logo" class="w-full h-full object-cover">
+            </div>
+            @(isPersian ? "آروین پلیمر" : "Ervin Polymer")
+            <span class="text-xs md:text-sm mr-2 hidden md:block">
+                @(isPersian ? "دانش بنیان فن آور" : "")
+            </span>
+        </a>
+
+        <!-- Desktop Menu -->
+        <ul class="hidden md:flex space-x-4 lg:space-x-8 text-base lg:text-lg">
+            @foreach (var item in Model.Items)
+            {
+                if (item.Title == "محصولات" || item.Title == "Products")
+                {
+                    <li class="relative group">
+                        <a href="@item.Url" class="text-custom-white hover:text-custom-yellow transition duration-300 font-medium mx-2 lg:mx-3 flex items-center">
+                            @item.Title
+                            <svg class="w-4 h-4 mr-1 transform group-hover:rotate-180 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </a>
+
+                        <!-- Mega Menu -->
+                        <div class="absolute left-1/2 transform -translate-x-1/2 mt-2 w-80 md:w-96 lg:w-[800px] bg-white shadow-xl rounded-lg overflow-hidden opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300">
+                            <div class="p-4 md:p-6">
+                                <h3 class="font-bold text-custom-dark-gray text-lg mb-4">@(isPersian ? "محصولات پرطرفدار" : "Popular Products")</h3>
+
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    @foreach (var product in products)
+                                    {
+                                        var translation = product.Translations.FirstOrDefault(t => t.Lang.Code.ToLower() == Model.CurrentCulture);
+                                        <div class="bg-gray-50 rounded-lg p-4 hover:shadow-md transition-shadow duration-300">
+                                            <div class="flex items-start mb-3">
+                                                <div class="flex-shrink-0 w-12 h-12 bg-gray-200 rounded flex items-center justify-center mr-3">
+                                                    <i class="fas fa-box text-custom-blue"></i>
+                                                </div>
+                                                <div>
+                                                    <h4 class="font-semibold text-custom-blue text-sm md:text-base">@(translation?.Title)</h4>
+                                                    <p class="text-xs text-gray-500 mt-1 line-clamp-2">
+                                                        @(translation?.Description?.Length > 60 ? translation.Description.Substring(0, 60) + "..." : translation?.Description)
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <a asp-controller="Home"
+                                               asp-action="ProductDetail"
+                                               asp-route-id="@product.Id"
+                                               class="block w-full text-center px-4 py-2 custom-yellow text-custom-blue font-semibold rounded-full hover:opacity-90 transition duration-300 text-sm">
+                                                @(isPersian ? "جزئیات محصول" : "Product Details")
+                                            </a>
+                                        </div>
+                                    }
+                                </div>
+
+                                <div class="mt-4 pt-4 border-t border-gray-200">
+                                    <a href="/@Model.CurrentCulture/#products" class="block text-center text-custom-yellow hover:underline font-medium">
+                                        @(isPersian ? "مشاهده همه محصولات →" : "View All Products →")
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                }
+                else
+                {
+                    <li>
+                        <a href="@item.Url" class="text-custom-white hover:text-custom-yellow transition duration-300 font-medium mx-2 lg:mx-3">
+                            @item.Title
+                        </a>
+                    </li>
+                }
+            }
+        </ul>
+
+        <!-- Language Switcher & Mobile Menu Toggle -->
+        <div class="flex items-center space-x-4 ltr">
+            <!-- Language Switcher -->
+            <div class="relative group">
+                <button class="flex items-center text-custom-yellow hover:text-custom-white transition duration-300 p-2 rounded-md">
+                    <i class="fas fa-globe text-lg md:text-xl mr-2"></i>
+                    <span class="font-medium text-sm md:text-base">@(langs.FirstOrDefault(l => l.Code.ToLower() == ViewContext.RouteData.Values["culture"]?.ToString()?.ToLower())?.Name ?? "فارسی")</span>
+                </button>
+                <div class="absolute left-0 mt-2 w-32 bg-white rounded-md shadow-lg py-1 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300">
+                    @foreach (var lang in langs)
+                    {
+                        <a href="@Url.Action(ViewContext.RouteData.Values["action"]?.ToString(), ViewContext.RouteData.Values["controller"]?.ToString(), new { culture = lang.Code })"
+                           class="block px-4 py-2 text-gray-700 hover:bg-gray-100 transition-colors duration-200 text-sm">
+                            @lang.Name
+                        </a>
+                    }
+                </div>
+            </div>
+
+            <!-- Mobile Menu Toggle -->
+            <button id="mobile-menu-button" class="md:hidden text-custom-white p-2 rounded-md">
+                <i class="fas fa-bars text-xl"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="hidden md:hidden custom-blue pb-4 px-4">
+        <ul class="flex flex-col space-y-3 text-lg">
+            @foreach (var item in Model.Items)
+            {
+                <li>
+                    <a href="@item.Url" class="text-custom-white hover:text-custom-yellow transition duration-300 block py-2 font-medium">
+                        @item.Title
+                    </a>
+                </li>
+            }
+        </ul>
+
+        <!-- Mobile Products -->
+        <div class="mt-4 pt-4 border-t border-custom-yellow/30">
+            <h3 class="text-custom-white font-bold mb-3">@(isPersian ? "محصولات" : "Products")</h3>
+            <div class="grid grid-cols-1 gap-3">
+                @foreach (var product in products.Take(4))
+                {
+                    var translation = product.Translations.FirstOrDefault(t => t.Lang.Code.ToLower() == Model.CurrentCulture);
+                    <a asp-controller="Home" asp-action="ProductDetail" asp-route-id="@product.Id"
+                       class="bg-white/10 rounded-lg p-3 flex items-center hover:bg-white/20 transition duration-300">
+                        <div class="flex-shrink-0 w-10 h-10 bg-white/20 rounded flex items-center justify-center mr-3">
+                            <i class="fas fa-box text-custom-yellow"></i>
+                        </div>
+                        <span class="text-custom-white text-sm">@(translation?.Title)</span>
+                    </a>
+                }
+            </div>
+        </div>
+    </div>
+</header>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Mobile menu toggle
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            if (mobileMenuButton) {
+                mobileMenuButton.addEventListener('click', function () {
+                    const mobileMenu = document.getElementById('mobile-menu');
+                    if (mobileMenu) {
+                        mobileMenu.classList.toggle('hidden');
+                    }
+                });
+            }
+        });
+    </script>
+
+    <style>
+        .line-clamp-2 {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        /* برای نمایش بهتر در موبایل */
+        @@media (max-width: 768px) {
+            .container {
+                padding-left: 1rem;
+                padding-right: 1rem;
+            }
+        }
+    </style>
+}

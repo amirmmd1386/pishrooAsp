@@ -1,0 +1,40 @@
+﻿@model pishrooAsp.Models.Slider.Slider
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "افزودن اسلاید";
+}
+<div class="container mx-auto px-4 py-8">
+
+<h1>افزودن اسلاید</h1>
+
+<form asp-action="Create" method="post" enctype="multipart/form-data">
+    <div>
+        <label>آدرس تصویر</label>
+        <input type="file" name="ImageFile" />
+    </div>
+
+    <div>
+        <label>لینک</label>
+        <input type="text" name="Link" class="border p-2 w-full" />
+    </div>
+
+    <hr />
+    <h3>ترجمه‌ها</h3>
+    @foreach (var lang in ViewBag.Langs)
+    {
+        <div class="border p-3 my-2">
+            <h4>@lang.Name</h4>
+            <input type="hidden" name="translations.Index" value="@lang.Id" />
+            <input type="hidden" name="translations[@lang.Id].LangId" value="@lang.Id" />
+
+            <label>عنوان</label>
+            <input type="text" name="translations[@lang.Id].Title" class="border p-2 w-full" />
+
+            <label>توضیح کوتاه</label>
+            <textarea name="translations[@lang.Id].ShortDescription" class="border p-2 w-full"></textarea>
+        </div>
+    }
+
+    <button type="submit" class="bg-green-600 text-white px-4 py-2 mt-4 rounded">ثبت</button>
+</form>
+</div>

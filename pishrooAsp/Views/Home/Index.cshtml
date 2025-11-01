@@ -1,0 +1,73 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+@{
+    string TitleChanger = ViewBag.lang;
+    bool isPersian = TitleChanger == "fa";
+}
+
+
+   
+    <main>
+   
+
+        <!-- Hero Slider Section -->
+    @await Component.InvokeAsync("Slider")
+
+    <div id="products">
+        <!-- Product Showcase Section -->
+       @await Component.InvokeAsync("Products")
+
+    </div>
+
+       
+        <!-- Latest News & Articles Section -->
+        <div id="news">
+        <section id="news-articles" class="py-16 bg-gray-50">
+            <div class="container mx-auto px-4">
+            <h2 class="text-4xl font-bold text-center text-blue-800 mb-12">@(isPersian ? "آخرین اخبار و مقالات" : "Newest news and blogs")</h2>
+
+                <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+                    <!-- خبر اصلی (ستون بزرگ) -->
+                @await Component.InvokeAsync("News")
+
+                @await Component.InvokeAsync("Blog", new { count = 3 })
+                <!-- لیست اخبار (ستون کوچک) -->
+                
+
+               
+            </div>
+        </section>
+    </div>
+        
+        <!-- About Us & Why Choose Us Section -->
+        <section id="about" class="py-16 custom-light-gray">
+            <div class="container mx-auto px-4">
+                <h2 class="text-4xl font-bold text-center text-custom-blue mb-12">@(isPersian?"درباره ما":"About Us")</h2>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                    <!-- About Us Card -->
+                    <div class="custom-white rounded-xl shadow-lg p-8">
+                    <h3 class="text-3xl font-bold text-custom-blue mb-4">@(ViewBag.Name)</h3>
+                        <p class="text-custom-dark-gray leading-relaxed text-lg mb-4">
+                        @(ViewBag.about)
+                        </p>
+                        <p class="text-custom-dark-gray leading-relaxed text-lg">
+                        @(ViewBag.Slogan)
+                        </p>
+                    </div>
+
+                    <!-- Why Choose Us Card -->
+                @await Component.InvokeAsync("WhyUs")
+
+                </div>
+            </div>
+        </section>
+    </main>
+<div class="relative w-full h-screen bg-fixed bg-cover bg-center border-t-8 border-b-8"
+     style="background-image: url('@ViewBag.Background'); border-color: #FFD700;">
+</div>
+
+
+

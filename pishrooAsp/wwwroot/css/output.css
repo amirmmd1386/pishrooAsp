@@ -1,0 +1,133 @@
+/* Custom Colors */
+
+:root {
+  --ervin-blue: #2A4B7C;
+  /* سرمه‌ای روشن */
+  --ervin-yellow: #FFD700;
+  /* زرد تخم‌مرغی روشن */
+  --ervin-white: #FFFFFF;
+  /* سفید */
+  --ervin-light-gray: #F0F0F0;
+  /* خاکستری روشن */
+  --ervin-dark-gray: #333333;
+  /* خاکستری تیره برای متن */
+}
+
+/* Extend Tailwind CSS with custom colors */
+
+.custom-blue {
+  background-color: var(--ervin-blue);
+}
+
+.text-custom-blue {
+  color: var(--ervin-blue);
+}
+
+.border-custom-blue {
+  border-color: var(--ervin-blue);
+}
+
+.custom-yellow {
+  background-color: var(--ervin-yellow);
+}
+
+.text-custom-yellow {
+  color: var(--ervin-yellow);
+}
+
+.border-custom-yellow {
+  border-color: var(--ervin-yellow);
+}
+
+.custom-white {
+  background-color: var(--ervin-white);
+}
+
+.text-custom-white {
+  color: var(--ervin-white);
+}
+
+.custom-light-gray {
+  background-image: url("data:image/svg+xml,<svg id='patternId' width='100%' height='100%' xmlns='http://www.w3.org/2000/svg'><defs><pattern id='a' patternUnits='userSpaceOnUse' width='29' height='50.115' patternTransform='scale(1) rotate(40)'><rect x='0' y='0' width='100%' height='100%' fill='%23ffffffff'/><path d='M14.498 16.858L0 8.488.002-8.257l14.5-8.374L29-8.26l-.002 16.745zm0 50.06L0 58.548l.002-16.745 14.5-8.373L29 41.8l-.002 16.744zM28.996 41.8l-14.498-8.37.002-16.744L29 8.312l14.498 8.37-.002 16.745zm-29 0l-14.498-8.37.002-16.744L0 8.312l14.498 8.37-.002 16.745z'  stroke-width='0.5' stroke='%23eaeaeaff' fill='none'/></pattern></defs><rect width='800%' height='800%' transform='translate(-29,-13.23)' fill='url(%23a)'/></svg>")
+}
+
+.text-custom-dark-gray {
+  color: var(--ervin-dark-gray);
+}
+
+/* Custom font families */
+
+body {
+  font-family: 'Vazirmatn', 'Inter', sans-serif;
+  direction: rtl;
+  /* Set default direction to RTL */
+}
+
+.ltr {
+  direction: ltr;
+  /* Override for specific LTR elements like language switcher */
+}
+
+/* Slider specific styles - Modified for smoother transition */
+
+.slider-container {
+  position: relative;
+  overflow: hidden;
+}
+
+.slider-item {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  /* Hidden by default using opacity */
+  visibility: hidden;
+  /* Also hide from screen readers when not active */
+  transition: opacity 1s ease-in-out, visibility 1s ease-in-out;
+  /* Smooth transition */
+}
+
+.slider-item.active {
+  opacity: 1;
+  /* Show active slide */
+  visibility: visible;
+  /* Make visible when active */
+}
+
+/* Active dot styling */
+
+.dot.active-dot {
+  border: 2px solid var(--ervin-yellow);
+  /* Yellow border for active dot */
+  background-color: var(--ervin-white);
+  /* White fill for active dot */
+}
+
+/* Custom scrollbar for better aesthetics */
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--ervin-light-gray);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--ervin-blue);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #1e3a62;
+  /* Darker blue on hover */
+}
+
+/* Smooth scroll for anchor links */
+
+html {
+  scroll-behavior: smooth;
+}

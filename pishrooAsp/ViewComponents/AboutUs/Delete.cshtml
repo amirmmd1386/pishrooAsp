@@ -1,0 +1,31 @@
+﻿@model pishrooAsp.Models.AboutUsItem
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "حذف درباره ما";
+}
+
+<div class="container mx-auto px-4 py-8">
+    <h1 class="text-2xl font-bold mb-6 text-red-600">@ViewData["Title"]</h1>
+
+    <div class="border border-gray-300 p-6 rounded bg-gray-50">
+        <p class="mb-4">آیا مطمئن هستید که می‌خواهید این مورد را حذف کنید؟</p>
+
+        <dl class="mb-6">
+            <dt class="font-semibold">تلفن</dt>
+            <dd>@Model.Phone1</dd>
+            <dt class="font-semibold mt-2">ایمیل</dt>
+            <dd>@Model.Email1</dd>
+            <dt class="font-semibold mt-2">اینستاگرام</dt>
+            <dd>@Model.Instagram</dd>
+        </dl>
+
+        <form asp-action="DeleteConfirmed" method="post">
+            <input type="hidden" name="id" value="@Model.Id" />
+
+            <div class="flex gap-4">
+                <a href="@Url.Action("Index")" class="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded-lg">انصراف</a>
+                <button type="submit" class="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg">حذف</button>
+            </div>
+        </form>
+    </div>
+</div>

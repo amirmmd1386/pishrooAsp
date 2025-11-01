@@ -1,0 +1,421 @@
+﻿<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>پنل مدیریت اخبار</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        [dir="rtl"] .rotate-180 {
+            transform: rotate(180deg);
+        }
+    </style>
+</head>
+<body class="bg-gray-100 font-sans">
+    <div class="container mx-auto px-4 py-8">
+        <!-- هدر پنل -->
+        <div class="flex justify-between items-center mb-8">
+            <h1 class="text-2xl font-bold text-gray-800">مدیریت اخبار</h1>
+            <button id="addNewsBtn" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">
+                <i class="fas fa-plus ml-2"></i> خبر جدید
+            </button>
+        </div>
+
+        <!-- جدول لیست اخبار -->
+        <div class="bg-white rounded-lg shadow overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">عنوان</th>
+                            <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">تاریخ انتشار</th>
+                            <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">وضعیت</th>
+                            <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">عملیات</th>
+                        </tr>
+                    </thead>
+                    <tbody id="newsTableBody" class="bg-white divide-y divide-gray-200">
+                        <!-- اخبار اینجا لود می‌شوند -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- مودال افزودن/ویرایش خبر -->
+        <div id="newsModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+            <div class="bg-white rounded-lg shadow-xl w-full max-w-3xl max-h-[90vh] overflow-y-auto">
+                <div class="flex justify-between items-center border-b p-4">
+                    <h3 id="modalTitle" class="text-lg font-semibold">افزودن خبر جدید</h3>
+                    <button id="closeModal" class="text-gray-500 hover:text-gray-700">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <form id="newsForm" class="p-6 space-y-4">
+                    <input type="hidden" id="newsId">
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="publishDate" class="block text-sm font-medium text-gray-700 mb-1">تاریخ انتشار</label>
+                            <input type="datetime-local" id="publishDate" class="w-full border border-gray-300 rounded-md p-2">
+                        </div>
+                        <div class="flex items-center">
+                            <input type="checkbox" id="isPublished" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                            <label for="isPublished" class="mr-2 block text-sm font-medium text-gray-700">منتشر شود</label>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="defaultImageUrl" class="block text-sm font-medium text-gray-700 mb-1">آدرس تصویر پیش‌فرض</label>
+                        <input type="text" id="defaultImageUrl" class="w-full border border-gray-300 rounded-md p-2">
+                    </div>
+
+                    <!-- ترجمه‌ها -->
+                    <div class="border-t pt-4">
+                        <h4 class="font-medium text-gray-700 mb-3">ترجمه‌ها</h4>
+                        <div id="translationsContainer" class="space-y-4">
+                            <!-- ترجمه‌ها اینجا اضافه می‌شوند -->
+                        </div>
+                        <button type="button" id="addTranslation" class="mt-2 text-blue-600 hover:text-blue-800 text-sm">
+                            <i class="fas fa-plus ml-1"></i> افزودن ترجمه
+                        </button>
+                    </div>
+
+                    <!-- تصاویر -->
+                    <div class="border-t pt-4">
+                        <h4 class="font-medium text-gray-700 mb-3">تصاویر</h4>
+                        <div id="imagesContainer" class="space-y-2">
+                            <!-- تصاویر اینجا اضافه می‌شوند -->
+                        </div>
+                        <button type="button" id="addImage" class="mt-2 text-blue-600 hover:text-blue-800 text-sm">
+                            <i class="fas fa-plus ml-1"></i> افزودن تصویر
+                        </button>
+                    </div>
+
+                    <!-- فایل‌های پیوست -->
+                    <div class="border-t pt-4">
+                        <h4 class="font-medium text-gray-700 mb-3">فایل‌های پیوست</h4>
+                        <div id="attachmentsContainer" class="space-y-2">
+                            <!-- پیوست‌ها اینجا اضافه می‌شوند -->
+                        </div>
+                        <button type="button" id="addAttachment" class="mt-2 text-blue-600 hover:text-blue-800 text-sm">
+                            <i class="fas fa-plus ml-1"></i> افزودن پیوست
+                        </button>
+                    </div>
+
+                    <div class="flex justify-end space-x-3 pt-4 border-t">
+                        <button type="button" id="cancelBtn" class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">
+                            انصراف
+                        </button>
+                        <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
+                            ذخیره
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // متغیرهای عمومی
+        let currentAction = 'create';
+        let languages = []; // اینجا باید از API زبان‌ها لود شود
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // لود اولیه داده‌ها
+            loadNews();
+            loadLanguages();
+
+            // مدیریت رویدادها
+            document.getElementById('addNewsBtn').addEventListener('click', showAddModal);
+            document.getElementById('closeModal').addEventListener('click', hideModal);
+            document.getElementById('cancelBtn').addEventListener('click', hideModal);
+            document.getElementById('addTranslation').addEventListener('click', addTranslationField);
+            document.getElementById('addImage').addEventListener('click', addImageField);
+            document.getElementById('addAttachment').addEventListener('click', addAttachmentField);
+            document.getElementById('newsForm').addEventListener('submit', handleFormSubmit);
+        });
+
+        // توابع اصلی
+        async function loadNews() {
+            try {
+                const response = await fetch('/api/News');
+                const newsList = await response.json();
+                renderNewsTable(newsList);
+            } catch (error) {
+                console.error('Error loading news:', error);
+                alert('خطا در بارگذاری اخبار');
+            }
+        }
+
+        async function loadLanguages() {
+            // اینجا باید API زبان‌ها را فراخوانی کنید
+            // languages = await fetch('/api/Languages').then(res => res.json());
+            languages = [
+                { id: 1, name: 'فارسی', code: 'fa' },
+                { id: 2, name: 'انگلیسی', code: 'en' }
+            ];
+        }
+
+        function renderNewsTable(newsList) {
+            const tbody = document.getElementById('newsTableBody');
+            tbody.innerHTML = '';
+
+            newsList.forEach(news => {
+                const mainTranslation = news.translations?.[0] || {};
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm font-medium text-gray-900">${mainTranslation.title || 'بدون عنوان'}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm text-gray-500">${new Date(news.publishDate).toLocaleDateString('fa-IR')}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full
+                            ${news.isPublished ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}">
+                            ${news.isPublished ? 'منتشر شده' : 'پیش‌نویس'}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <button onclick="editNews(${news.id})" class="text-blue-600 hover:text-blue-900 mr-3">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button onclick="deleteNews(${news.id})" class="text-red-600 hover:text-red-900">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function showAddModal() {
+            currentAction = 'create';
+            document.getElementById('modalTitle').textContent = 'افزودن خبر جدید';
+            document.getElementById('newsForm').reset();
+            document.getElementById('translationsContainer').innerHTML = '';
+            document.getElementById('imagesContainer').innerHTML = '';
+            document.getElementById('attachmentsContainer').innerHTML = '';
+            document.getElementById('newsModal').classList.remove('hidden');
+        }
+
+        async function editNews(id) {
+            try {
+                const response = await fetch(`/api/News/${id}`);
+                const news = await response.json();
+
+                currentAction = 'update';
+                document.getElementById('modalTitle').textContent = 'ویرایش خبر';
+                document.getElementById('newsId').value = news.id;
+                document.getElementById('publishDate').value = formatDateTimeForInput(news.publishDate);
+                document.getElementById('isPublished').checked = news.isPublished;
+                document.getElementById('defaultImageUrl').value = news.defaultImageUrl || '';
+
+                // ترجمه‌ها
+                const translationsContainer = document.getElementById('translationsContainer');
+                translationsContainer.innerHTML = '';
+                news.translations?.forEach(trans => {
+                    addTranslationField(trans);
+                });
+
+                // تصاویر
+                const imagesContainer = document.getElementById('imagesContainer');
+                imagesContainer.innerHTML = '';
+                news.images?.forEach(img => {
+                    addImageField(img);
+                });
+
+                // پیوست‌ها
+                const attachmentsContainer = document.getElementById('attachmentsContainer');
+                attachmentsContainer.innerHTML = '';
+                news.attachments?.forEach(att => {
+                    addAttachmentField(att);
+                });
+
+                document.getElementById('newsModal').classList.remove('hidden');
+            } catch (error) {
+                console.error('Error loading news:', error);
+                alert('خطا در بارگذاری خبر');
+            }
+        }
+
+        function addTranslationField(translation = {}) {
+            const container = document.getElementById('translationsContainer');
+            const div = document.createElement('div');
+            div.className = 'border p-3 rounded-lg bg-gray-50';
+            div.innerHTML = `
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">زبان</label>
+                        <select class="lang-select w-full border border-gray-300 rounded-md p-2">
+                            ${languages.map(lang => `
+                                <option value="${lang.id}" ${translation.langId === lang.id ? 'selected' : ''}>
+                                    ${lang.name}
+                                </option>
+                            `).join('')}
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">عنوان</label>
+                        <input type="text" value="${translation.title || ''}" class="w-full border border-gray-300 rounded-md p-2">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">خلاصه</label>
+                        <input type="text" value="${translation.summary || ''}" class="w-full border border-gray-300 rounded-md p-2">
+                    </div>
+                    <div class="flex items-end">
+                        <button type="button" class="remove-translation px-3 py-2 bg-red-100 text-red-600 rounded-md hover:bg-red-200">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="mt-3">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">محتوا</label>
+                    <textarea rows="3" class="w-full border border-gray-300 rounded-md p-2">${translation.content || ''}</textarea>
+                </div>
+            `;
+            container.appendChild(div);
+
+            div.querySelector('.remove-translation').addEventListener('click', function() {
+                container.removeChild(div);
+            });
+        }
+
+        function addImageField(image = {}) {
+            const container = document.getElementById('imagesContainer');
+            const div = document.createElement('div');
+            div.className = 'flex items-center space-x-3';
+            div.innerHTML = `
+                <input type="text" value="${image.imageUrl || ''}" placeholder="آدرس تصویر" class="flex-1 border border-gray-300 rounded-md p-2">
+                <button type="button" class="remove-item px-3 py-2 bg-red-100 text-red-600 rounded-md hover:bg-red-200">
+                    <i class="fas fa-times"></i>
+                </button>
+            `;
+            container.appendChild(div);
+
+            div.querySelector('.remove-item').addEventListener('click', function() {
+                container.removeChild(div);
+            });
+        }
+
+        function addAttachmentField(attachment = {}) {
+            const container = document.getElementById('attachmentsContainer');
+            const div = document.createElement('div');
+            div.className = 'flex items-center space-x-3';
+            div.innerHTML = `
+                <input type="text" value="${attachment.fileUrl || ''}" placeholder="آدرس فایل" class="flex-1 border border-gray-300 rounded-md p-2">
+                <button type="button" class="remove-item px-3 py-2 bg-red-100 text-red-600 rounded-md hover:bg-red-200">
+                    <i class="fas fa-times"></i>
+                </button>
+            `;
+            container.appendChild(div);
+
+            div.querySelector('.remove-item').addEventListener('click', function() {
+                container.removeChild(div);
+            });
+        }
+
+        async function handleFormSubmit(e) {
+            e.preventDefault();
+
+            const formData = {
+                publishDate: document.getElementById('publishDate').value,
+                isPublished: document.getElementById('isPublished').checked,
+                defaultImageUrl: document.getElementById('defaultImageUrl').value,
+                translations: [],
+                images: [],
+                attachments: []
+            };
+
+            // جمع‌آوری ترجمه‌ها
+            document.querySelectorAll('#translationsContainer > div').forEach(div => {
+                formData.translations.push({
+                    langId: parseInt(div.querySelector('.lang-select').value),
+                    title: div.querySelector('input[type="text"]').value,
+                    summary: div.querySelectorAll('input[type="text"]')[1].value,
+                    content: div.querySelector('textarea').value
+                });
+            });
+
+            // جمع‌آوری تصاویر
+            document.querySelectorAll('#imagesContainer > div').forEach(div => {
+                const url = div.querySelector('input').value;
+                if (url) {
+                    formData.images.push({ imageUrl: url });
+                }
+            });
+
+            // جمع‌آوری پیوست‌ها
+            document.querySelectorAll('#attachmentsContainer > div').forEach(div => {
+                const url = div.querySelector('input').value;
+                if (url) {
+                    formData.attachments.push({ fileUrl: url });
+                }
+            });
+
+            try {
+                let response;
+                if (currentAction === 'create') {
+                    response = await fetch('/api/News', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(formData)
+                    });
+                } else {
+                    const id = document.getElementById('newsId').value;
+                    response = await fetch(`/api/News/${id}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(formData)
+                    });
+                }
+
+                if (response.ok) {
+                    hideModal();
+                    loadNews();
+                    alert('خبر با موفقیت ذخیره شد');
+                } else {
+                    throw new Error('خطا در ذخیره خبر');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('خطا در ذخیره خبر');
+            }
+        }
+
+        async function deleteNews(id) {
+            if (!confirm('آیا از حذف این خبر مطمئن هستید؟')) return;
+
+            try {
+                const response = await fetch(`/api/News/${id}`, {
+                    method: 'DELETE'
+                });
+
+                if (response.ok) {
+                    loadNews();
+                    alert('خبر با موفقیت حذف شد');
+                } else {
+                    throw new Error('خطا در حذف خبر');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('خطا در حذف خبر');
+            }
+        }
+
+        function hideModal() {
+            document.getElementById('newsModal').classList.add('hidden');
+        }
+
+        function formatDateTimeForInput(dateTime) {
+            const date = new Date(dateTime);
+            const local = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
+            return local.toISOString().slice(0, 16);
+        }
+
+        // توابع عمومی برای استفاده در رویدادهای onClick
+        window.editNews = editNews;
+        window.deleteNews = deleteNews;
+    </script>
+</body>
+</html>

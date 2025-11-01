@@ -1,0 +1,22 @@
+﻿@model pishrooAsp.Models.WhyUss.WhyUsItem
+
+@{
+    ViewData["Title"] = "حذف مورد";
+    Layout = "_AdminLayout";
+
+}
+<div class="container mx-auto px-4 py-8">
+<h1 class="text-2xl font-bold mb-6">حذف مورد</h1>
+
+<div class="mb-6">
+    <p>آیا از حذف این مورد مطمئن هستید؟</p>
+    <p><strong>آیکون:</strong> @Model.Icon</p>
+    <p><strong>تعداد ترجمه‌ها:</strong> @(Model.Translations?.Count ?? 0)</p>
+</div>
+
+<form asp-action="Delete" method="post">
+    <input type="hidden" asp-for="Id" />
+    <button type="submit" class="px-6 py-2 bg-red-600 text-white rounded hover:bg-red-700">حذف نهایی</button>
+    <a href="@Url.Action("Index")" class="inline-block mr-4 px-6 py-2 border border-gray-500 rounded hover:bg-gray-100">انصراف</a>
+</form>
+</div>

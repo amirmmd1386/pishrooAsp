@@ -1,0 +1,70 @@
+﻿@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+@model List<pishrooAsp.Models.Lang>
+@{
+    ViewData["Title"] = "مدیریت زبان‌ها";
+}
+
+<div class="max-w-2xl mx-auto mt-8 bg-white p-6 rounded-lg shadow-md">
+    <h2 class="text-2xl font-bold mb-6">زبان‌ها</h2>
+
+    <form method="post" asp-action="Create" class="space-y-4">
+        <div>
+            <label class="block text-sm font-medium">نام:</label>
+            <input name="Name" class="w-full border p-2 rounded" />
+        </div>
+        <div>
+            <label class="block text-sm font-medium">کد:</label>
+            <input name="Code" class="w-full border p-2 rounded" />
+        </div>
+        <div>
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700 mb-1">جهت متن:</label>
+                <div class="flex items-center space-x-4">
+                    <label class="inline-flex items-center">
+                        <input type="radio" name="dir" value="true" class="form-radio" />
+                        <span class="ml-2">راست‌چین (RTL)</span>
+                    </label>
+                    <label class="inline-flex items-center">
+                        <input type="radio" name="dir" value="false" class="form-radio" checked />
+                        <span class="ml-2">چپ‌چین (LTR)</span>
+                    </label>
+                </div>
+            </div>
+
+        </div>
+        <button class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">ثبت زبان</button>
+    </form>
+
+    <hr class="my-6" />
+
+    <table class="w-full border text-center">
+        <thead>
+            <tr class="bg-gray-100">
+                <th class="p-2">#</th>
+                <th>نام</th>
+                <th>کد</th>
+                <th>جهت</th>
+                <th>عملیات</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var lang in Model)
+            {
+                <tr>
+                    <td class="p-2">@lang.Id</td>
+                    <td>@lang.Name</td>
+                    <td>@lang.Code</td>
+                    <td>@(lang.dir ? "RTL" : "LTR")</td>
+                    <td>
+                        <form method="post" asp-action="Delete" asp-route-id="@lang.Id">
+                            <button class="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600">حذف</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

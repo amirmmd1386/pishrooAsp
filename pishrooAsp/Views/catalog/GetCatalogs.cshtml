@@ -1,0 +1,67 @@
+﻿@model IEnumerable<pishrooAsp.Models.Catalog>
+@{
+    ViewData["Title"] = "لیست کاتالوگ‌ها";
+
+}
+
+<div class="container mx-auto px-4 py-10">
+    <!-- Title -->
+    <div class="flex items-center justify-between mb-8">
+        <h1 class="text-2xl font-bold text-gray-800">📂 لیست کاتالوگ‌ها</h1>
+      
+    </div>
+
+    <!-- Success / Error Messages -->
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="mb-4 p-3 bg-green-100 text-green-800 rounded-lg">
+            @TempData["SuccessMessage"]
+        </div>
+    }
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="mb-4 p-3 bg-red-100 text-red-800 rounded-lg">
+            @TempData["ErrorMessage"]
+        </div>
+    }
+
+    <!-- Catalog Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        @foreach (var catalog in Model)
+        {
+            <div class="bg-white shadow-lg rounded-xl overflow-hidden hover:shadow-xl transition">
+                <div class="p-5 flex flex-col h-full">
+                    <!-- Title -->
+                    <h2 class="text-lg font-semibold text-gray-800 mb-2">
+                        @catalog.Title
+                    </h2>
+
+                    <!-- Description -->
+                    <p class="text-gray-600 text-sm mb-4 line-clamp-3">
+                        @catalog.Description
+                    </p>
+
+                    <!-- File info -->
+                    <div class="flex items-center text-xs text-gray-500 mb-3">
+                        <i class="fas fa-calendar-alt ml-2"></i>
+                        <span>@catalog.UploadDate.ToString("yyyy/MM/dd")</span>
+                    </div>
+                    <div class="flex items-center text-xs text-gray-500 mb-3">
+                        <i class="fas fa-file ml-2"></i>
+                        <span>@(catalog.FileSize / 1024) KB</span>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="mt-auto flex gap-2">
+                        <a href="@Url.Action("Download","Catalog", new { id = catalog.Id })"
+                           class="flex-1 px-3 py-2 bg-green-600 text-white text-sm rounded-lg text-center hover:bg-green-700 transition">
+                            ⬇ دانلود کاتالوگ
+                        </a>
+                       
+                    </div>
+
+                </div>
+            </div>
+        }
+    </div>
+</div>

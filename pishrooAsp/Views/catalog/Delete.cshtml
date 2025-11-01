@@ -1,0 +1,70 @@
+﻿@model Catalog
+
+@{
+    ViewData["Title"] = "حذف کاتالوگ";
+    Layout = "_AdminLayout";
+
+}
+
+<div class="container mx-auto p-4 max-w-2xl">
+    <h1 class="text-2xl font-bold text-red-600 mb-6">حذف کاتالوگ</h1>
+
+    <h3 class="text-lg font-semibold mb-4">آیا از حذف این کاتالوگ اطمینان دارید؟</h3>
+
+    <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+        <dl class="divide-y divide-gray-200">
+            <div class="py-3 grid grid-cols-3 gap-4">
+                <dt class="text-sm font-medium text-gray-500">عنوان</dt>
+                <dd class="mt-1 text-sm text-gray-900 col-span-2">@Model.Title</dd>
+            </div>
+
+            <div class="py-3 grid grid-cols-3 gap-4">
+                <dt class="text-sm font-medium text-gray-500">توضیحات</dt>
+                <dd class="mt-1 text-sm text-gray-900 col-span-2">@Model.Description</dd>
+            </div>
+
+            <div class="py-3 grid grid-cols-3 gap-4">
+                <dt class="text-sm font-medium text-gray-500">نام فایل</dt>
+                <dd class="mt-1 text-sm text-gray-900 col-span-2">@Model.OriginalFileName</dd>
+            </div>
+
+            <div class="py-3 grid grid-cols-3 gap-4">
+                <dt class="text-sm font-medium text-gray-500">تاریخ آپلود</dt>
+                <dd class="mt-1 text-sm text-gray-900 col-span-2">
+                    @(
+                        (Model.UploadDate is DateTime dt)
+                        ? dt.ToString("yyyy/MM/dd")
+                        : "-"
+                        )
+                </dd>
+            </div>
+
+            <div class="py-3 grid grid-cols-3 gap-4">
+                <dt class="text-sm font-medium text-gray-500">وضعیت</dt>
+                <dd class="mt-1 text-sm text-gray-900 col-span-2">
+                    @if (Model.IsActive)
+                    {
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">فعال</span>
+                    }
+                    else
+                    {
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">غیرفعال</span>
+                    }
+                </dd>
+            </div>
+        </dl>
+
+        <form asp-action="Delete" method="post" class="mt-6">
+            @Html.AntiForgeryToken()
+            <input asp-for="Id" type="hidden" />    <!-- از value صریح استفاده نکن -->
+            <div class="flex items-center justify-between">
+                <button type="submit" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                    حذف
+                </button>
+                <a asp-action="Index" class="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800">
+                    بازگشت به لیست
+                </a>
+            </div>
+        </form>
+    </div>
+</div>

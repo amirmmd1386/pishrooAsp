@@ -1,0 +1,23 @@
+﻿@model pishrooAsp.ModelViewer.NewsViewModel
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    ViewData["Title"] = "حذف خبر";
+}
+
+<div class="max-w-3xl mx-auto mt-8 bg-white p-6 rounded-lg shadow-lg text-center">
+    <h2 class="text-xl font-bold mb-4">آیا از حذف این خبر مطمئن هستید؟</h2>
+    <p class="mb-6 text-gray-600">@Model.Translations.FirstOrDefault()?.Title</p>
+
+    @if (!string.IsNullOrEmpty(Model.DefaultImageUrl))
+    {
+        <img src="@Model.DefaultImageUrl" class="w-48 mx-auto rounded mb-4" />
+    }
+
+    <form asp-action="DeleteConfirmed" method="post">
+        <input type="hidden" asp-for="Id" />
+        <div class="flex justify-center space-x-3">
+            <a href="@Url.Action("Index")" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded">انصراف</a>
+            <button type="submit" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded">بله، حذف شود</button>
+        </div>
+    </form>
+</div>

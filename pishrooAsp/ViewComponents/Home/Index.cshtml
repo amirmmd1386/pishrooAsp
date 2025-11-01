@@ -1,0 +1,348 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+
+
+
+    <!-- Navbar -->
+    <header class="sticky top-0 z-50 custom-blue shadow-lg border-b-4 border-custom-yellow">
+        <nav class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <!-- Logo -->
+            <a href="#" class="text-custom-white text-3xl font-bold flex items-center">
+                <img src="https://placehold.co/60x60/FFD700/2A4B7C?text=اروین" alt="لوگوی اروین پلیمر" class="h-12 w-12 rounded-full ml-2">
+                اروین پلیمر
+            </a>
+
+            <!-- Desktop Menu -->
+            <ul class="hidden md:flex space-x-8 text-lg">
+                <li><a href="#home" class="text-custom-white hover:text-custom-yellow transition duration-300 font-medium">خانه</a></li>
+                <li><a href="#products" class="text-custom-white hover:text-custom-yellow transition duration-300 font-medium">محصولات</a></li>
+                <li><a href="#news" class="text-custom-white hover:text-custom-yellow transition duration-300 font-medium">اخبار</a></li>
+                <li><a href="#about" class="text-custom-white hover:text-custom-yellow transition duration-300 font-medium">درباره ما</a></li>
+                <li><a href="#contact" class="text-custom-white hover:text-custom-yellow transition duration-300 font-medium">تماس با ما</a></li>
+            </ul>
+
+            <!-- Language Switcher & Mobile Menu Toggle -->
+            <div class="flex items-center space-x-4 ltr">
+                <!-- Language Switcher -->
+                <div class="relative group">
+                    <button class="flex items-center text-custom-yellow hover:text-custom-white transition duration-300 focus:outline-none p-2 rounded-md hover:custom-blue/50">
+                        <i class="fas fa-globe text-xl mr-2"></i>
+                        <span id="current-lang" class="font-medium">فارسی</span>
+                        <i class="fas fa-chevron-down text-xs ml-2 group-hover:rotate-180 transition-transform duration-300"></i>
+                    </button>
+                    <div class="absolute left-0 mt-2 w-32 custom-white rounded-md shadow-lg py-1 hidden group-hover:block transition-all duration-300 origin-top-right scale-y-0 group-hover:scale-y-100 transform">
+                        <a href="#" class="block px-4 py-2 text-custom-dark-gray hover:custom-light-gray" data-lang="fa">فارسی</a>
+                        <a href="#" class="block px-4 py-2 text-custom-dark-gray hover:custom-light-gray" data-lang="en">English</a>
+                    </div>
+                </div>
+
+                <!-- Mobile Menu Toggle -->
+                <button id="mobile-menu-button" class="md:hidden text-custom-white focus:outline-none p-2 rounded-md hover:custom-blue/50">
+                    <i class="fas fa-bars text-2xl"></i>
+                </button>
+            </div>
+        </nav>
+
+        <!-- Mobile Menu (Hidden by default) -->
+        <div id="mobile-menu" class="hidden md:hidden custom-blue pb-4">
+            <ul class="flex flex-col items-center space-y-4 text-lg">
+                <li><a href="#home" class="text-custom-white hover:text-custom-yellow transition duration-300 block py-2 font-medium">خانه</a></li>
+                <li><a href="#products" class="text-custom-white hover:text-custom-yellow transition duration-300 block py-2 font-medium">محصولات</a></li>
+                <li><a href="#news" class="text-custom-white hover:text-custom-yellow transition duration-300 block py-2 font-medium">اخبار</a></li>
+                <li><a href="#about" class="text-custom-white hover:text-custom-yellow transition duration-300 block py-2 font-medium">درباره ما</a></li>
+                <li><a href="#contact" class="text-custom-white hover:text-custom-yellow transition duration-300 block py-2 font-medium">تماس با ما</a></li>
+            </ul>
+        </div>
+    </header>
+
+    <main>
+        <!-- Hero Slider Section -->
+        <section id="home" class="slider-container w-full h-screen relative">
+            <!-- Slider Items -->
+            <div class="slider-item active flex items-center justify-center text-center p-4">
+                <img src="assest/image/about.png" alt="تصویر اسلاید ۱" class="absolute inset-0 w-full h-full object-cover opacity-80">
+                <div class="relative z-10 text-custom-white black opacity-40 p-8 rounded-lg max-w-3xl">
+                    <h2 class="text-5xl md:text-6xl font-extrabold mb-4 leading-tight">پیشرو در صنعت پلیمر</h2>
+                    <p class="text-xl md:text-2xl font-light">ارائه راه حل‌های نوین و پایدار برای آینده‌ای بهتر.</p>
+                    <button class="mt-8 px-8 py-4 custom-yellow text-custom-blue text-xl font-semibold rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 transition duration-300">
+                        بیشتر بدانید
+                    </button>
+                </div>
+            </div>
+            <div class="slider-item flex items-center justify-center text-center p-4">
+                <img src="https://placehold.co/1920x1080/FFD700/2A4B7C?text=کیفیت+برتر" alt="تصویر اسلاید ۲" class="absolute inset-0 w-full h-full object-cover opacity-80">
+                <div class="relative z-10 text-custom-blue custom-white opacity-80 p-8 rounded-lg max-w-3xl">
+                    <h2 class="text-5xl md:text-6xl font-extrabold mb-4 leading-tight">کیفیت، تعهد ماست</h2>
+                    <p class="text-xl md:text-2xl font-light">با استفاده از بهترین مواد اولیه و فناوری روز دنیا.</p>
+                    <button class="mt-8 px-8 py-4 custom-blue text-custom-yellow text-xl font-semibold rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 transition duration-300">
+                        مشاهده محصولات
+                    </button>
+                </div>
+            </div>
+            <div class="slider-item flex items-center justify-center text-center p-4">
+                <img src="https://placehold.co/1920x1080/2A4B7C/FFD700?text=راه+حل+پایدار" alt="تصویر اسلاید ۳" class="absolute inset-0 w-full h-full object-cover opacity-80">
+                <div class="relative z-10 text-custom-white black opacity-40 p-8 rounded-lg max-w-3xl">
+                    <h2 class="text-5xl md:text-6xl font-extrabold mb-4 leading-tight">راه حل‌های پایدار پلیمری</h2>
+                    <p class="text-xl md:text-2xl font-light">مسئولیت‌پذیری در قبال محیط زیست و آینده.</p>
+                    <button class="mt-8 px-8 py-4 custom-yellow text-custom-blue text-xl font-semibold rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 transition duration-300">
+                        تماس با ما
+                    </button>
+                </div>
+            </div>
+
+            <!-- Slider Navigation Buttons -->
+            <button id="prev-slide" class="absolute top-1/2 right-4 transform -translate-y-1/2 custom-blue text-custom-white p-3 rounded-full shadow-lg hover:opacity-80 transition duration-300 z-20">
+                <i class="fas fa-chevron-right text-2xl"></i>
+            </button>
+            <button id="next-slide" class="absolute top-1/2 left-4 transform -translate-y-1/2 custom-blue text-custom-white p-3 rounded-full shadow-lg hover:opacity-80 transition duration-300 z-20">
+                <i class="fas fa-chevron-left text-2xl"></i>
+            </button>
+
+            <!-- Slider Navigation Dots -->
+            <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-3 z-20">
+                <div class="dot w-4 h-4 rounded-full custom-white opacity-50 cursor-pointer transition duration-300 hover:opacity-100 border-2 border-transparent"></div>
+                <div class="dot w-4 h-4 rounded-full custom-white opacity-50 cursor-pointer transition duration-300 hover:opacity-100 border-2 border-transparent"></div>
+                <div class="dot w-4 h-4 rounded-full custom-white opacity-50 cursor-pointer transition duration-300 hover:opacity-100 border-2 border-transparent"></div>
+            </div>
+        </section>
+
+        <!-- Product Showcase Section -->
+        <section id="products" class="py-16 custom-light-gray">
+            <div class="container mx-auto px-4">
+                <h2 class="text-4xl font-bold text-center text-custom-blue mb-12">محصولات ما</h2>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Product Card 1 -->
+                    <div class="custom-white rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-2 transition duration-300 p-6 flex flex-col items-center text-center">
+                        <img src="https://arvinpolymer.com/uploads/Resources/File/638613922944412992/sis.png" alt="پلیمر صنعتی" class="w-full h-63 object-cover  rounded-lg mb-4">
+                        <h3 class="text-2xl font-semibold text-custom-blue mb-2">پلیمر صنعتی</h3>
+                        <p class="text-custom-dark-gray text-base mb-4">مواد پلیمری با استحکام بالا برای کاربردهای صنعتی سنگین.</p>
+                        <button class="mt-auto px-6 py-3 custom-yellow text-custom-blue font-semibold rounded-full hover:opacity-90 transition duration-300">
+                            جزئیات محصول
+                        </button>
+                    </div>
+
+                    <!-- Product Card 2 -->
+                    <div class="custom-white rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-2 transition duration-300 p-6 flex flex-col items-center text-center">
+                        <img src="https://placehold.co/200x150/FFD700/2A4B7C?text=پلیمر+پزشکی" alt="پلیمر پزشکی" class="w-full h-48 object-cover rounded-lg mb-4">
+                        <h3 class="text-2xl font-semibold text-custom-blue mb-2">پلیمر پزشکی</h3>
+                        <p class="text-custom-dark-gray text-base mb-4">مواد پلیمری زیست‌سازگار برای تجهیزات پزشکی و داروسازی.</p>
+                        <button class="mt-auto px-6 py-3 w-100 custom-yellow text-custom-blue font-semibold rounded-full hover:opacity-90 transition duration-300">
+                            جزئیات محصول
+                        </button>
+                    </div>
+
+                    <!-- Product Card 3 -->
+                    <div class="custom-white rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-2 transition duration-300 p-6 flex flex-col items-center text-center">
+                        <img src="https://placehold.co/200x150/2A4B7C/FFFFFF?text=پلیمر+بسته‌بندی" alt="پلیمر بسته‌بندی" class="w-full h-48 object-cover rounded-lg mb-4">
+                        <h3 class="text-2xl font-semibold text-custom-blue mb-2">پلیمر بسته‌بندی</h3>
+                        <p class="text-custom-dark-gray text-base mb-4">راه حل‌های پلیمری سبک و مقاوم برای صنعت بسته‌بندی.</p>
+                        <button class="mt-auto px-6 py-3 custom-yellow text-custom-blue font-semibold rounded-full hover:opacity-90 transition duration-300">
+                            جزئیات محصول
+                        </button>
+                    </div>
+
+                    <!-- Product Card 4 -->
+                    <div class="custom-white rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-2 transition duration-300 p-6 flex flex-col items-center text-center">
+                        <img src="https://placehold.co/200x150/FFD700/2A4B7C?text=پلیمر+خودرو" alt="پلیمر خودرو" class="w-full h-48 object-cover rounded-lg mb-4">
+                        <h3 class="text-2xl font-semibold text-custom-blue mb-2">پلیمر خودرو</h3>
+                        <p class="text-custom-dark-gray text-base mb-4">پلیمرهای مقاوم در برابر حرارت و ضربه برای قطعات خودرو.</p>
+                        <button class="mt-auto px-6 py-3 custom-yellow text-custom-blue font-semibold rounded-full hover:opacity-90 transition duration-300">
+                            جزئیات محصول
+                        </button>
+                    </div>
+
+                    <!-- Product Card 5 -->
+                    <div class="custom-white rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-2 transition duration-300 p-6 flex flex-col items-center text-center">
+                        <img src="https://placehold.co/200x150/2A4B7C/FFD700?text=پلیمر+ساختمانی" alt="پلیمر ساختمانی" class="w-full h-48 object-cover rounded-lg mb-4">
+                        <h3 class="text-2xl font-semibold text-custom-blue mb-2">پلیمر ساختمانی</h3>
+                        <p class="text-custom-dark-gray text-base mb-4">مواد پلیمری عایق و مقاوم برای صنعت ساختمان‌سازی.</p>
+                        <button class="mt-auto px-6 py-3 custom-yellow text-custom-blue font-semibold rounded-full hover:opacity-90 transition duration-300">
+                            جزئیات محصول
+                        </button>
+                    </div>
+
+                    <!-- Product Card 6 -->
+                    <div class="custom-white rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-2 transition duration-300 p-6 flex flex-col items-center text-center">
+                        <img src="https://placehold.co/200x150/FFD700/FFFFFF?text=پلیمر+کشاورزی" alt="پلیمر کشاورزی" class="w-full h-48 object-cover rounded-lg mb-4">
+                        <h3 class="text-2xl font-semibold text-custom-blue mb-2">پلیمر کشاورزی</h3>
+                        <p class="text-custom-dark-gray text-base mb-4">پلیمرهای مخصوص برای بهبود عملکرد و بهره‌وری کشاورزی.</p>
+                        <button class="mt-auto px-6 py-3 custom-yellow text-custom-blue font-semibold rounded-full hover:opacity-90 transition duration-300">
+                            جزئیات محصول
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+       
+        <!-- Latest News & Articles Section -->
+        <section id="news-articles" class="py-16 bg-gray-50">
+            <div class="container mx-auto px-4">
+                <h2 class="text-4xl font-bold text-center text-blue-800 mb-12">آخرین اخبار و مقالات</h2>
+
+                <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+                    <!-- خبر اصلی (ستون بزرگ) -->
+                    <div class="lg:col-span-2 bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition duration-300">
+                        <div class="h-full flex flex-col">
+                            <div class="h-64 overflow-hidden">
+                                <img src="https://placehold.co/800x600/1e3a8a/ffffff?text=خبر+ویژه" alt="خبر ویژه" class="w-full h-full object-cover">
+                            </div>
+                            <div class="p-6 flex-grow">
+                                <div class="flex justify-between items-center mb-3">
+                                    <span class="text-sm text-blue-600 font-medium">۲۵ تیر ۱۴۰۳</span>
+                                    <span class="bg-red-100 text-red-800 text-xs px-2 py-1 rounded-full">ویژه</span>
+                                </div>
+                                <h3 class="text-2xl font-bold text-gray-800 mb-3">رونمایی از محصول جدید پلیمری با قابلیت بازیافت ۱۰۰%</h3>
+                                <p class="text-gray-600 mb-4 leading-relaxed">
+                                    شرکت اروین پلیمر امروز از جدیدترین محصول خود در زمینه پلیمرهای زیست‌تخریب‌پذیر رونمایی کرد. این محصول که نتیجه ۳ سال تحقیق و توسعه است...
+                                </p>
+                                <a href="#" class="inline-flex items-center text-blue-600 font-medium hover:text-blue-800">
+                                    ادامه مطلب
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                    </svg>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- لیست اخبار (ستون کوچک) -->
+                    <div class="lg:col-span-2 space-y-4">
+                        <!-- خبر ۱ -->
+                        <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition duration-300 flex h-32">
+                            <div class="w-1/3">
+                                <img src="https://placehold.co/300x200/3b82f6/ffffff?text=فوتبال" alt="خبر فوتبال" class="w-full h-full object-cover">
+                            </div>
+                            <div class="w-2/3 p-4 flex flex-col justify-between">
+                                <div>
+                                    <div class="flex justify-between items-center mb-1">
+                                        <span class="text-xs text-blue-600">۷ دقیقه پیش</span>
+                                        <span class="bg-blue-100 text-blue-800 text-xs px-2 py-0.5 rounded">فوتبال</span>
+                                    </div>
+                                    <h3 class="text-lg font-bold text-gray-800 line-clamp-2">پوستی: مثل فصل گذشته از هیچ تیمی نمی‌ترسیم</h3>
+                                </div>
+                                <a href="#" class="text-blue-600 text-xs font-medium hover:underline flex items-center">
+                                    ادامه خبر
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                    </svg>
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- خبر ۲ -->
+                        <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition duration-300 flex h-32">
+                            <div class="w-1/3">
+                                <img src="https://placehold.co/300x200/ef4444/ffffff?text=استقلال" alt="خبر استقلال" class="w-full h-full object-cover">
+                            </div>
+                            <div class="w-2/3 p-4 flex flex-col justify-between">
+                                <div>
+                                    <div class="flex justify-between items-center mb-1">
+                                        <span class="text-xs text-blue-600">۱۰ دقیقه پیش</span>
+                                        <span class="bg-red-100 text-red-800 text-xs px-2 py-0.5 rounded">فوتبال</span>
+                                    </div>
+                                    <h3 class="text-lg font-bold text-gray-800 line-clamp-2">عصبانیت کره‌ای‌ها از خرید جدید استقلال</h3>
+                                </div>
+                                <a href="#" class="text-blue-600 text-xs font-medium hover:underline flex items-center">
+                                    ادامه خبر
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                    </svg>
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- خبر ۳ -->
+                        <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition duration-300 flex h-32">
+                            <div class="w-1/3">
+                                <img src="https://placehold.co/300x200/10b981/ffffff?text=کارگری" alt="خبر کارگری" class="w-full h-full object-cover">
+                            </div>
+                            <div class="w-2/3 p-4 flex flex-col justify-between">
+                                <div>
+                                    <div class="flex justify-between items-center mb-1">
+                                        <span class="text-xs text-blue-600">۱۵ دقیقه پیش</span>
+                                        <span class="bg-green-100 text-green-800 text-xs px-2 py-0.5 rounded">اداری</span>
+                                    </div>
+                                    <h3 class="text-lg font-bold text-gray-800 line-clamp-2">صحبت‌های کارگری در پایان نشست هیات اجرایی</h3>
+                                </div>
+                                <a href="#" class="text-blue-600 text-xs font-medium hover:underline flex items-center">
+                                    ادامه خبر
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                    </svg>
+                                </a>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+
+                <!-- دکمه مشاهده همه -->
+                <div class="text-center mt-10">
+                    <a href="#" class="inline-flex items-center px-6 py-3 border border-blue-600 text-blue-600 font-medium rounded-full hover:bg-blue-600 hover:text-white transition duration-300">
+                        مشاهده همه اخبار
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        </section>
+        <!-- About Us & Why Choose Us Section -->
+        <section id="about" class="py-16 custom-light-gray">
+            <div class="container mx-auto px-4">
+                <h2 class="text-4xl font-bold text-center text-custom-blue mb-12">درباره ما</h2>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                    <!-- About Us Card -->
+                    <div class="custom-white rounded-xl shadow-lg p-8">
+                        <h3 class="text-3xl font-bold text-custom-blue mb-4">اروین پلیمر: پیشگام در نوآوری پلیمری</h3>
+                        <p class="text-custom-dark-gray leading-relaxed text-lg mb-4">
+                            شرکت اروین پلیمر با بیش از دو دهه تجربه در زمینه تولید و عرضه مواد پلیمری پیشرفته، به عنوان یکی از پیشگامان این صنعت در منطقه شناخته می‌شود. ما با تکیه بر دانش فنی روز و بهره‌گیری از تیم متخصص و متعهد، همواره در تلاشیم تا با ارائه محصولات با کیفیت و نوآورانه، نیازهای متنوع صنایع مختلف را برآورده سازیم.
+                        </p>
+                        <p class="text-custom-dark-gray leading-relaxed text-lg">
+                            هدف ما، توسعه راه حل‌های پلیمری پایدار و کارآمد است که نه تنها به رشد مشتریانمان کمک کند، بلکه مسئولیت‌پذیری اجتماعی و زیست‌محیطی را نیز در بر گیرد. ما به آینده‌ای روشن‌تر با پلیمرهای هوشمند اعتقاد داریم.
+                        </p>
+                    </div>
+
+                    <!-- Why Choose Us Card -->
+                    <div class="custom-white rounded-xl shadow-lg p-8">
+                        <h3 class="text-3xl font-bold text-custom-blue mb-4">چرا اروین پلیمر انتخاب برتر است؟</h3>
+                        <ul class="space-y-4 text-lg">
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle text-custom-yellow text-2xl mt-1 ml-3"></i>
+                                <p class="text-custom-dark-gray">
+                                    <span class="font-semibold">کیفیت برتر و تضمین شده:</span> محصولات ما با بالاترین استانداردهای کیفی جهانی و با استفاده از بهترین مواد اولیه تولید می‌شوند.
+                                </p>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-lightbulb text-custom-yellow text-2xl mt-1 ml-3"></i>
+                                <p class="text-custom-dark-gray">
+                                    <span class="font-semibold">نوآوری و تحقیق مداوم:</span> سرمایه‌گذاری بی‌وقفه در تحقیق و توسعه برای ارائه راه حل‌های پلیمری نوین و پیشرفته.
+                                </p>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-handshake text-custom-yellow text-2xl mt-1 ml-3"></i>
+                                <p class="text-custom-dark-gray">
+                                    <span class="font-semibold">پشتیبانی و مشاوره تخصصی:</span> تیم پشتیبانی متخصص و متعهد ما آماده ارائه مشاوره فنی و خدمات پس از فروش به شماست.
+                                </p>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-leaf text-custom-yellow text-2xl mt-1 ml-3"></i>
+                                <p class="text-custom-dark-gray">
+                                    <span class="font-semibold">تعهد به پایداری محیط زیست:</span> تولید محصولات دوستدار محیط زیست و فرآیندهای پایدار، اولویت اصلی ماست.
+                                </p>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+
+

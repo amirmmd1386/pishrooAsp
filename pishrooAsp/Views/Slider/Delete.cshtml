@@ -1,0 +1,153 @@
+﻿@model pishrooAsp.Models.Slider.Slider
+
+@{
+    ViewData["Title"] = "حذف اسلایدر";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+@section Styles {
+    <style>
+        .card {
+            margin: 20px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-header {
+            border-radius: 10px 10px 0 0 !important;
+            padding: 15px 20px;
+        }
+
+        .card-body {
+            padding: 25px;
+        }
+
+        dt {
+            font-weight: 600;
+            color: #555;
+        }
+
+        dd {
+            margin-bottom: 15px;
+        }
+
+        .img-thumbnail {
+            border: 2px solid #dee2e6;
+            border-radius: 5px;
+        }
+
+        .table th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 5px;
+            margin-left: 10px;
+        }
+
+        .btn-danger {
+            background-color: #dc3545;
+            border-color: #dc3545;
+        }
+
+            .btn-danger:hover {
+                background-color: #c82333;
+                border-color: #bd2130;
+            }
+    </style>
+}
+
+<div class="card">
+    <div class="card-header bg-danger text-white">
+        <h4>حذف اسلایدر</h4>
+    </div>
+    <div class="card-body">
+        <h5 class="text-danger">آیا از حذف این اسلایدر مطمئن هستید؟</h5>
+
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <dl class="row">
+                    <dt class="col-sm-4">تصویر:</dt>
+                    <dd class="col-sm-8">
+                        @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                        {
+                            <img src="@Model.ImageUrl" alt="اسلایدر" class="img-thumbnail" style="max-width: 200px; max-height: 150px;" />
+                        }
+                        else
+                        {
+                            <span class="text-muted">بدون تصویر</span>
+                        }
+                    </dd>
+
+                    <dt class="col-sm-4">لینک:</dt>
+                    <dd class="col-sm-8">
+                        @if (!string.IsNullOrEmpty(Model.Link))
+                        {
+                            <a href="@Model.Link" target="_blank">@Model.Link</a>
+                        }
+                        else
+                        {
+                            <span class="text-muted">بدون لینک</span>
+                        }
+                    </dd>
+                </dl>
+            </div>
+        </div>
+
+        <!-- نمایش ترجمه‌ها -->
+        <div class="mt-4">
+            <h6>ترجمه‌ها:</h6>
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>زبان</th>
+                            <th>عنوان</th>
+                            <th>توضیحات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.Translations != null && Model.Translations.Any())
+                        {
+                            foreach (var translation in Model.Translations)
+                            {
+                                <tr>
+                                    <td>@translation.Lang?.Name</td>
+                                    <td>@translation.Title</td>
+                                    <td>@(string.IsNullOrEmpty(translation.ShortDescription) ? "---" : translation.ShortDescription)</td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="3" class="text-center text-muted">هیچ ترجمه‌ای وجود ندارد</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- تغییر مهم: حذف ActionName از فرم -->
+        <form asp-action="Delete" method="post">
+            <input type="hidden" asp-for="Id" />
+
+            <div class="form-group mt-4">
+                <button type="submit" class="btn btn-danger">
+                    <i class="fas fa-trash"></i> حذف قطعی
+                </button>
+                <a asp-action="Index" class="btn btn-secondary">
+                    <i class="fas fa-arrow-right"></i> بازگشت به لیست
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,43 @@
+﻿@model pishrooAsp.Models.Products.Product
+
+@{
+    ViewData["Title"] = "حذف محصول";
+}
+
+<div class="container mx-auto px-4 py-8">
+    <h1 class="text-2xl font-bold text-gray-800 mb-6">حذف محصول</h1>
+
+    <div class="bg-white shadow-md rounded-lg p-6">
+        <h3 class="text-lg font-medium text-red-600 mb-4">آیا از حذف این محصول مطمئن هستید؟</h3>
+
+        <div class="space-y-4">
+            <div>
+                <h4 class="text-sm font-medium text-gray-500">عنوان اصلی:</h4>
+                <p class="mt-1 text-sm text-gray-900">@Model.Translations?.FirstOrDefault()?.Title</p>
+            </div>
+
+            <div>
+                <h4 class="text-sm font-medium text-gray-500">تاریخ ایجاد:</h4>
+                <p class="mt-1 text-sm text-gray-900">@Model.CreatedAt.ToString("yyyy/MM/dd")</p>
+            </div>
+
+            @if (!string.IsNullOrEmpty(Model.ImageUrl))
+            {
+                <div>
+                    <h4 class="text-sm font-medium text-gray-500">تصویر:</h4>
+                    <img src="@Model.ImageUrl" class="mt-2 h-24 w-24 rounded-lg object-cover" alt="تصویر محصول" />
+                </div>
+            }
+        </div>
+
+        <form asp-action="Delete" class="mt-8 flex justify-end space-x-4 space-x-reverse">
+            <a asp-action="Index" class="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded-lg transition duration-200">
+                انصراف
+            </a>
+            <input type="hidden" asp-for="Id" />
+            <button type="submit" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition duration-200">
+                حذف محصول
+            </button>
+        </form>
+    </div>
+</div>

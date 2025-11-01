@@ -1,0 +1,64 @@
+﻿@model pishrooAsp.ModelViewer.NewsViewModel
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    ViewData["Title"] = "ویرایش خبر";
+}
+
+<div class="max-w-5xl mx-auto mt-8 bg-white p-6 rounded-lg shadow-lg">
+    <h2 class="text-2xl font-bold mb-6">ویرایش خبر</h2>
+
+    <form asp-action="Edit" method="post" enctype="multipart/form-data" class="space-y-4">
+        <input type="hidden" asp-for="Id" />
+        <input type="hidden" name="Translations[0].LangId" value="@Model.Translations[0].LangId" />
+
+        <div>
+            <label class="block font-medium">اخبار یا مقاله؟</label>
+            <input type="checkbox" asp-for="IsPublished" />
+        </div>
+
+        <div>
+            <label class="block font-medium">کد نویسنده</label>
+            <input type="number" asp-for="AuthorId" class="w-full border p-2 rounded" />
+        </div>
+
+        <div>
+            <label class="block font-medium">تصویر فعلی</label>
+            @if (!string.IsNullOrEmpty(Model.DefaultImageUrl))
+            {
+                <img src="@Model.DefaultImageUrl" class="w-32 h-32 object-cover rounded mb-2" />
+            }
+            <input type="file" name="DefaultImage" class="w-full" />
+        </div>
+
+        <div>
+            <label class="block font-medium">عنوان خبر</label>
+            <input type="text" name="Translations[0].Title" value="@Model.Translations[0].Title" class="w-full border p-2 rounded" />
+        </div>
+
+        <div>
+            <label class="block font-medium">خلاصه خبر</label>
+            <textarea name="Translations[0].Summary" class="w-full border p-2 rounded">@Model.Translations[0].Summary</textarea>
+        </div>
+
+        <div>
+            <label class="block font-medium">متن کامل</label>
+            <textarea name="Translations[0].Content" class="w-full border p-2 rounded">@Model.Translations[0].Content</textarea>
+        </div>
+        <div>
+            <label class="block font-medium">کلمات کلیدی (SEO)</label>
+            <input type="text" name="Translations[0].MetaKeywords" value="@Model.Translations[0].MetaKeywords" class="w-full border p-2 rounded" />
+
+        </div>
+
+
+        <div>
+            <label class="block font-medium">توضیحات متا (SEO)</label>
+            <input type="text" name="Translations[0].MetaDescription" value="@Model.Translations[0].MetaDescription" class="w-full border p-2 rounded" />
+
+        </div>
+        <div class="flex justify-end space-x-3">
+            <a href="@Url.Action("Index")" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded">بازگشت</a>
+            <button class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">ذخیره تغییرات</button>
+        </div>
+    </form>
+</div>

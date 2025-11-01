@@ -1,0 +1,56 @@
+﻿@model pishrooAsp.Models.Slider.Slider
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "ویرایش اسلاید";
+}
+<div class="container mx-auto px-4 py-8">
+
+<h1>ویرایش اسلاید</h1>
+
+<form asp-action="Edit" method="post" enctype="multipart/form-data">
+    <input type="hidden" name="Id" value="@Model.Id" />
+
+    <div>
+        <label class="block text-gray-700 text-sm font-bold mb-2" for="ImageFile">
+            آپلود تصویر جدید (اگر می‌خواهید تغییر دهید)
+        </label>
+        <input type="file" name="ImageFile" accept="image/*"
+               class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
+        <span asp-validation-for="ImageUrl" class="text-red-500 text-xs italic"></span>
+
+        @* نمایش تصویر قبلی (اختیاری) *@
+        @if (!string.IsNullOrEmpty(Model.ImageUrl))
+        {
+            <img src="@Model.ImageUrl" alt="تصویر فعلی" class="mt-2 max-w-xs" />
+        }
+    </div>
+   
+
+    <div>
+        <label>لینک</label>
+        <input type="text" name="Link" value="@Model.Link" class="border p-2 w-full" />
+    </div>
+
+    <hr />
+    <h3>ترجمه‌ها</h3>
+    @foreach (var lang in ViewBag.Langs)
+    {
+        var translation = Model.Translations.FirstOrDefault(t => t.LangId == lang.Id) ?? new pishrooAsp.Models.Slider.SliderTranslation();
+
+        <div class="border p-3 my-2">
+            <h4>@lang.Name</h4>
+            <input type="hidden" name="translations.Index" value="@lang.Id" />
+            <input type="hidden" name="translations[@lang.Id].LangId" value="@lang.Id" />
+
+            <label>عنوان</label>
+            <input type="text" name="translations[@lang.Id].Title" value="@translation.Title" class="border p-2 w-full" />
+
+            <label>توضیح کوتاه</label>
+            <textarea name="translations[@lang.Id].ShortDescription" class="border p-2 w-full">@translation.ShortDescription</textarea>
+        </div>
+    }
+
+    <button type="submit" class="bg-blue-600 text-white px-4 py-2 mt-4 rounded">ذخیره تغییرات</button>
+    <a asp-action="Index" class="bg-gray-400 text-white px-4 py-2 mt-4 rounded">انصراف</a>
+</form>
+</div>

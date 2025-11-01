@@ -1,0 +1,43 @@
+﻿@model IEnumerable<pishrooAsp.Models.Slider.Slider>
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "مدیریت اسلایدر";
+}
+<div class="container mx-auto px-4 py-8">
+
+
+<a asp-action="Create" class="bg-green-600 text-white px-4 py-2 rounded">افزودن اسلاید جدید</a>
+
+    <table class="table-auto w-full mt-4 border bg-white-50">
+    <thead>
+        <tr>
+            <th>تصویر</th>
+            <th>عنوان‌ها</th>
+            <th>لینک</th>
+            <th>عملیات</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr class="border-t">
+                <td>
+                    <img src="@item.ImageUrl" class="w-32 h-20 object-cover" />
+                </td>
+                <td>
+                    @foreach (var t in item.Translations)
+                    {
+
+                        <div>@t.Lang.Name: @t.Title</div>
+                    }
+                </td>
+                <td>@item.Link</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="text-blue-600">ویرایش</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="text-red-600">حذف</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+</div>

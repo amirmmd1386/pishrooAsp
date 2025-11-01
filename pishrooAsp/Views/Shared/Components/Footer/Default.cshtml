@@ -1,0 +1,100 @@
+﻿@model pishrooAsp.Models.AboutUs.AboutUsViewModel
+
+@{
+    string TitleChanger = Model?.Translation?.Lang?.Code ?? "fa";
+        
+    
+    bool isPersian = TitleChanger == "fa";
+}
+
+<footer id="contact" class="custom-blue py-12 text-custom-white">
+    <div class="container mx-auto px-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+
+        <!-- Company Info -->
+        <div class="col-span-full lg:col-span-1 mb-6 lg:mb-0">
+            <a href="@Model.Item.Website" class="text-custom-white text-3xl font-bold flex items-center mb-4">
+                <img src="~/image/companyLogo.png"
+                     alt="@Model.Translation.CompanyName"
+                     class="h-20  ml-2">
+                @Model.Translation.CompanyName
+            </a>
+            <p class="text-custom-white text-sm leading-relaxed max-w-xs">
+                @Model.Translation.Slogan
+            </p>
+        </div>
+
+        <!-- Contact Info -->
+        <div class="col-span-1 sm:col-span-1 lg:col-span-1">
+            <h4 class="text-xl font-semibold mb-4 border-b-2 border-custom-yellow pb-2 inline-block">
+                @(isPersian ? "تماس با ما" : "Contact Us")
+            </h4>
+            <ul class="space-y-3 text-sm">
+                <li class="flex items-center">
+                    <i class="fas fa-map-marker-alt text-custom-yellow text-lg ml-2"></i>
+                    <span>@Model.Translation.Address</span>
+                </li>
+                @if (!string.IsNullOrEmpty(Model.Item.Phone1))
+                {
+                    <li class="flex items-center">
+                        <i class="fas fa-phone-alt text-custom-yellow text-lg ml-2"></i>
+                        <span>@Model.Item.Phone1</span>
+                    </li>
+                }
+                @if (!string.IsNullOrEmpty(Model.Item.Email1))
+                {
+                    <li class="flex items-center">
+                        <i class="fas fa-envelope text-custom-yellow text-lg ml-2"></i>
+                        <span>@Model.Item.Email1</span>
+                    </li>
+                }
+            </ul>
+        </div>
+
+        <!-- Quick Links -->
+        <div class="col-span-1 sm:col-span-1 lg:col-span-1">
+            <h4 class="text-xl font-semibold mb-4 border-b-2 border-custom-yellow pb-2 inline-block">
+                @(isPersian ? "لینک‌های سریع" : "Quick Links")
+            </h4>
+            <ul class="space-y-3 text-sm">
+                <li><a href="#home" class="hover:text-custom-yellow transition duration-300">@(isPersian ? "خانه" : "Home")</a></li>
+                <li><a href="#products" class="hover:text-custom-yellow transition duration-300">@(isPersian ? "محصولات" : "Products")</a></li>
+                <li><a href="#news" class="hover:text-custom-yellow transition duration-300">@(isPersian ? "اخبار" : "News")</a></li>
+                <li><a href="#about" class="hover:text-custom-yellow transition duration-300">@(isPersian ? "درباره ما" : "About Us")</a></li>
+                <li><a href="#contact" class="hover:text-custom-yellow transition duration-300">@(isPersian ? "تماس با ما" : "Contact Us")</a></li>
+            </ul>
+        </div>
+
+        <!-- Social Media -->
+        <div class="col-span-1 sm:col-span-2 lg:col-span-1">
+            <h4 class="text-xl font-semibold mb-4 border-b-2 border-custom-yellow pb-2 inline-block">
+                @(isPersian ? "ما را دنبال کنید" : "Follow Us")
+            </h4>
+            <div class="flex space-x-6 text-3xl ltr">
+                @if (!string.IsNullOrEmpty(Model.Item.Facebook))
+                {
+                    <a href="@Model.Item.Facebook" class="text-custom-yellow hover:text-custom-white transform hover:scale-110 transition duration-300"><i class="fab fa-facebook-f"></i></a>
+                }
+                @if (!string.IsNullOrEmpty(Model.Item.LinkedIn))
+                {
+                    <a href="@Model.Item.LinkedIn" class="text-custom-yellow hover:text-custom-white transform hover:scale-110 transition duration-300"><i class="fab fa-linkedin-in"></i></a>
+                }
+                @if (!string.IsNullOrEmpty(Model.Item.Instagram))
+                {
+                    <a href="@Model.Item.Instagram" class="text-custom-yellow hover:text-custom-white transform hover:scale-110 transition duration-300"><i class="fab fa-instagram"></i></a>
+                }
+                @if (!string.IsNullOrEmpty(Model.Item.WhatsApp))
+                {
+                    <a href="@Model.Item.WhatsApp" class="text-custom-yellow hover:text-custom-white transform hover:scale-110 transition duration-300"><i class="fab fa-whatsapp"></i></a>
+                }
+                @if (!string.IsNullOrEmpty(Model.Item.YouTube))
+                {
+                    <a href="@Model.Item.YouTube" class="text-custom-yellow hover:text-custom-white transform hover:scale-110 transition duration-300"><i class="fab fa-youtube"></i></a>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-12 pt-8 border-t border-gray-700 text-center text-sm">
+        &copy; <span>@DateTime.Now.Year</span> @Model.Translation.CompanyName. @(isPersian ? "تمامی حقوق محفوظ است." : "All rights reserved.")
+    </div>
+</footer>

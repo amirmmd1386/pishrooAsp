@@ -1,0 +1,107 @@
+﻿@model pishrooAsp.Models.Products.Product
+@{
+    ViewData["Title"] = "ویرایش محصول";
+    var languages = ViewBag.Languages as List<pishrooAsp.Models.Lang>;
+}
+
+<div class="container mx-auto px-4 py-8">
+    <h1 class="text-2xl font-bold text-gray-800 mb-6">ویرایش محصول</h1>
+
+    <form asp-action="Edit" enctype="multipart/form-data" class="bg-white shadow-md rounded-lg p-6">
+        <input type="hidden" asp-for="Id" />
+        <div class="mb-6">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4">تنظیمات سئو (SEO)</h2>
+            <div class="grid grid-cols-1 gap-4">
+                <div>
+                    <label class="block text-gray-700 text-sm font-bold mb-2">کلمه کلیدی سئو</label>
+                    <input name="seoWord" class="w-full px-3 py-2 border border-gray-300 rounded-md"
+                           placeholder="مثال: پلیمر صنعتی، محصولات پلیمری" />
+                    <span asp-validation-for="seoWord" class="text-red-500 text-xs"></span>
+                </div>
+
+                <div>
+                    <label class="block text-gray-700 text-sm font-bold mb-2">توضیحات متا سئo</label>
+                    <textarea name="SeoDescription" rows="2" class="w-full px-3 py-2 border border-gray-300 rounded-md"
+                              placeholder="توضیحات مختصر و جذاب برای موتورهای جستجو"></textarea>
+                    <span asp-validation-for="SeoDiscription" class="text-red-500 text-xs"></span>
+                </div>
+            </div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="ImageFile">
+                    آپلود تصویر جدید (اگر می‌خواهید تغییر دهید)
+                </label>
+                <input type="file" name="ImageFile" accept="image/*"
+                       class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
+                <span asp-validation-for="ImageUrl" class="text-red-500 text-xs italic"></span>
+
+                @* نمایش تصویر قبلی (اختیاری) *@
+                @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                {
+                    <img src="@Model.ImageUrl" alt="تصویر فعلی" class="mt-2 max-w-xs" />
+                }
+            </div>
+
+            <div>
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="AttachmentFile">
+                    آپلود فایل ضمیمه جدید (اگر می‌خواهید تغییر دهید)
+                </label>
+                <input type="file" name="AttachmentFile"
+                       class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
+                <span asp-validation-for="AttachmentUrl" class="text-red-500 text-xs italic"></span>
+
+                @* نمایش لینک فایل ضمیمه قبلی (اختیاری) *@
+                @if (!string.IsNullOrEmpty(Model.AttachmentUrl))
+                {
+                    <a href="@Model.AttachmentUrl" target="_blank" class="block mt-2 text-blue-600 underline">فایل ضمیمه فعلی</a>
+                }
+            </div>
+        </div>
+
+
+        <div class="mt-8">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4">ترجمه‌ها</h2>
+
+            <div class="space-y-6">
+                @for (int i = 0; i < languages.Count; i++)
+                {
+                    var translation = Model.Translations?.FirstOrDefault(t => t.LangId == languages[i].Id);
+                    <div class="border border-gray-200 rounded-lg p-4">
+                        <input type="hidden" name="Translations[@i].LangId" value="@languages[i].Id" />
+                        <h3 class="text-lg font-medium text-gray-800 mb-3">@languages[i].Name</h3>
+
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-sm font-bold mb-2" for="Translations_@(i)__Title">
+                                عنوان
+                            </label>
+                            <input name="Translations[@i].Title" value="@translation?.Title" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required />
+                        </div>
+
+                        <div>
+                            <label class="block text-gray-700 text-sm font-bold mb-2" for="Translations_@(i)__Description">
+                                توضیحات
+                            </label>
+                            <textarea name="Translations[@i].Description" rows="3" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">@translation?.Description</textarea>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <div class="mt-8 flex justify-end space-x-4 space-x-reverse">
+            <a asp-action="Index" class="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded-lg transition duration-200">
+                انصراف
+            </a>
+            <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition duration-200">
+                ذخیره تغییرات
+            </button>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

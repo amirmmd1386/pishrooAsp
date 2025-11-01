@@ -1,0 +1,39 @@
+﻿@using pishrooAsp.Models.ProductRequest
+@model message
+
+@{
+    ViewData["Title"] = "حذف پیام";
+}
+
+<div class="container mx-auto px-4 py-8 max-w-2xl">
+    <h1 class="text-2xl font-bold text-gray-800 mb-6">حذف پیام</h1>
+
+    <div class="bg-white shadow-md rounded-lg p-6">
+        <h3 class="text-lg font-medium text-red-600 mb-4">آیا از حذف این پیام مطمئن هستید؟</h3>
+
+        <div class="bg-red-50 border border-red-200 rounded-md p-4 mb-6">
+            <dl class="grid grid-cols-1 gap-2">
+                <div>
+                    <dt class="text-sm font-medium text-gray-500">ID</dt>
+                    <dd class="text-sm text-gray-900">@Model.Id</dd>
+                </div>
+                <div>
+                    <dt class="text-sm font-medium text-gray-500">پیام</dt>
+                    <dd class="text-sm text-gray-900">@Model.Message</dd>
+                </div>
+            </dl>
+        </div>
+
+        <form asp-action="Delete">
+            <input type="hidden" asp-for="Id" />
+            <div class="flex items-center space-x-4 space-x-reverse">
+                <button type="submit" class="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-lg transition duration-200">
+                    حذف
+                </button>
+                <a asp-action="Index" class="bg-gray-500 hover:bg-gray-600 text-white px-6 py-2 rounded-lg transition duration-200">
+                    بازگشت به لیست
+                </a>
+            </div>
+        </form>
+    </div>
+</div>

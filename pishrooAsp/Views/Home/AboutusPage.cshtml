@@ -1,0 +1,409 @@
+﻿@model pishrooAsp.Models.AboutUs.AboutUsViewModel
+@{
+    Layout = "_InnerPage";
+    ViewData["Title"] = "درباره ما";
+}
+
+<!-- فونت آیکون‌ها -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<div class="container mx-auto px-4 py-8">
+    <!-- هدر صفحه -->
+    <header class="text-center mb-12">
+        <h1 class="text-4xl font-bold text-gray-800 mb-2">@Model.Translation.CompanyName</h1>
+        <p class="text-xl text-indigo-600 italic">@Model.Translation.Slogan</p>
+    </header>
+
+    <!-- بخش اصلی -->
+    <div class="flex flex-col lg:flex-row gap-8 mb-12">
+        <!-- بخش سمت چپ (تصویر و اطلاعات تماس) -->
+        <div class="lg:w-1/3">
+            <!-- تصویر شرکت -->
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden mb-8">
+                <img src="/image/companyImage.jpg" alt="ساختمان شرکت" class="w-full h-64 object-cover">
+                <div class="p-6">
+                    <div class="flex items-center mb-4">
+                        <i class="fas fa-calendar-alt text-indigo-500 ml-2"></i>
+                        <span>سال تأسیس: @(Model.Item.EstablishedYear?.ToString() ?? "ثبت نشده")</span>
+                    </div>
+                    <div class="flex items-center">
+                        <i class="fas fa-users text-indigo-500 ml-2"></i>
+                        <span>تعداد کارکنان: @(Model.Item.EmployeeCount?.ToString() ?? "ثبت نشده") نفر</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- اطلاعات تماس -->
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h3 class="text-xl font-semibold text-gray-800 mb-4 border-b pb-2">اطلاعات تماس</h3>
+
+                <div class="space-y-4">
+                    <!-- تلفن‌ها -->
+                    @if (!string.IsNullOrEmpty(Model.Item.Phone1) || !string.IsNullOrEmpty(Model.Item.Phone2))
+                    {
+                        <div class="flex items-start">
+                            <i class="fas fa-phone-alt text-indigo-500 mt-1 ml-2"></i>
+                            <div>
+                                <p class="font-medium">تلفن‌های تماس:</p>
+                                @if (!string.IsNullOrEmpty(Model.Item.Phone1))
+                                {
+                                    <div class="flex items-center mt-1">
+                                        <a href="tel:@Model.Item.Phone1" class="text-gray-600 hover:text-indigo-600 flex items-center">
+                                            <i class="fas fa-phone text-sm ml-1"></i>
+                                            @Model.Item.Phone1
+                                        </a>
+                                    </div>
+                                }
+                                @if (!string.IsNullOrEmpty(Model.Item.Phone2))
+                                {
+                                    <div class="flex items-center mt-1">
+                                        <a href="tel:@Model.Item.Phone2" class="text-gray-600 hover:text-indigo-600 flex items-center">
+                                            <i class="fas fa-phone text-sm ml-1"></i>
+                                            @Model.Item.Phone2
+                                        </a>
+                                    </div>
+                                }
+                                @if (!string.IsNullOrEmpty(Model.Item.Phone3))
+                                {
+                                    <div class="flex items-center mt-1">
+                                        <a href="tel:@Model.Item.Phone3" class="text-gray-600 hover:text-indigo-600 flex items-center">
+                                            <i class="fas fa-phone text-sm ml-1"></i>
+                                            @Model.Item.Phone3
+                                        </a>
+                                    </div>
+                                }
+                                @if (!string.IsNullOrEmpty(Model.Item.Phone4))
+                                {
+                                    <div class="flex items-center mt-1">
+                                        <a href="tel:@Model.Item.Phone4" class="text-gray-600 hover:text-indigo-600 flex items-center">
+                                            <i class="fas fa-phone text-sm ml-1"></i>
+                                            @Model.Item.Phone4
+                                        </a>
+                                    </div>
+                                }
+                                @if (!string.IsNullOrEmpty(Model.Item.Phone5))
+                                {
+                                    <div class="flex items-center mt-1">
+                                        <a href="tel:@Model.Item.Phone5" class="text-gray-600 hover:text-indigo-600 flex items-center">
+                                            <i class="fas fa-phone text-sm ml-1"></i>
+                                            @Model.Item.Phone5
+                                        </a>
+                                    </div>
+                                }
+                                @if (!string.IsNullOrEmpty(Model.Item.Phone6))
+                                {
+                                    <div class="flex items-center mt-1">
+                                        <a href="tel:@Model.Item.Phone6" class="text-gray-600 hover:text-indigo-600 flex items-center">
+                                            <i class="fas fa-phone text-sm ml-1"></i>
+                                            @Model.Item.Phone6
+                                        </a>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    }
+
+                    @* <!-- موبایل‌ها --> *@
+                    @* @if (!string.IsNullOrEmpty(Model.Item.Phone3) || !string.IsNullOrEmpty(Model.Item.Phone4)) *@
+                    @* { *@
+                    @*     <div class="flex items-start"> *@
+                    @*         <i class="fas fa-mobile-alt text-indigo-500 mt-1 ml-2"></i> *@
+                    @*         <div> *@
+                    @*             <p class="font-medium">موبایل:</p> *@
+                    @*             @if (!string.IsNullOrEmpty(Model.Item.Phone3)) *@
+                    @*             { *@
+                    @*                 <div class="flex items-center mt-1"> *@
+                    @*                     <a href="tel:@Model.Item.Phone3" class="text-gray-600 hover:text-indigo-600 flex items-center"> *@
+                    @*                         <i class="fas fa-phone text-sm ml-1"></i> *@
+                    @*                         @Model.Item.Phone3 *@
+                    @*                     </a> *@
+                    @*                 </div> *@
+                    @*             } *@
+                    @*             @if (!string.IsNullOrEmpty(Model.Item.Phone4)) *@
+                    @*             { *@
+                    @*                 <div class="flex items-center mt-1"> *@
+                    @*                     <a href="tel:@Model.Item.Phone4" class="text-gray-600 hover:text-indigo-600 flex items-center"> *@
+                    @*                         <i class="fas fa-phone text-sm ml-1"></i> *@
+                    @*                         @Model.Item.Phone4 *@
+                    @*                     </a> *@
+                    @*                 </div> *@
+                    @*             } *@
+                    @*             @if (!string.IsNullOrEmpty(Model.Item.Phone5)) *@
+                    @*             { *@
+                    @*                 <div class="flex items-center mt-1"> *@
+                    @*                     <a href="tel:@Model.Item.Phone5" class="text-gray-600 hover:text-indigo-600 flex items-center"> *@
+                    @*                         <i class="fas fa-phone text-sm ml-1"></i> *@
+                    @*                         @Model.Item.Phone5 *@
+                    @*                     </a> *@
+                    @*                 </div> *@
+                    @*             } *@
+                    @*             @if (!string.IsNullOrEmpty(Model.Item.Phone6)) *@
+                    @*             { *@
+                    @*                 <div class="flex items-center mt-1"> *@
+                    @*                     <a href="tel:@Model.Item.Phone6" class="text-gray-600 hover:text-indigo-600 flex items-center"> *@
+                    @*                         <i class="fas fa-phone text-sm ml-1"></i> *@
+                    @*                         @Model.Item.Phone6 *@
+                    @*                     </a> *@
+                    @*                 </div> *@
+                    @*             } *@
+                    @*         </div> *@
+                    @*     </div> *@
+                    @* } *@
+
+                    <!-- فکس‌ها -->
+                    @if (!string.IsNullOrEmpty(Model.Item.Fax1) || !string.IsNullOrEmpty(Model.Item.Fax2))
+                    {
+                        <div class="flex items-start">
+                            <i class="fas fa-fax text-indigo-500 mt-1 ml-2"></i>
+                            <div>
+                                <p class="font-medium">موبایل:</p>
+                                @if (!string.IsNullOrEmpty(Model.Item.Fax1))
+                                {
+                                    <p class="text-gray-600">@Model.Item.Fax1</p>
+                                }
+                                @if (!string.IsNullOrEmpty(Model.Item.Fax2))
+                                {
+                                    <p class="text-gray-600">@Model.Item.Fax2</p>
+                                }
+                                @if (!string.IsNullOrEmpty(Model.Item.Fax3))
+                                {
+                                    <p class="text-gray-600">@Model.Item.Fax3</p>
+                                }
+                                @if (!string.IsNullOrEmpty(Model.Item.Fax4))
+                                {
+                                    <p class="text-gray-600">@Model.Item.Fax4</p>
+                                }
+                                @if (!string.IsNullOrEmpty(Model.Item.Fax5))
+                                {
+                                    <p class="text-gray-600">@Model.Item.Fax5</p>
+                                }
+                                @if (!string.IsNullOrEmpty(Model.Item.Fax6))
+                                {
+                                    <p class="text-gray-600">@Model.Item.Fax6</p>
+                                }
+                            </div>
+                        </div>
+                    }
+
+                    <!-- ایمیل‌ها -->
+                    @if (!string.IsNullOrEmpty(Model.Item.Email1) || !string.IsNullOrEmpty(Model.Item.Email2))
+                    {
+                        <div class="flex items-start">
+                            <i class="fas fa-envelope text-indigo-500 mt-1 ml-2"></i>
+                            <div>
+                                <p class="font-medium">ایمیل:</p>
+                                @if (!string.IsNullOrEmpty(Model.Item.Email1))
+                                {
+                                    <div class="flex items-center mt-1">
+                                        <a href="mailto:@Model.Item.Email1" class="text-gray-600 hover:text-indigo-600 flex items-center">
+                                            <i class="far fa-envelope text-sm ml-1"></i>
+                                            @Model.Item.Email1
+                                        </a>
+                                    </div>
+                                }
+                                @if (!string.IsNullOrEmpty(Model.Item.Email2))
+                                {
+                                    <div class="flex items-center mt-1">
+                                        <a href="mailto:@Model.Item.Email2" class="text-gray-600 hover:text-indigo-600 flex items-center">
+                                            <i class="far fa-envelope text-sm ml-1"></i>
+                                            @Model.Item.Email2
+                                        </a>
+                                    </div>
+                                }
+                                @if (!string.IsNullOrEmpty(Model.Item.Email3))
+                                {
+                                    <div class="flex items-center mt-1">
+                                        <a href="mailto:@Model.Item.Email3" class="text-gray-600 hover:text-indigo-600 flex items-center">
+                                            <i class="far fa-envelope text-sm ml-1"></i>
+                                            @Model.Item.Email3
+                                        </a>
+                                    </div>
+                                }
+                                @if (!string.IsNullOrEmpty(Model.Item.Email4))
+                                {
+                                    <div class="flex items-center mt-1">
+                                        <a href="mailto:@Model.Item.Email4" class="text-gray-600 hover:text-indigo-600 flex items-center">
+                                            <i class="far fa-envelope text-sm ml-1"></i>
+                                            @Model.Item.Email4
+                                        </a>
+                                    </div>
+                                }
+                                @if (!string.IsNullOrEmpty(Model.Item.Email5))
+                                {
+                                    <div class="flex items-center mt-1">
+                                        <a href="mailto:@Model.Item.Email5" class="text-gray-600 hover:text-indigo-600 flex items-center">
+                                            <i class="far fa-envelope text-sm ml-1"></i>
+                                            @Model.Item.Email5
+                                        </a>
+                                    </div>
+                                }
+                                @if (!string.IsNullOrEmpty(Model.Item.Email6))
+                                {
+                                    <div class="flex items-center mt-1">
+                                        <a href="mailto:@Model.Item.Email6" class="text-gray-600 hover:text-indigo-600 flex items-center">
+                                            <i class="far fa-envelope text-sm ml-1"></i>
+                                            @Model.Item.Email6
+                                        </a>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    }
+
+                    <!-- وبسایت -->
+                    @if (!string.IsNullOrEmpty(Model.Item.Website))
+                    {
+                        <div class="flex items-start">
+                            <i class="fas fa-globe text-indigo-500 mt-1 ml-2"></i>
+                            <div>
+                                <p class="font-medium">وبسایت:</p>
+                                <a href="@Model.Item.Website" target="_blank" class="text-indigo-600 hover:underline flex items-center">
+                                    <i class="fas fa-external-link-alt text-sm ml-1"></i>
+                                    @Model.Item.Website
+                                </a>
+                            </div>
+                        </div>
+                    }
+
+                    <!-- آدرس -->
+                    @if (!string.IsNullOrEmpty(Model.Translation.Address) || !string.IsNullOrEmpty(Model.Translation.Address2))
+                    {
+                        <div class="flex items-start">
+                            <i class="fas fa-map-marker-alt text-indigo-500 mt-1 ml-2"></i>
+                            <div>
+                                <p class="font-medium">آدرس کارخانه:</p>
+                                @if (!string.IsNullOrEmpty(Model.Translation.Address))
+                                {
+                                    <p class="text-gray-600">@Model.Translation.Address</p>
+                                }
+                                <p class="font-medium">آدرس دفتر مرکزی:</p>
+
+                                @if (!string.IsNullOrEmpty(Model.Translation.Address2))
+                                {
+                                    <p class="text-gray-600">@Model.Translation.Address2</p>
+                                }
+                                @if (!string.IsNullOrEmpty(Model.Item.MapLocation))
+                                {
+                                    <div class="mt-2">
+                                        <a href="@Model.Item.MapLocation" target="_blank" class="text-indigo-600 hover:underline flex items-center text-sm">
+                                            <i class="fas fa-map-marked-alt ml-1"></i>
+                                            مشاهده روی نقشه
+                                        </a>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- بخش سمت راست (توضیحات شرکت) -->
+        <div class="lg:w-2/3">
+            <div class="bg-white rounded-xl shadow-lg p-8 mb-8">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6 border-b pb-2">درباره شرکت</h2>
+                <div class="prose max-w-none text-gray-700">
+                    @Html.Raw(Model.Translation.Description)
+                </div>
+            </div>
+
+            <!-- مدیر عامل -->
+            @if (!string.IsNullOrEmpty(Model.Translation.CEOName))
+            {
+                <div class="bg-white rounded-xl shadow-lg p-6 flex items-center">
+                    <img src="/image/companyLogo.png" alt="مدیر عامل" class="w-24 h-24 rounded-full object-cover border-4 border-indigo-100">
+                    <div class="mr-4">
+                        <h3 class="text-xl font-semibold text-gray-800">مدیر عامل شرکت</h3>
+                        <p class="text-indigo-600 font-medium">@Model.Translation.CEOName</p>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- شبکه‌های اجتماعی -->
+    @if (!string.IsNullOrEmpty(Model.Item.Instagram) || !string.IsNullOrEmpty(Model.Item.LinkedIn) || !string.IsNullOrEmpty(Model.Item.Telegram) || !string.IsNullOrEmpty(Model.Item.WhatsApp) || !string.IsNullOrEmpty(Model.Item.YouTube) || !string.IsNullOrEmpty(Model.Item.Facebook))
+    {
+        <div class="bg-white rounded-xl shadow-lg p-6 mb-12">
+            <h3 class="text-xl font-semibold text-gray-800 mb-6 text-center">ما را در شبکه‌های اجتماعی دنبال کنید</h3>
+            <div class="flex justify-center space-x-6 space-x-reverse flex-wrap">
+                @if (!string.IsNullOrEmpty(Model.Item.Instagram))
+                {
+                    <a href="https://instagram.com/@Model.Item.Instagram" target="_blank" class="social-icon text-rose-600 hover:text-rose-700 text-3xl mb-4">
+                        <i class="fab fa-instagram"></i>
+                        <span class="text-sm block mt-1">اینستاگرام</span>
+                    </a>
+                }
+
+                @if (!string.IsNullOrEmpty(Model.Item.LinkedIn))
+                {
+                    <a href="@Model.Item.LinkedIn" target="_blank" class="social-icon text-blue-700 hover:text-blue-800 text-3xl mb-4">
+                        <i class="fab fa-linkedin"></i>
+                        <span class="text-sm block mt-1">لینکدین</span>
+                    </a>
+                }
+
+                @if (!string.IsNullOrEmpty(Model.Item.Telegram))
+                {
+                    <a href="https://t.me/@Model.Item.Telegram" target="_blank" class="social-icon text-blue-500 hover:text-blue-600 text-3xl mb-4">
+                        <i class="fab fa-telegram"></i>
+                        <span class="text-sm block mt-1">تلگرام</span>
+                    </a>
+                }
+
+                @if (!string.IsNullOrEmpty(Model.Item.WhatsApp))
+                {
+                    <a href="https://wa.me/@Model.Item.WhatsApp" target="_blank" class="social-icon text-green-500 hover:text-green-600 text-3xl mb-4">
+                        <i class="fab fa-whatsapp"></i>
+                        <span class="text-sm block mt-1">واتساپ</span>
+                    </a>
+                }
+
+                @if (!string.IsNullOrEmpty(Model.Item.YouTube))
+                {
+                    <a href="@Model.Item.YouTube" target="_blank" class="social-icon text-red-600 hover:text-red-700 text-3xl mb-4">
+                        <i class="fab fa-youtube"></i>
+                        <span class="text-sm block mt-1">یوتیوب</span>
+                    </a>
+                }
+
+                @if (!string.IsNullOrEmpty(Model.Item.Facebook))
+                {
+                    <a href="@Model.Item.Facebook" target="_blank" class="social-icon text-blue-600 hover:text-blue-700 text-3xl mb-4">
+                        <i class="fab fa-facebook"></i>
+                        <span class="text-sm block mt-1">فیسبوک</span>
+                    </a>
+                }
+            </div>
+        </div>
+    }
+</div>
+
+<!-- فوتر -->
+<footer class="bg-gray-800 text-white py-8">
+    <div class="container mx-auto px-4 text-center">
+        <p>تمامی حقوق مادی و معنوی این وبسایت متعلق به @Model.Translation.CompanyName می‌باشد.</p>
+        <p class="mt-2 text-gray-400">آخرین بروزرسانی: @Model.Item.UpdatedAt.ToString("yyyy/MM/dd")</p>
+    </div>
+</footer>
+
+<style>
+    .social-icon {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        transition: transform 0.3s ease;
+    }
+
+    .social-icon:hover {
+        transform: translateY(-3px);
+    }
+
+    .prose {
+        line-height: 1.8;
+    }
+
+    .prose p {
+        margin-bottom: 1rem;
+    }
+</style>

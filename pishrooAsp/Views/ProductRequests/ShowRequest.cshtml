@@ -1,0 +1,362 @@
+﻿@model IEnumerable<pishrooAsp.Models.ProductRequest.ProductRequest>
+@using pishrooAsp.ModelViewer;
+
+
+
+
+<div dir="rtl" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="bg-white shadow-xl rounded-lg overflow-hidden">
+        <!-- هدر جدول -->
+        <div class="px-6 py-4 border-b border-gray-200 bg-gradient-to-r from-blue-50 to-indigo-50">
+            <h2 class="text-2xl font-bold text-gray-800">لیست درخواست‌های محصول</h2>
+        </div>
+
+        <!-- نمایش پیام‌ها -->
+        @if (TempData["Success"] != null)
+        {
+            <div class="m-4 p-4 rounded-lg bg-green-50 border border-green-200 text-green-800">
+                @TempData["Success"]
+            </div>
+        }
+
+        <!-- جدول اصلی -->
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">نام</th>
+                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">تماس</th>
+                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">محصول</th>
+                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">مقدار</th>
+                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">وضعیت</th>
+                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">عملیات</th>
+                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">ارسال پیام</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    @foreach (var item in Model)
+                    {
+                        <tr class="hover:bg-gray-50 transition-colors duration-150">
+                            <td class="px-6 py-4">@item.FullName</td>
+                            <td class="px-6 py-4">
+                                <div>@item.PhoneNumber</div>
+                                <a href="tel:@item.PhoneNumber" class="text-blue-600 hover:underline text-xs">📞 تماس</a>
+                            </td>
+                            <td class="px-6 py-4">@item.ProductType</td>
+                            <td class="px-6 py-4">@item.RequiredAmountKg کیلو</td>
+
+                            <!-- وضعیت -->
+                            <td class="px-6 py-4">
+                                <form asp-action="ChangeStatus" method="post" class="flex flex-col gap-2">
+                                    <input type="hidden" name="Id" value="@item.Id" />
+                                    <select name="Status" class="border rounded p-1 text-sm">
+                                        <option value="@pishrooAsp.Models.ProductRequest.RequestStatus.Pending" selected="@(item.Status == pishrooAsp.Models.ProductRequest.RequestStatus.Pending)">در حال بررسی</option>
+                                        <option value="@pishrooAsp.Models.ProductRequest.RequestStatus.Checked" selected="@(item.Status == pishrooAsp.Models.ProductRequest.RequestStatus.Checked)">تایید شده</option>
+                                        <option value="@pishrooAsp.Models.ProductRequest.RequestStatus.Rejected" selected="@(item.Status == pishrooAsp.Models.ProductRequest.RequestStatus.Rejected)">رد شده</option>
+                                    </select>
+                                    <button type="submit" class="bg-blue-500 text-white px-2 py-1 rounded text-xs">ذخیره وضعیت</button>
+                                </form>
+                            </td>
+
+                            <!-- عملیات -->
+                            <td class="px-6 py-4 flex gap-2 flex-wrap">
+                                <!-- جزئیات -->
+                                <a href="@Url.Action("DetailsShow", "ProductRequests", new { id = item.Id })"
+                                   class="px-2 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 text-xs">جزئیات</a>
+
+                                <!-- دکمه مشاهده تاریخچه پیام‌ها -->
+                                <a href="@Url.Action("MessageHistory", "ProductRequests", new { id = item.Id })"
+                                   class="px-2 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600 text-xs">
+                                    📋 تاریخچه پیام‌ها
+                                </a>
+                                <!-- حذف -->
+                                <form method="post" action="@Url.Action("Delete", "ProductRequests")"
+                                      onsubmit="return confirm('آیا مطمئن هستید؟');">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="id" value="@item.Id" />
+                                    <button type="submit" class="px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600 text-xs">حذف</button>
+                                </form>
+
+                                @* <!-- دانلود فایل‌ها --> *@
+                                @* @if (item.Files != null && item.Files.Any()) *@
+                                @* { *@
+                                @*     foreach (var file in item.Files) *@
+                                @*     { *@
+                                @*         <a href="@file.FilePath" download *@
+                                @*            class="px-2 py-1 bg-green-500 text-white rounded hover:bg-green-600 text-xs"> *@
+                                @*             دانلود فایل *@
+                                @*         </a> *@
+                                @*     } *@
+                                @* } *@
+                            </td>
+
+                            <!-- بخش ارسال پیام -->
+                            <td class="px-6 py-4">
+                                <!-- دکمه باز کردن مودال -->
+                                <button type="button"
+                                        onclick="openMessageModal('@item.Id', '@item.FullName', '@item.PhoneNumber')"
+                                        class="px-3 py-2 bg-purple-500 text-white rounded hover:bg-purple-600 text-sm transition duration-200">
+                                    📤 ارسال پیام
+                                </button>
+
+                                <!-- نمایش وضعیت آخرین پیام -->
+                                @if (item.LastMessageSentAt.HasValue)
+                                {
+                                    <div class="mt-2 text-xs text-gray-500">
+                                        آخرین پیام: @item.LastMessageSentAt.Value.ToString("yyyy/MM/dd HH:mm")
+                                    </div>
+                                }
+
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- مودال ارسال پیام -->
+<div id="messageModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-50">
+    <div class="relative top-20 mx-auto p-5 border w-11/12 md:w-3/4 lg:w-1/2 shadow-lg rounded-md bg-white">
+        <!-- هدر مودال -->
+        <div class="flex items-center justify-between pb-3 border-b">
+            <h3 class="text-xl font-bold text-gray-800">ارسال پیام به مشتری</h3>
+            <button onclick="closeMessageModal()" class="text-gray-400 hover:text-gray-600">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+        </div>
+
+        <!-- محتوای مودال -->
+        <div class="mt-4">
+            <!-- اطلاعات مشتری -->
+            <div class="bg-gray-50 p-4 rounded-lg mb-4">
+                <h4 class="font-semibold text-gray-700 mb-2">اطلاعات مشتری:</h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
+                    <div><span class="font-medium">نام:</span> <span id="modalCustomerName"></span></div>
+                    <div><span class="font-medium">شماره تماس:</span> <span id="modalCustomerPhone"></span></div>
+                </div>
+            </div>
+
+            <!-- پیام‌های از پیش تعریف شده -->
+            <div class="mb-6">
+                <h4 class="font-semibold text-gray-700 mb-3">پیام‌های آماده:</h4>
+                <div class="grid grid-cols-1 gap-2 max-h-60 overflow-y-auto">
+                    @if (ViewBag.Message != null)
+                    {
+                        foreach (var message in ViewBag.Message)
+                        {
+                            <div class="border rounded-lg p-3 hover:bg-gray-50 cursor-pointer transition duration-200"
+                                 onclick="selectTemplateMessage(@message.Id, '@message.Message.Replace("'", "\\'")')">
+
+                                <div class="text-sm text-gray-600 mt-1">@message.Message</div>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="text-center text-gray-500 py-4">
+                            پیامی یافت نشد
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- پیام سفارشی -->
+            <div class="mb-4 hidden">
+                <h4 class="font-semibold text-gray-700 mb-2">پیام سفارشی:</h4>
+                <textarea id="customMessageText"
+                          rows="4"
+                          class="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                          placeholder="متن پیام سفارشی خود را وارد کنید..."></textarea>
+            </div>
+
+            <!-- دکمه‌های اق
+
+
+
+            دام -->
+            <div class="flex justify-end gap-3 pt-4 border-t">
+                <button type="button"
+                        onclick="closeMessageModal()"
+                        class="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition duration-200">
+                    انصراف
+                </button>
+                <button type="button"
+                        onclick="sendSelectedMessage()"
+                        class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition duration-200 flex items-center">
+                    <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+                    </svg>
+                    ارسال پیام
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- صفحه‌بندی -->
+@if (ViewBag.TotalPages > 1)
+{
+    <div class="flex justify-center mt-6">
+        <nav class="flex items-center gap-2">
+            @if (ViewBag.CurrentPage > 1)
+            {
+                <a href="@Url.Action("Index", new { page = ViewBag.CurrentPage - 1 })"
+                   class="px-3 py-2 bg-white border border-gray-300 rounded-md text-sm font-medium text-gray-500 hover:bg-gray-50">
+                    قبلی
+                </a>
+            }
+
+            @for (int i = 1; i <= ViewBag.TotalPages; i++)
+            {
+                if (i == ViewBag.CurrentPage)
+                {
+                    <span class="px-3 py-2 bg-blue-500 border border-blue-500 rounded-md text-sm font-medium text-white">
+                        @i
+                    </span>
+                }
+                else
+                {
+                    <a href="@Url.Action("Index", new { page = i })"
+                       class="px-3 py-2 bg-white border border-gray-300 rounded-md text-sm font-medium text-gray-500 hover:bg-gray-50">
+                        @i
+                    </a>
+                }
+            }
+
+            @if (ViewBag.CurrentPage < ViewBag.TotalPages)
+            {
+                <a href="@Url.Action("Index", new { page = ViewBag.CurrentPage + 1 })"
+                   class="px-3 py-2 bg-white border border-gray-300 rounded-md text-sm font-medium text-gray-500 hover:bg-gray-50">
+                    بعدی
+                </a>
+            }
+        </nav>
+    </div>
+}
+<!-- اضافه کردن AntiForgeryToken برای درخواست‌های AJAX -->
+@Html.AntiForgeryToken()
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script>
+        // متغیرهای全局
+        let currentRequestId = null;
+        let selectedMessageId = null;
+        let selectedMessageContent = '';
+
+        // باز کردن مودال
+        function openMessageModal(requestId, customerName, customerPhone) {
+            currentRequestId = requestId;
+
+            // پر کردن اطلاعات مشتری
+            document.getElementById('modalCustomerName').textContent = customerName;
+            document.getElementById('modalCustomerPhone').textContent = customerPhone;
+
+            // ریست کردن فرم
+            document.getElementById('customMessageText').value = '';
+            selectedMessageId = null;
+            selectedMessageContent = '';
+
+            // حذف هایلایت از همه پیام‌ها
+            document.querySelectorAll('[onclick*="selectTemplateMessage"]').forEach(item => {
+                item.classList.remove('ring-2', 'ring-purple-500', 'bg-purple-50');
+            });
+
+            // نمایش مودال
+            document.getElementById('messageModal').classList.remove('hidden');
+        }
+
+        // بستن مودال
+        function closeMessageModal() {
+            document.getElementById('messageModal').classList.add('hidden');
+            currentRequestId = null;
+        }
+
+        // انتخاب پیام از پیش تعریف شده
+        function selectTemplateMessage(messageId, messageContent) {
+            selectedMessageId = messageId;
+            selectedMessageContent = messageContent;
+
+            // هایلایت کردن پیام انتخاب شده
+            document.querySelectorAll('[onclick*="selectTemplateMessage"]').forEach(item => {
+                item.classList.remove('ring-2', 'ring-purple-500', 'bg-purple-50');
+            });
+
+            // پیدا کردن المنت کلیک شده و هایلایت کردن آن
+            event.currentTarget.classList.add('ring-2', 'ring-purple-500', 'bg-purple-50');
+
+            // پر کردن متن پیام سفارشی با پیام انتخاب شده
+            document.getElementById('customMessageText').value = messageContent;
+        }
+
+        // ارسال پیام انتخاب شده
+        function sendSelectedMessage() {
+            if (!currentRequestId) {
+                alert('خطا: درخواست معتبر نیست');
+                return;
+            }
+
+            const customMessage = document.getElementById('customMessageText').value.trim();
+
+            if (!customMessage) {
+                alert('لطفاً متن پیام را وارد کنید');
+                return;
+            }
+
+            if (confirm('آیا از ارسال این پیام مطمئن هستید؟')) {
+                const token = $('input[name="__RequestVerificationToken"]').val();
+
+                // اگر پیام از پیش تعریف شده انتخاب شده، از messageId استفاده کن
+                // در غیر این صورت پیام سفارشی ارسال کن
+                const dataToSend = selectedMessageId ?
+                    { requestId: currentRequestId, messageId: selectedMessageId } :
+                    { requestId: currentRequestId, messageContent: customMessage };
+
+                const url = selectedMessageId ?
+                    '/fa/ProductRequests/SendTemplateMessage' :
+                    '/fa/ProductRequests/SendCustomMessage';
+
+                $.ajax({
+                    url: url,
+                    type: 'POST',
+                    contentType: 'application/json',
+                    headers: {
+                        'RequestVerificationToken': token
+                    },
+                    data: JSON.stringify(dataToSend),
+                    success: function(response) {
+                        if (response.success) {
+                            alert('پیام با موفقیت ارسال شد');
+                            closeMessageModal();
+                            location.reload();
+                        } else {
+                            alert('خطا: ' + response.message);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        alert('خطا در ارسال پیام: ' + error);
+                    }
+                });
+            }
+        }
+
+        // بستن مودال با کلیک خارج از آن
+        document.addEventListener('click', function(event) {
+            const modal = document.getElementById('messageModal');
+            if (event.target === modal) {
+                closeMessageModal();
+            }
+        });
+
+        // بستن مودال با کلید ESC
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeMessageModal();
+            }
+        });
+    </script>
+}

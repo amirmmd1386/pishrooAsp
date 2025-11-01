@@ -1,0 +1,46 @@
+﻿@model IEnumerable<dynamic>
+@{
+    var isPersian = ViewBag.lang == "fa";
+}
+
+@if (Model != null && Model.Any())
+{
+    <div class="lg:col-span-2 space-y-4">
+        @foreach (var news in Model)
+        {
+            <!-- تعیین رنگ دسته‌بندی بر اساس نام -->
+            
+                var categoryColor = news.Category switch
+                {
+                    "فوتبال" => "blue",
+                    "استقلال" => "red",
+                    "کارگری" => "green",
+                    _ => "gray"
+                };
+            
+
+            <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition duration-300 flex h-32">
+                <div class="w-1/3">
+                    <img src="@news.ImageUrl" alt="@news.Title" class="w-full h-full object-cover">
+                </div>
+                <div class="w-2/3 p-4 flex flex-col justify-between">
+                    <div>
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="text-xs text-blue-600">@news.TimeAgo</span>
+                            <span class="bg-@(categoryColor)-100 text-@(categoryColor)-800 text-xs px-2 py-0.5 rounded">
+                                @news.Category
+                            </span>
+                        </div>
+                        <h3 class="text-lg font-bold text-gray-800 line-clamp-2">@news.Title</h3>
+                    </div>
+                    <a href="@Url.Action("Details", "News", new { id = news.Id })" class="text-blue-600 text-xs font-medium hover:underline flex items-center">
+                        @(isPersian ? "ادامه خبر" : "Read more")
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        }
+    </div>
+}

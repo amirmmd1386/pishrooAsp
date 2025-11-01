@@ -1,0 +1,70 @@
+﻿@model pishrooAsp.Models.Newses.News
+
+@{
+    ViewData["Title"] = "جزئیات خبر";
+}
+
+<div class="max-w-5xl lg:mx-auto my-6 mx-3 bg-white p-6 rounded-lg shadow-lg">
+    <h2 class="text-3xl font-bold mb-6">@(Model.Translations.FirstOrDefault()?.Title ?? "بدون عنوان")</h2>
+
+    <p class="text-sm text-gray-500 mb-4">
+        منتشر شده در: @Model.PublishDate.ToString("yyyy/MM/dd") |
+        وضعیت انتشار: @(Model.IsPublished ? "منتشر شده" : "منتشر نشده") |
+        نویسنده: @(Model.AuthorId?.ToString() ?? "نامشخص")
+    </p>
+
+    <div class="mb-6">
+        @if (!string.IsNullOrEmpty(Model.DefaultImageUrl))
+        {
+            <img src="@Model.DefaultImageUrl" alt="تصویر پیش‌فرض" class="w-full max-h-96 object-cover rounded" />
+        }
+    </div>
+
+    <div class="mb-6">
+        <h3 class="text-xl font-semibold mb-2">خلاصه خبر</h3>
+        <p>@Model.Translations.FirstOrDefault()?.Summary</p>
+    </div>
+
+    <div class="mb-6">
+        <h3 class="text-xl font-semibold mb-2">متن کامل</h3>
+        <p>@Html.Raw(Model.Translations.FirstOrDefault()?.Content)</p>
+    </div>
+
+    <div class="mb-6">
+        <h3 class="text-xl font-semibold mb-2">تصاویر مرتبط</h3>
+        @if (Model.Images != null && Model.Images.Any())
+        {
+            <div class="grid grid-cols-3 gap-4">
+                @foreach (var img in Model.Images)
+                {
+                    <img src="@img.ImageUrl" alt="@img.AltText" class="rounded shadow" />
+                }
+            </div>
+        }
+        else
+        {
+            <p>هیچ تصویری موجود نیست.</p>
+        }
+    </div>
+
+    <div class="mb-6">
+        <h3 class="text-xl font-semibold mb-2">فایل‌های پیوست</h3>
+        @if (Model.Attachments != null && Model.Attachments.Any())
+        {
+            <ul class="list-disc list-inside">
+                @foreach (var attach in Model.Attachments)
+                {
+                    <li>
+                        <a href="@attach.FileUrl" target="_blank" class="text-blue-600 underline">
+                            @attach.FileName
+                        </a>
+                    </li>
+                }
+            </ul>
+        }
+        else
+        {
+            <p>هیچ فایلی موجود نیست.</p>
+        }
+    </div>
+</div>

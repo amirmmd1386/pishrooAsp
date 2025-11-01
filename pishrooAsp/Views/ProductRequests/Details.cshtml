@@ -1,0 +1,165 @@
+﻿@using pishrooAsp.Models.ProductRequest
+@model pishrooAsp.Models.ProductRequest.ProductRequest
+
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div dir="rtl" class="flex items-center justify-center min-h-screen  px-4 py-10">
+    <div class="w-full max-w-3xl bg-white shadow-2xl rounded-2xl overflow-hidden border border-gray-200">
+
+        <!-- هدر -->
+        <div class="bg-gradient-to-r from-indigo-500 via-blue-500 to-purple-500 px-6 py-6 text-white">
+            <h2 class="text-2xl font-extrabold">جزئیات درخواست محصول</h2>
+            <p class="text-sm opacity-90 mt-1">اطلاعات کامل درخواست کاربر</p>
+        </div>
+
+        <!-- محتوا -->
+        <div class="p-8 space-y-6">
+            <dl class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6 text-sm">
+
+                <div class="flex items-center gap-2">
+                    <span class="text-indigo-500">👤</span>
+                    <div>
+                        <dt class="font-semibold text-gray-600">نام و نام خانوادگی</dt>
+                        <dd class="text-gray-900">@Model.FullName</dd>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-2">
+                    <span class="text-green-500">📞</span>
+                    <div>
+                        <dt class="font-semibold text-gray-600">شماره تماس</dt>
+                        <dd class="text-gray-900">@Model.PhoneNumber</dd>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-2">
+                    <span class="text-blue-500">🏢</span>
+                    <div>
+                        <dt class="font-semibold text-gray-600">نام شرکت</dt>
+                        <dd class="text-gray-900">@Model.CompanyName</dd>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-2">
+                    <span class="text-purple-500">📦</span>
+                    <div>
+                        <dt class="font-semibold text-gray-600">نوع محصول</dt>
+                        <dd class="text-gray-900">@Model.ProductType</dd>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-2">
+                    <span class="text-pink-500">💉</span>
+                    <div>
+                        <dt class="font-semibold text-gray-600">روش تزریق</dt>
+                        <dd class="text-gray-900">@Model.InjectionMethod</dd>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-2">
+                    <span class="text-orange-500">⚖️</span>
+                    <div>
+                        <dt class="font-semibold text-gray-600">مقدار مورد نیاز (کیلوگرم)</dt>
+                        <dd class="text-gray-900">@Model.RequiredAmountKg</dd>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-2">
+                    <span class="text-yellow-500">🧪</span>
+                    <div>
+                        <dt class="font-semibold text-gray-600">نرمی (A)</dt>
+                        <dd class="text-gray-900">@Model.SoftnessA</dd>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-2">
+                    <span class="text-red-500">🧱</span>
+                    <div>
+                        <dt class="font-semibold text-gray-600">سفتی (D)</dt>
+                        <dd class="text-gray-900">@Model.HardnessB</dd>
+                    </div>
+                </div>
+
+                <div class="md:col-span-2">
+                    <dt class="font-semibold text-gray-600 flex items-center gap-1">📝 توضیحات</dt>
+                    <dd class="text-gray-900 whitespace-pre-line bg-gray-50 p-3 rounded-lg border">@Model.Description</dd>
+                </div>
+
+                <div class="flex items-center gap-2">
+                    <span class="text-gray-500">📅</span>
+                    <div>
+                        <dt class="font-semibold text-gray-600">تاریخ ثبت</dt>
+                        <dd class="text-gray-900">@Model.CreatedAt.ToString("yyyy/MM/dd - HH:mm")</dd>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-2">
+                    <span class="text-indigo-600">📌</span>
+                    <div>
+                        <dt class="font-semibold text-gray-600">وضعیت</dt>
+                        <dd>
+                            <span class="px-4 py-1 rounded-full text-xs font-semibold tracking-wide
+                                @(Model.Status == pishrooAsp.Models.ProductRequest.RequestStatus.Pending ? "bg-yellow-100 text-yellow-700" :
+                                  Model.Status == pishrooAsp.Models.ProductRequest.RequestStatus.Checked ? "bg-green-100 text-green-700" :
+                                  "bg-red-100 text-red-700")">
+                                @Model.Status
+                            </span>
+                        </dd>
+                    </div>
+                </div>
+                
+                @if (ViewBag.Files != null && ((IEnumerable<dynamic>)ViewBag.Files).Any())
+                {
+                    <div class="space-y-3">
+                        @foreach (var file in (List<ProductRequestFile>)ViewBag.Files)
+                        {
+                            <div class="flex items-center justify-between p-3 border border-gray-200 rounded-lg">
+                                <div class="flex items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clip-rule="evenodd" />
+                                    </svg>
+                                    <span class="text-sm text-gray-700">تصویر سفارش</span>
+                                </div>
+                                <a href="@Url.Content(file.FilePath)" download
+                                   class="px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600 text-sm transition duration-200 flex items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                    </svg>
+                                    دانلود
+                                </a>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="text-center py-4 text-gray-500">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                        <p class="mt-2">فایلی برای دانلود وجود ندارد</p>
+                    </div>
+                }
+    
+
+            </dl>
+        </div>
+
+        <!-- دکمه‌ها -->
+        <div class="flex justify-between items-center bg-gray-50 px-6 py-4 border-t">
+            <a asp-action="Index"
+               class="px-5 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition">
+                ⬅️ بازگشت
+            </a>
+            <form asp-action="Delete" method="post" onsubmit="return confirm('آیا مطمئن هستید؟');">
+                <input type="hidden" name="id" value="@Model.Id" />
+                <button type="submit"
+                        class="px-5 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition">
+                    🗑️ حذف
+                </button>
+            </form>
+        </div>
+    </div>
+</div>

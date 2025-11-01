@@ -1,0 +1,80 @@
+﻿@model pishrooAsp.ModelViewer.NewsViewModel
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    ViewData["Title"] = "ثبت خبر جدید";
+    var languages = ViewBag.Languages as List<pishrooAsp.Models.Lang>;
+}
+
+<div class="max-w-5xl mx-auto mt-8 bg-white p-6 rounded-lg shadow-lg">
+    <h2 class="text-2xl font-bold mb-6">ثبت خبر جدید</h2>
+
+    <form asp-action="Create" method="post" enctype="multipart/form-data" class="space-y-4">
+
+        <div>
+            <label class="block font-medium">اخبار یا مقاله؟</label>
+            <input type="checkbox" asp-for="IsPublished" />
+        </div>
+
+        <div>
+            <label class="block font-medium">کد نویسنده (اختیاری)</label>
+            <input type="number" asp-for="AuthorId" class="w-full border p-2 rounded" />
+        </div>
+
+        <div>
+            <label class="block font-medium">تصویر پیش‌فرض</label>
+            <input type="file" name="DefaultImage" class="w-full" />
+        </div>
+
+        <div>
+            <label class="block font-medium">عنوان خبر</label>
+            <input type="text" name="Translations[0].Title" class="w-full border p-2 rounded" />
+        </div>
+
+        <div>
+            <label class="block font-medium">خلاصه خبر</label>
+            <textarea name="Translations[0].Summary" class="w-full border p-2 rounded"></textarea>
+        </div>
+
+        <div>
+            <label class="block font-medium">متن کامل</label>
+            <textarea name="Translations[0].Content" class="w-full border p-2 rounded"></textarea>
+        </div>
+
+        <div>
+            <label class="block font-medium">کلمات کلیدی (SEO)</label>
+            @* @Model.Translations[0].MetaKeywords *@
+            <input type="text" name="Translations[0].MetaKeywords" class="w-full border p-2 rounded" />
+        </div>
+
+        <div>
+            <label class="block font-medium">توضیحات متا (SEO)</label>
+            <input type="text" name="Translations[0].MetaDescription" class="w-full border p-2 rounded" />
+        </div>
+
+        <div>
+            <label class="block font-medium">زبان</label>
+            <select name="Translations[0].LangId" class="w-full border p-2 rounded">
+                @for (int i = 0; i < languages.Count; i++)
+                {
+                    <option value="@languages[i].Id">@languages[i].Name</option>
+                  
+                }
+            </select>
+        </div>
+
+        <div>
+            <label class="block font-medium">تصاویر دیگر</label>
+            <input type="file" name="Images" multiple class="w-full" />
+        </div>
+
+        <div>
+            <label class="block font-medium">فایل‌های پیوست</label>
+            <input type="file" name="Attachments" multiple class="w-full" />
+        </div>
+
+        <div class="flex justify-end space-x-3">
+            <a href="@Url.Action("Index")" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded">بازگشت</a>
+            <button class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded">ثبت</button>
+        </div>
+    </form>
+</div>

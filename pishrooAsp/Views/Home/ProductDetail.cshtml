@@ -1,0 +1,170 @@
+﻿@model pishrooAsp.Models.Products.Product
+@{
+    var translation = Model.Translations?.FirstOrDefault();
+    var culture = ViewContext.HttpContext.GetRouteValue("culture")?.ToString() ?? "fa";
+    var isPersian = culture == "fa";
+    var url = " /" + culture + "/ProductRequests/create";
+}
+
+<div class="container mx-auto px-4 py-8">
+    <!-- Breadcrumb navigation -->
+    <nav class="flex mb-6 text-sm text-gray-600">
+        <a href="/" class="text-indigo-600 hover:text-indigo-800">@(isPersian ? "خانه" : "Home")</a>
+        <span class="mx-2">/</span>
+        <a href="/products" class="text-indigo-600 hover:text-indigo-800">@(isPersian ? "محصولات" : "Products")</a>
+        <span class="mx-2">/</span>
+        <span class="text-gray-500">@translation?.Title</span>
+    </nav>
+
+    <!-- Main product section -->
+    <div class="flex flex-col lg:flex-row gap-8">
+        <!-- Product image gallery -->
+        <div class="lg:w-1/2">
+            <div class="bg-white rounded-xl shadow-md overflow-hidden">
+                <img src="@Model.ImageUrl" alt="@translation?.Title"
+                     class="w-full h-140 object-cover product-image">
+            </div>
+
+            <!-- Attachment file -->
+            @if (!string.IsNullOrEmpty(Model.AttachmentUrl))
+            {
+                <div class="mt-4 bg-white rounded-xl shadow-md p-4">
+                    <h3 class="text-lg font-semibold mb-3">@(isPersian ? "دانلود فایل مرتبط" : "Download Related File")</h3>
+                    <a href="@Model.AttachmentUrl" download
+                       class="inline-flex items-center px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">
+                        <i class="fas fa-download @(isPersian ? "ml-2" : "mr-2")"></i>
+                        @(isPersian ? "دانلود مشخصات فنی" : "Download Technical Specs")
+                    </a>
+                </div>
+            }
+        </div>
+
+        <!-- Product information -->
+        <div class="lg:w-1/2">
+            <div class="bg-white rounded-xl shadow-md p-6">
+                <h1 class="text-2xl font-bold text-gray-800 mb-2">@translation?.Title</h1>
+
+                <div class="prose max-w-none text-gray-700 my-6 whitespace-pre-line">
+                    @Html.Raw(translation?.Description)
+                </div>
+
+                <div class="mt-6 pt-4 border-t border-gray-200">
+                    <div class="flex items-center text-sm text-gray-500 mb-2">
+                        <i class="fas fa-calendar-alt @(isPersian ? "ml-2" : "mr-2")"></i>
+                        <span>@(isPersian ? $"تاریخ ثبت: {Model.CreatedAt}" : $"Registration Date: {Model.CreatedAt}")</span>
+                    </div>
+
+                    <div class="flex items-center text-sm text-gray-500">
+                        <i class="fas fa-language @(isPersian ? "ml-2" : "mr-2")"></i>
+                        <span>@(isPersian ? $"زبان: {translation?.Lang?.Name}" : $"Language: {translation?.Lang?.Name}")</span>
+                    </div>
+                </div>
+
+                <!-- Action buttons -->
+                <div class="mt-8 flex flex-wrap gap-3">
+                    <a href="@url" class="px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition flex-1">
+                        <i class="fas fa-shopping-cart @(isPersian ? "ml-2" : "mr-2")"></i>
+                        @(isPersian ? "افزودن به سبد خرید" : "Add to Cart")
+                    </a>
+
+                    <button class="px-6 py-3 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition">
+                        <i class="fas fa-heart @(isPersian ? "ml-2" : "mr-2")"></i>
+                        @(isPersian ? "علاقه‌مندی‌ها" : "Wishlist")
+                    </button>
+                </div>
+            </div>
+            <!-- Usage Files Section -->
+            @if (!string.IsNullOrEmpty(Model.Usage1FileUrl) ||
+            !string.IsNullOrEmpty(Model.Usage2FileUrl) ||
+            !string.IsNullOrEmpty(Model.Usage3FileUrl) ||
+            !string.IsNullOrEmpty(Model.Usage4FileUrl) ||
+            !string.IsNullOrEmpty(Model.Usage5FileUrl))
+            {
+                <div class="mt-10">
+                    <h2 class="text-xl font-bold text-gray-800 mb-4">
+                        @(isPersian ? "کاربردهای محصول" : "Product Usages")
+                    </h2>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        @* کاربرد ۱ *@
+                        @if (!string.IsNullOrEmpty(Model.Usage1FileUrl))
+                        {
+                            <div class="bg-white shadow rounded-lg p-4 flex items-center justify-between">
+                                <div>
+                                    <h3 class="font-semibold text-gray-800">@Model.Usage1Title</h3>
+                                    <p class="text-sm text-gray-500">@Model.Usage1FileType</p>
+                                </div>
+                                <a href="@Model.Usage1FileUrl" target="_blank"
+                                   class="px-3 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700">
+                                    @(isPersian ? "مشاهده / دانلود" : "View / Download")
+                                </a>
+                            </div>
+                        }
+
+                        @* کاربرد ۲ *@
+                        @if (!string.IsNullOrEmpty(Model.Usage2FileUrl))
+                        {
+                            <div class="bg-white shadow rounded-lg p-4 flex items-center justify-between">
+                                <div>
+                                    <h3 class="font-semibold text-gray-800">@Model.Usage2Title</h3>
+                                    <p class="text-sm text-gray-500">@Model.Usage2FileType</p>
+                                </div>
+                                <a href="@Model.Usage2FileUrl" target="_blank"
+                                   class="px-3 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700">
+                                    @(isPersian ? "مشاهده / دانلود" : "View / Download")
+                                </a>
+                            </div>
+                        }
+
+                        @* کاربرد ۳ *@
+                        @if (!string.IsNullOrEmpty(Model.Usage3FileUrl))
+                        {
+                            <div class="bg-white shadow rounded-lg p-4 flex items-center justify-between">
+                                <div>
+                                    <h3 class="font-semibold text-gray-800">@Model.Usage3Title</h3>
+                                    <p class="text-sm text-gray-500">@Model.Usage3FileType</p>
+                                </div>
+                                <a href="@Model.Usage3FileUrl" target="_blank"
+                                   class="px-3 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700">
+                                    @(isPersian ? "مشاهده / دانلود" : "View / Download")
+                                </a>
+                            </div>
+                        }
+
+                        @* کاربرد ۴ *@
+                        @if (!string.IsNullOrEmpty(Model.Usage4FileUrl))
+                        {
+                            <div class="bg-white shadow rounded-lg p-4 flex items-center justify-between">
+                                <div>
+                                    <h3 class="font-semibold text-gray-800">@Model.Usage4Title</h3>
+                                    <p class="text-sm text-gray-500">@Model.Usage4FileType</p>
+                                </div>
+                                <a href="@Model.Usage4FileUrl" target="_blank"
+                                   class="px-3 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700">
+                                    @(isPersian ? "مشاهده / دانلود" : "View / Download")
+                                </a>
+                            </div>
+                        }
+
+                        @* کاربرد ۵ (اختیاری) *@
+                        @if (!string.IsNullOrEmpty(Model.Usage5FileUrl))
+                        {
+                            <div class="bg-white shadow rounded-lg p-4 flex items-center justify-between">
+                                <div>
+                                    <h3 class="font-semibold text-gray-800">@Model.Usage5Title</h3>
+                                    <p class="text-sm text-gray-500">@Model.Usage5FileType</p>
+                                </div>
+                                <a href="@Model.Usage5FileUrl" target="_blank"
+                                   class="px-3 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700">
+                                    @(isPersian ? "مشاهده / دانلود" : "View / Download")
+                                </a>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+
+           
+        </div>
+    </div>
+</div>

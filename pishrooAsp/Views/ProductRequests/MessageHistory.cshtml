@@ -1,0 +1,67 @@
+﻿@model IEnumerable<pishrooAsp.Models.ProductRequest.ProductRequestMessage>
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    var requestId = ViewBag.RequestId;
+}
+
+<div dir="rtl" class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="bg-white shadow-xl rounded-lg overflow-hidden">
+        <!-- هدر -->
+        <div class="px-6 py-4 border-b border-gray-200 bg-gradient-to-r from-blue-50 to-indigo-50">
+            <div class="flex justify-between items-center">
+                <h2 class="text-2xl font-bold text-gray-800">تاریخچه پیام‌های ارسالی</h2>
+                <a href="@Url.Action("Index")"
+                   class="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition duration-200">
+                    بازگشت به لیست
+                </a>
+            </div>
+        </div>
+
+        <!-- جدول تاریخچه پیام‌ها -->
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">مشتری</th>
+                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">پیام</th>
+                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">زمان ارسال</th>
+                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">وضعیت</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    @foreach (var item in Model)
+                    {
+                        <tr class="hover:bg-gray-50 transition-colors duration-150">
+                            <td class="px-6 py-4">
+                                <div class="font-medium">@item.ProductRequest?.FullName</div>
+                                <div class="text-sm text-gray-500">@item.ProductRequest?.PhoneNumber</div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="max-w-md">@item.Message?.Message</div>
+                            </td>
+                            <td class="px-6 py-4" dir="ltr">
+                                @item.SentAt.ToLocalTime().ToString("yyyy/MM/dd HH:mm")
+                            </td>
+                            <td class="px-6 py-4">
+                                <span class="px-2 py-1 rounded-full text-xs font-medium
+                                    @(item.Status == "Sent" ? "bg-green-100 text-green-800" :
+                                      item.Status == "Failed" ? "bg-red-100 text-red-800" :
+                                      "bg-yellow-100 text-yellow-800")">
+                                    @(item.Status == "Sent" ? "ارسال شده" :
+                                        item.Status == "Failed" ? "ناموفق" : "نامشخص")
+                                </span>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            @if (!Model.Any())
+            {
+                <div class="text-center py-8 text-gray-500">
+                    هیچ پیامی یافت نشد
+                </div>
+            }
+        </div>
+    </div>
+</div>

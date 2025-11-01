@@ -1,0 +1,95 @@
+﻿@page
+@model StatisticsModel
+@using System.Globalization
+
+@{
+    ViewData["Title"] = "آمار بازدید سایت";
+    // تنظیم راست به چپ برای کل صفحه
+    Layout = "_Layout";
+}
+
+<h1 class="text-3xl font-bold mb-6 text-gray-800 text-right">داشبورد آمار بازدید 📊</h1>
+
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+    <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-100">
+        <h2 class="text-xl font-semibold mb-4 text-right">بازدید بر اساس نوع دستگاه</h2>
+        <div dir="ltr">
+            <canvas id="deviceChart" class="w-full h-80"></canvas>
+        </div>
+    </div>
+
+    <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-100">
+        <h2 class="text-xl font-semibold mb-4 text-right">بازدید 7 روز گذشته</h2>
+        <div dir="ltr">
+            <canvas id="dailyChart" class="w-full h-80"></canvas>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+
+    <script>
+        // داده‌های نمودار نوع دستگاه
+        var deviceData = @Html.Raw(Model.DeviceStatsJson);
+        var deviceLabels = Object.keys(deviceData);
+        var deviceCounts = Object.values(deviceData);
+
+        // تنظیم نمودار نوع دستگاه (نمودار دایره‌ای)
+        new Chart(document.getElementById('deviceChart'), {
+            type: 'pie',
+            data: {
+                labels: deviceLabels,
+                datasets: [{
+                    label: 'تعداد بازدید',
+                    data: deviceCounts,
+                    backgroundColor: [
+                        '#4f46e5', // Indigo
+                        '#10b981', // Emerald
+                        '#f59e0b', // Amber
+                    ],
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    title: {
+                        display: false
+                    }
+                }
+            }
+        });
+
+        // داده‌های نمودار روزانه
+        var dailyData = @Html.Raw(Model.DailyStatsJson);
+        var dailyLabels = Object.keys(dailyData);
+        var dailyCounts = Object.values(dailyData);
+
+        // تنظیم نمودار روزانه (نمودار خطی)
+        new Chart(document.getElementById('dailyChart'), {
+            type: 'line',
+            data: {
+                labels: dailyLabels,
+                datasets: [{
+                    label: 'تعداد بازدید',
+                    data: dailyCounts,
+                    borderColor: '#4f46e5', // Indigo
+                    tension: 0.1,
+                    fill: false
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
+}

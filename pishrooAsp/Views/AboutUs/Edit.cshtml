@@ -1,0 +1,286 @@
+﻿@model pishrooAsp.Models.AboutUsItem
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "ویرایش درباره ما";
+    var langs = ViewBag.Langs as List<pishrooAsp.Models.Lang>;
+    var translations = ViewBag.translations as List<pishrooAsp.Models.AboutUsTranslation>;
+}
+
+<div class="container mx-auto px-4 py-8 max-w-6xl">
+    <div class="bg-white rounded-xl shadow-md overflow-hidden p-6">
+        <!-- هدر فرم -->
+        <div class="border-b pb-4 mb-6">
+            <h1 class="text-2xl font-bold text-gray-800 flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                </svg>
+                @ViewData["Title"]
+            </h1>
+            <p class="text-gray-600 mt-2">اطلاعات تماس و محتوای درباره ما را ویرایش کنید</p>
+        </div>
+
+        <form asp-action="Edit" method="post" class="space-y-8">
+            <input type="hidden" asp-for="Id" />
+
+            <!-- بخش اطلاعات تماس -->
+            <div class="bg-blue-50 p-5 rounded-lg">
+                <h2 class="text-xl font-semibold text-blue-800 mb-4 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                    </svg>
+                    اطلاعات تماس
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">تلفن ۱</label>
+                        <input name="Phone1" value="@Model.Phone1" placeholder="مثال: 02112345678" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" />
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">تلفن ۲</label>
+                        <input name="Phone2" value="@Model.Phone2" placeholder="تلفن دوم (اختیاری)" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" />
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">تلفن ۳</label>
+                        <input name="Phone3" value="@Model.Phone3" placeholder="تلفن سوم (اختیاری)" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" />
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">تلفن ۴</label>
+                        <input name="Phone4" value="@Model.Phone4" placeholder="تلفن چهارم (اختیاری)" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" />
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">تلفن ۵</label>
+                        <input name="Phone5" value="@Model.Phone5" placeholder="تلفن پنجم (اختیاری)" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" />
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">تلفن ۶</label>
+                        <input name="Phone6" value="@Model.Phone6" placeholder="تلفن ششم (اختیاری)" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" />
+                    </div>
+                </div>
+            </div>
+
+            <!-- بخش فکس -->
+            <div class="bg-green-50 p-5 rounded-lg">
+                <h2 class="text-xl font-semibold text-green-800 mb-4 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2z" />
+                    </svg>
+                    اطلاعات فکس
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">فکس ۱</label>
+                        <input name="Fax1" value="@Model.Fax1" placeholder="شماره فکس" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition" />
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">فکس ۲</label>
+                        <input name="Fax2" value="@Model.Fax2" placeholder="فکس دوم (اختیاری)" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition" />
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">فکس ۳</label>
+                        <input name="Fax3" value="@Model.Fax3" placeholder="فکس سوم (اختیاری)" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition" />
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">فکس ۴</label>
+                        <input name="Fax4" value="@Model.Fax4" placeholder="فکس چهارم (اختیاری)" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition" />
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">فکس ۵</label>
+                        <input name="Fax5" value="@Model.Fax5" placeholder="فکس پنجم (اختیاری)" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition" />
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">فکس ۶</label>
+                        <input name="Fax6" value="@Model.Fax6" placeholder="فکس ششم (اختیاری)" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition" />
+                    </div>
+                </div>
+            </div>
+
+            <!-- بخش ایمیل -->
+            <div class="bg-indigo-50 p-5 rounded-lg">
+                <h2 class="text-xl font-semibold text-indigo-800 mb-4 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                    </svg>
+                    اطلاعات ایمیل
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">ایمیل ۱</label>
+                        <input name="Email1" value="@Model.Email1" placeholder="مثال: info@example.com" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition" />
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">ایمیل ۲</label>
+                        <input name="Email2" value="@Model.Email2" placeholder="ایمیل دوم (اختیاری)" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition" />
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">ایمیل ۳</label>
+                        <input name="Email3" value="@Model.Email3" placeholder="ایمیل سوم (اختیاری)" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition" />
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">ایمیل ۴</label>
+                        <input name="Email4" value="@Model.Email4" placeholder="ایمیل چهارم (اختیاری)" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition" />
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">ایمیل ۵</label>
+                        <input name="Email5" value="@Model.Email5" placeholder="ایمیل پنجم (اختیاری)" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition" />
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">ایمیل ۶</label>
+                        <input name="Email6" value="@Model.Email6" placeholder="ایمیل ششم (اختیاری)" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition" />
+                    </div>
+                </div>
+            </div>
+
+            <!-- بخش اطلاعات عمومی -->
+            <div class="bg-orange-50 p-5 rounded-lg">
+                <h2 class="text-xl font-semibold text-orange-800 mb-4 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                    </svg>
+                    اطلاعات عمومی شرکت
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">وبسایت</label>
+                        <input name="Website" value="@Model.Website" placeholder="مثال: https://example.com" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition" />
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">موقعیت نقشه</label>
+                        <input name="MapLocation" value="@Model.MapLocation" placeholder="لینک موقعیت در نقشه" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition" />
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">سال تأسیس</label>
+                        <input name="EstablishedYear" type="number" value="@Model.EstablishedYear" placeholder="مثال: 1390" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition" />
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">تعداد کارکنان</label>
+                        <input name="EmployeeCount" type="number" value="@Model.EmployeeCount" placeholder="تعداد کارکنان شرکت" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition" />
+                    </div>
+                </div>
+            </div>
+
+            <!-- بخش شبکه‌های اجتماعی -->
+            <div class="bg-purple-50 p-5 rounded-lg">
+                <h2 class="text-xl font-semibold text-purple-800 mb-4 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                    </svg>
+                    شبکه‌های اجتماعی
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">اینستاگرام</label>
+                        <div class="flex">
+                            <span class="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-sm">
+                                @@
+                            </span>
+                            <input name="Instagram" value="@Model.Instagram" placeholder="username" class="flex-1 px-4 py-2 border border-gray-300 rounded-r-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition" />
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">تلگرام</label>
+                        <div class="flex">
+                            <span class="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-sm">
+                                @@
+                            </span>
+                            <input name="Telegram" value="@Model.Telegram" placeholder="username" class="flex-1 px-4 py-2 border border-gray-300 rounded-r-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition" />
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">لینکدین</label>
+                        <input name="LinkedIn" value="@Model.LinkedIn" placeholder="لینک پروفایل" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition" />
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">واتساپ</label>
+                        <input name="WhatsApp" value="@Model.WhatsApp" placeholder="شماره واتساپ" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition" />
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">یوتیوب</label>
+                        <input name="YouTube" value="@Model.YouTube" placeholder="لینک کانال یوتیوب" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition" />
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">فیسبوک</label>
+                        <input name="Facebook" value="@Model.Facebook" placeholder="لینک صفحه فیسبوک" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition" />
+                    </div>
+                </div>
+            </div>
+
+            <!-- بخش ترجمه‌ها -->
+            <div>
+                <h2 class="text-xl font-semibold text-gray-800 mb-6 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129" />
+                    </svg>
+                    ترجمه‌ها
+                </h2>
+                <div class="space-y-6">
+                    @for (int i = 0; i < langs.Count; i++)
+                    {
+                        var tr = translations.FirstOrDefault(t => t.LangId == langs[i].Id) ?? new pishrooAsp.Models.AboutUsTranslation();
+                        <div class="border border-gray-200 rounded-xl p-5 hover:shadow-md transition">
+                            <input type="hidden" name="translations[@i].LangId" value="@langs[i].Id" />
+                            <h3 class="text-lg font-medium mb-4 text-gray-700 flex items-center">
+                                <span class="w-8 h-8 flex items-center justify-center bg-blue-100 text-blue-800 rounded-full mr-2">
+                                    @langs[i].Name.Substring(0, 1)
+                                </span>
+                                @langs[i].Name
+                            </h3>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">نام شرکت</label>
+                                    <input name="translations[@i].CompanyName" value="@tr.CompanyName" placeholder="نام会社 به این زبان" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" />
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">شعار</label>
+                                    <input name="translations[@i].Slogan" value="@tr.Slogan" placeholder="شعار شرکت" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" />
+                                </div>
+                            </div>
+
+                            <div class="mt-4">
+                                <label class="block text-sm font-medium text-gray-700 mb-1">عنوان</label>
+                                <input name="translations[@i].Title" value="@tr.Title" placeholder="عنوان درباره ما" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" />
+                            </div>
+
+                            <div class="mt-4">
+                                <label class="block text-sm font-medium text-gray-700 mb-1">توضیحات</label>
+                                <textarea name="translations[@i].Description" placeholder="متن کامل درباره شرکت" rows="4" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">@tr.Description</textarea>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">آدرس</label>
+                                    <input name="translations[@i].Address" value="@tr.Address" placeholder="آدرس اصلی" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" />
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">آدرس ۲</label>
+                                    <input name="translations[@i].Address2" value="@tr.Address2" placeholder="آدرس دوم (اختیاری)" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" />
+                                </div>
+                            </div>
+
+                            <div class="mt-4">
+                                <label class="block text-sm font-medium text-gray-700 mb-1">نام مدیرعامل</label>
+                                <input name="translations[@i].CEOName" value="@tr.CEOName" placeholder="نام کامل مدیرعامل" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" />
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- دکمه‌های اقدام -->
+            <div class="flex justify-end gap-4 pt-6 border-t">
+                <a href="@Url.Action("Index")" class="flex items-center px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-100 transition">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                    انصراف
+                </a>
+                <button type="submit" class="flex items-center px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                    </svg>
+                    ذخیره تغییرات
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
