@@ -1,0 +1,94 @@
+﻿@* Components/Products/Luxury.cshtml *@
+@model List<ProductViewModel>
+
+<section class="luxury-products py-20 bg-gradient-to-br from-blue-50 to-indigo-50">
+    <div class="container mx-auto px-4">
+        <!-- هدر لوکس -->
+        <div class="text-center mb-16">
+            <div class="inline-flex items-center justify-center w-20 h-20 bg-blue-600 rounded-full mb-6">
+                <i class="fas fa-gem text-2xl text-white"></i>
+            </div>
+            <h2 class="text-5xl font-black text-blue-800 mb-4">محصولات اختصاصی</h2>
+            <div class="w-32 h-1 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full mx-auto mb-4"></div>
+            <p class="text-xl text-gray-600 max-w-2xl mx-auto">با کیفیت ترین محصولات صنعتی با استانداردهای بین‌المللی</p>
+        </div>
+
+        <!-- محصولات با کارت‌های لوکس -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            @foreach (var product in Model)
+            {
+                <div class="luxury-card group" data-language="@product.Language">
+                    <!-- کارت محصول -->
+                    <div class="bg-white rounded-3xl shadow-2xl overflow-hidden border border-white/20 backdrop-blur-sm">
+                        <!-- هدر کارت -->
+                        <div class="relative overflow-hidden h-56">
+                            <img src="@product.ImageUrl"
+                                 alt="@product.Title"
+                                 class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                                 onerror="this.src='/images/default-luxury-product.jpg'">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+                            <div class="absolute top-4 right-4">
+                                <span class="bg-blue-600/90 text-white px-3 py-1 rounded-full text-xs font-bold backdrop-blur-sm">
+                                    @product.Language.ToUpper()
+                                </span>
+                            </div>
+                            <div class="absolute bottom-4 right-4">
+                                <span class="bg-green-500/90 text-white px-3 py-1 rounded-full text-xs font-bold backdrop-blur-sm">
+                                    <i class="fas fa-star mr-1"></i>
+                                    پریمیوم
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- بدنه کارت -->
+                        <div class="p-6">
+                            <h3 class="text-xl font-bold text-gray-800 mb-3 leading-tight">@product.Title</h3>
+                            <p class="text-gray-600 leading-6 text-sm mb-6 line-clamp-2">@product.Description</p>
+
+                            <!-- اکشن‌های کارت -->
+                            <div class="flex items-center justify-between">
+                                <a href="/@product.Language/products/@product.Id"
+                                   class="flex-1 bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 px-6 rounded-xl font-semibold hover:from-blue-700 hover:to-purple-700 transition-all duration-300 flex items-center justify-center group/btn mr-3">
+                                    <span>مشاهده</span>
+                                    <i class="fas fa-arrow-left mr-2 group-hover/btn:-translate-x-1 transition-transform"></i>
+                                </a>
+
+                                <button class="w-12 h-12 bg-gray-100 hover:bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center transition-all duration-300 group/fav">
+                                    <i class="far fa-heart group-hover/fav:scale-110"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <!-- حالت خالی لوکس -->
+        @if (!Model.Any())
+        {
+            <div class="text-center py-20">
+                <div class="w-32 h-32 bg-gradient-to-br from-blue-100 to-purple-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <i class="fas fa-box-open text-5xl text-blue-600"></i>
+                </div>
+                <h3 class="text-3xl font-bold text-gray-700 mb-4">محصولی یافت نشد</h3>
+                <p class="text-gray-500 text-lg mb-6">در حال حاضر هیچ محصولی برای نمایش وجود ندارد</p>
+                <button class="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-3 rounded-xl font-semibold hover:from-blue-700 hover:to-purple-700 transition-all duration-300">
+                    <i class="fas fa-sync-alt ml-2"></i>
+                    بارگذاری مجدد
+                </button>
+            </div>
+        }
+
+        <!-- دکمه مشاهده بیشتر -->
+        @if (Model.Any())
+        {
+            <div class="text-center mt-12">
+                <a href="/@Model.First().Language/products" class="inline-flex items-center bg-white text-blue-600 px-8 py-3 rounded-xl font-semibold hover:bg-blue-50 transition-all duration-300 border border-blue-200 shadow-lg">
+                    <span>مشاهده تمام محصولات</span>
+                    <i class="fas fa-arrow-left mr-3 group-hover:-translate-x-1 transition-transform"></i>
+                </a>
+            </div>
+        }
+    </div>
+</section>
+

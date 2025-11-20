@@ -3,7 +3,9 @@
     ViewData["Title"] = "افزودن محصول جدید";
     var languages = ViewBag.Languages as List<pishrooAsp.Models.Lang>;
 }
-
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
 <div class="container mx-auto px-4 py-8">
     <h1 class="text-2xl font-bold text-gray-800 mb-6">افزودن محصول جدید</h1>
 
@@ -21,7 +23,7 @@
 
                 <div>
                     <label class="block text-gray-700 text-sm font-bold mb-2">توضیحات متا سئو</label>
-                    <textarea name="SeoDescription" rows="2" class="w-full px-3 py-2 border border-gray-300 rounded-md"
+                    <textarea name="SeoDiscription" rows="2" class="w-full px-3 py-2 border border-gray-300 rounded-md"
                               placeholder="توضیحات مختصر و جذاب برای موتورهای جستجو"></textarea>
                     <p class="text-gray-500 text-xs mt-1">توضیحات متا برای بهبود سئو (حداکثر 300 کاراکتر)</p>
                 </div>
@@ -118,6 +120,8 @@
             <div class="space-y-6">
                 @for (int i = 0; i < languages.Count; i++)
                 {
+                    var translation = Model?.Translations?.FirstOrDefault(t => t.LangId == languages[i].Id);
+
                     <div class="border border-gray-200 rounded-lg p-4">
                         <input type="hidden" name="Translations[@i].LangId" value="@languages[i].Id" />
                         <h3 class="text-lg font-medium text-gray-800 mb-3">@languages[i].Name</h3>
@@ -126,11 +130,18 @@
                             <input name="Translations[@i].Title" class="w-full px-3 py-2 border border-gray-300 rounded-md" required />
                         </div>
                         <div>
-                            <label class="block text-gray-700 text-sm font-bold mb-2">توضیحات</label>
-                            <textarea name="Translations[@i].Description" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-md"></textarea>
-                        </div>
+                            @* <label class="block text-gray-700 text-sm font-bold mb-2">توضیحات</label> *@
+                            <!-- جایگزینی textarea با ویرایشگر ریچ تکست -->
+                            <partial name="_RichTextEditor"
+                                     view-data="@(new ViewDataDictionary(ViewData) {
+                                                          { "Name", $"Translations[{i}].Description" },
+                                                          { "Value", "" },
+                                                          { "Height", "300px" },
+                                                          { "Placeholder", $"توضیحات محصول به زبان {languages[i].Name}..." }
+                                                      })" />
                     </div>
-                }
+                </div>
+                                }
             </div>
         </div>
 

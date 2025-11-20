@@ -1,0 +1,606 @@
+﻿@{
+    var name = ViewData["Name"] as string ?? "Content";
+    var value = ViewData["Value"] as string ?? "";
+    var height = ViewData["Height"] as string ?? "500px";
+    var placeholder = ViewData["Placeholder"] as string ?? "متن خود را وارد کنید...";
+    var editorId = $"editor_{Guid.NewGuid().ToString("N")}";
+    var uploadUrl = ViewData["UploadUrl"] as string ?? "/Admin/Upload/UploadImage";
+}
+
+<div class="rich-text-editor mb-4">
+    <label class="block text-gray-700 text-sm font-bold mb-2">توضیحات</label>
+
+    <div id="@editorId" style="height: @height;"></div>
+    <input type="hidden" name="@name" id="@(editorId)_input" value="@value" />
+
+    <!-- وضعیت لودینگ -->
+    <div id="@(editorId)_loading" class="hidden mt-2 text-sm text-blue-600">
+        <svg class="animate-spin -ml-1 mr-3 h-4 w-4 text-blue-600 inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+        در حال آپلود تصویر...
+    </div>
+</div>
+
+<script>
+    // منتظر بمون تا صفحه کاملا لود بشه
+    window.addEventListener('load', function() {
+        initializeEditor('@editorId', '@name', `@Html.Raw(value)`, '@placeholder', '@uploadUrl');
+    });
+
+    function initializeEditor(editorId, name, initialValue, placeholder, uploadUrl) {
+        // مطمئن شو Quill وجود داره
+        if (typeof Quill === 'undefined') {
+            console.error('Quill not found!');
+            fallbackToTextarea(editorId, name, initialValue);
+            return;
+        }
+
+        try {
+            // ایجاد ویرایشگر با تمام امکانات (بدون جدول)
+            var quill = new Quill('#' + editorId, {
+                theme: 'snow',
+                modules: {
+                    toolbar: {
+                        container: [
+                            // فونت و سایز
+                            [{ 'font': [] }, { 'size': ['small', false, 'large', 'huge'] }],
+
+                            // استایل‌های متن
+                            ['bold', 'italic', 'underline', 'strike'],
+                            [{ 'color': [] }, { 'background': [] }],
+
+                            // ترازبندی - تمام گزینه‌ها
+                            [{ 'align': ['', 'right', 'center', 'left', 'justify'] }],
+
+                            // لیست‌ها
+                            [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                            [{ 'indent': '-1'}, { 'indent': '+1' }],
+
+                            // هدرها
+                            [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+
+                            // لینک و تصویر
+                            ['link', 'image'],
+
+                            // کد و نقل قول
+                            ['code-block', 'blockquote'],
+
+                            // پاک‌سازی
+                            ['clean']
+                        ],
+                        handlers: {
+                            'image': function() {
+                                handleImageUpload(quill, editorId, uploadUrl);
+                            }
+                        }
+                    }
+                },
+                placeholder: placeholder,
+                formats: [
+                    'bold', 'italic', 'underline', 'strike',
+                    'color', 'background',
+                    'font', 'size',
+                    'align', 'direction',
+                    'list', 'indent',
+                    'header',
+                    'link', 'image',
+                    'code-block', 'blockquote'
+                ]
+            });
+
+            // تنظیم پیشفرض RTL
+            quill.format('direction', 'rtl');
+            quill.format('align', 'right');
+
+            // مقدار اولیه
+            if (initialValue && initialValue !== '') {
+                quill.root.innerHTML = initialValue;
+            }
+
+            // رویداد تغییر متن
+            quill.on('text-change', function() {
+                document.getElementById(editorId + '_input').value = quill.root.innerHTML;
+            });
+
+            // رویداد سابمیت فرم
+            var form = document.querySelector('form');
+            if (form) {
+                form.addEventListener('submit', function() {
+                    document.getElementById(editorId + '_input').value = quill.root.innerHTML;
+                });
+            }
+
+            // فعال کردن درگ و دراپ برای عکس
+            setupDragAndDrop(quill, editorId, uploadUrl);
+
+            // اضافه کردن کلیدهای میانبر
+            setupKeyboardShortcuts(quill);
+
+            // اضافه کردن امکانات سفارشی
+            setupCustomFeatures(quill);
+
+            console.log('✅ ویرایشگر با تمام امکانات راه‌اندازی شد');
+
+        } catch (error) {
+            console.error('Error initializing editor:', error);
+            fallbackToTextarea(editorId, name, initialValue);
+        }
+    }
+
+        // تابع مدیریت آپلود عکس
+    function handleImageUpload(quill, editorId, uploadUrl) {
+        var input = document.createElement('input');
+        input.setAttribute('type', 'file');
+        input.setAttribute('accept', 'image/*');
+        input.click();
+
+        input.onchange = async function () {
+            var file = input.files[0];
+            if (!file) return;
+
+            var loadingElement = document.getElementById(editorId + '_loading');
+            loadingElement.classList.remove('hidden');
+
+            try {
+                var imageUrl = await uploadFile(file, uploadUrl);
+
+                // گرفتن alt از کاربر
+                var altText = prompt("متن ALT را وارد کنید:", "");
+
+                // درج تصویر
+                var range = quill.getSelection();
+                quill.insertEmbed(range.index, 'image', imageUrl);
+
+                // اعمال width و alt بعد از درج شدن
+                setTimeout(() => {
+                    var img = quill.root.querySelector(`img[src="${imageUrl}"]`);
+                    if (img) {
+                        img.style.width = "600px";   // عرض پیش‌فرض
+                        img.style.height = "auto";
+                        img.style.margin = "auto"; // بالا/پایین 20px، چپ/راست auto
+
+                        if (altText) img.setAttribute("alt", altText);
+                    }
+                }, 100);
+
+                loadingElement.classList.add('hidden');
+            } catch (error) {
+                console.error('Upload failed:', error);
+                loadingElement.classList.add('hidden');
+                alert('خطا در آپلود تصویر: ' + error.message);
+            }
+        };
+    }
+
+    // تابع آپلود فایل به سرور
+    async function uploadFile(file, uploadUrl) {
+        var formData = new FormData();
+        formData.append('file', file);
+        formData.append('folder', 'editor');
+
+        var response = await fetch(uploadUrl, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'RequestVerificationToken': getAntiForgeryToken()
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error('آپلود ناموفق بود. وضعیت: ' + response.status);
+        }
+
+        var result = await response.json();
+
+        if (!result.success) {
+            throw new Error(result.message || 'خطا در آپلود');
+        }
+
+        return result.url;
+    }
+
+    // گرفتن توکن ضد جعل
+    function getAntiForgeryToken() {
+        var tokenElement = document.querySelector('input[name="__RequestVerificationToken"]');
+        return tokenElement ? tokenElement.value : '';
+    }
+
+        function setupDragAndDrop(quill, editorId, uploadUrl) {
+        var editorElement = document.getElementById(editorId);
+
+        editorElement.addEventListener('dragover', function (e) {
+            e.preventDefault();
+            editorElement.classList.add('drag-over');
+        });
+
+        editorElement.addEventListener('dragleave', function () {
+            editorElement.classList.remove('drag-over');
+        });
+
+        editorElement.addEventListener('drop', async function (e) {
+            e.preventDefault();
+            editorElement.classList.remove('drag-over');
+
+            var files = e.dataTransfer.files;
+            if (files.length > 0 && files[0].type.startsWith('image/')) {
+
+                var loadingElement = document.getElementById(editorId + '_loading');
+                loadingElement.classList.remove('hidden');
+
+                try {
+                    var imageUrl = await uploadFile(files[0], uploadUrl);
+
+                    var altText = prompt("متن ALT تصویر را وارد کنید:", "");
+
+                    var range = quill.getSelection();
+                    quill.insertEmbed(range.index, 'image', imageUrl);
+
+                    setTimeout(() => {
+                        var img = quill.root.querySelector(`img[src="${imageUrl}"]`);
+                        if (img) {
+                            img.style.width = "600px";
+                            img.style.height = "auto";
+                             img.style.margin = "20px auto"; // بالا/پایین 20px، چپ/راست auto
+
+                            if (altText) img.setAttribute("alt", altText);
+                        }
+                    }, 100);
+
+                    loadingElement.classList.add('hidden');
+
+                } catch (error) {
+                    console.error('Drag & drop upload failed:', error);
+                    loadingElement.classList.add('hidden');
+                    alert('خطا در آپلود تصویر: ' + error.message);
+                }
+            }
+        });
+    }
+
+    // تنظیم کلیدهای میانبر
+    function setupKeyboardShortcuts(quill) {
+        // کلیدهای میانبر فارسی
+        quill.keyboard.addBinding({
+            key: 'b',
+            shortKey: true
+        }, function(range) {
+            quill.format('bold', !quill.getFormat(range).bold);
+        });
+
+        quill.keyboard.addBinding({
+            key: 'i',
+            shortKey: true
+        }, function(range) {
+            quill.format('italic', !quill.getFormat(range).italic);
+        });
+
+        quill.keyboard.addBinding({
+            key: 'u',
+            shortKey: true
+        }, function(range) {
+            quill.format('underline', !quill.getFormat(range).underline);
+        });
+
+        // ترازبندی با کلیدهای عددی
+        quill.keyboard.addBinding({
+            key: '1',
+            shortKey: true,
+            shiftKey: true
+        }, function() {
+            quill.format('align', 'right');
+        });
+
+        quill.keyboard.addBinding({
+            key: '2',
+            shortKey: true,
+            shiftKey: true
+        }, function() {
+            quill.format('align', 'center');
+        });
+
+        quill.keyboard.addBinding({
+            key: '3',
+            shortKey: true,
+            shiftKey: true
+        }, function() {
+            quill.format('align', 'left');
+        });
+
+        quill.keyboard.addBinding({
+            key: '4',
+            shortKey: true,
+            shiftKey: true
+        }, function() {
+            quill.format('align', 'justify');
+        });
+    }
+
+    // امکانات سفارشی
+    function setupCustomFeatures(quill) {
+        // مدیریت تصاویر - اضافه کردن border روی hover
+        quill.root.addEventListener('mouseover', function(e) {
+            if (e.target.tagName === 'IMG') {
+                e.target.style.transition = 'all 0.3s ease';
+                e.target.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.1)';
+            }
+        });
+
+        quill.root.addEventListener('mouseout', function(e) {
+            if (e.target.tagName === 'IMG') {
+                e.target.style.boxShadow = 'none';
+            }
+        });
+
+        // اضافه کردن قابلیت تغییر سایز تصویر با دبل کلیک
+        quill.root.addEventListener('dblclick', function(e) {
+            if (e.target.tagName === 'IMG') {
+                var img = e.target;
+                var currentWidth = img.offsetWidth;
+                var newWidth = currentWidth === 400 ? 800 : 400;
+                img.style.width = newWidth + 'px';
+                img.style.height = 'auto';
+            }
+        });
+    }
+
+    function fallbackToTextarea(editorId, name, value) {
+        var editorDiv = document.getElementById(editorId);
+        var hiddenInput = document.getElementById(editorId + '_input');
+
+        if (editorDiv && hiddenInput) {
+            var textarea = document.createElement('textarea');
+            textarea.name = name;
+            textarea.value = value;
+            textarea.className = 'w-full px-3 py-2 border border-gray-300 rounded-md mt-2';
+            textarea.rows = 12;
+            textarea.style.direction = 'rtl';
+            textarea.placeholder = 'برای آپلود عکس، ابتدا آن را در پوشه uploads قرار دهید و سپس از تگ <img src="/uploads/filename.jpg"> استفاده کنید.';
+
+            editorDiv.parentNode.replaceChild(textarea, editorDiv);
+            hiddenInput.remove();
+        }
+    }
+
+    // توابع کمکی برای مدیریت تصاویر
+    function resizeImage(imageElement, width, height) {
+        imageElement.style.width = width + 'px';
+        imageElement.style.height = height + 'px';
+    }
+
+    function addImageBorder(imageElement, color = '#3b82f6', width = '2px') {
+        imageElement.style.border = width + ' solid ' + color;
+        imageElement.style.borderRadius = '8px';
+    }
+
+    function removeImageBorder(imageElement) {
+        imageElement.style.border = 'none';
+    }
+</script>
+
+<style>
+    .ql-editor {
+        text-align: right;
+        direction: rtl;
+        font-family: 'Vazir', 'Tanha', 'Segoe UI', sans-serif;
+        font-size: 14px;
+        line-height: 1.8;
+        min-height: 300px;
+    }
+
+    .ql-toolbar.ql-snow {
+        border: 1px solid #d1d5db;
+        border-bottom: none;
+        border-radius: 8px 8px 0 0;
+        background: #f9fafb;
+    }
+
+    .ql-container.ql-snow {
+        border: 1px solid #d1d5db;
+        border-top: none;
+        border-radius: 0 0 8px 8px;
+    }
+
+    .drag-over {
+        background-color: #f0f9ff !important;
+        border: 2px dashed #3b82f6 !important;
+    }
+
+    .ql-editor img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 8px;
+        margin: 10px 0;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+
+        .ql-editor img:hover {
+            transform: scale(1.02);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+    /* استایل برای کد */
+    .ql-editor .ql-code-block-container {
+        background: #1f2937;
+        color: #f3f4f6;
+        border-radius: 6px;
+        padding: 12px;
+        margin: 10px 0;
+        direction: ltr;
+        text-align: left;
+        font-family: 'Courier New', monospace;
+    }
+
+    /* استایل برای نقل قول */
+    .ql-editor .ql-blockquote {
+        border-right: 4px solid #3b82f6;
+        background: #f8fafc;
+        padding: 12px 20px;
+        margin: 15px 0;
+        border-radius: 0 8px 8px 0;
+        font-style: italic;
+        color: #4b5563;
+    }
+
+    /* استایل برای هدرها */
+    .ql-editor h1, .ql-editor h2, .ql-editor h3,
+    .ql-editor h4, .ql-editor h5, .ql-editor h6 {
+        margin: 20px 0 10px 0;
+        color: #1f2937;
+        font-weight: bold;
+        line-height: 1.3;
+    }
+
+    .ql-editor h1 {
+        font-size: 2em;
+        border-bottom: 2px solid #e5e7eb;
+        padding-bottom: 10px;
+    }
+
+    .ql-editor h2 {
+        font-size: 1.5em;
+        border-bottom: 1px solid #e5e7eb;
+        padding-bottom: 8px;
+    }
+
+    .ql-editor h3 {
+        font-size: 1.25em;
+    }
+
+    .ql-editor h4 {
+        font-size: 1.1em;
+    }
+
+    .ql-editor h5 {
+        font-size: 1em;
+    }
+
+    .ql-editor h6 {
+        font-size: 0.9em;
+        color: #6b7280;
+    }
+
+    /* استایل برای لیست‌ها */
+    .ql-editor ul, .ql-editor ol {
+        padding-right: 25px;
+        margin: 10px 0;
+    }
+
+        .ql-editor ul li, .ql-editor ol li {
+            margin: 5px 0;
+            line-height: 1.6;
+        }
+
+        .ql-editor ul li {
+            list-style-type: disc;
+        }
+
+        .ql-editor ol li {
+            list-style-type: decimal;
+        }
+
+    /* استایل‌های سفارشی برای ترازبندی */
+    .ql-editor .ql-align-right {
+        text-align: right;
+    }
+
+    .ql-editor .ql-align-center {
+        text-align: center;
+        display: block;
+    }
+
+    .ql-editor .ql-align-left {
+        text-align: left;
+    }
+
+    .ql-editor .ql-align-justify {
+        text-align: justify;
+        text-justify: inter-word;
+    }
+
+    /* استایل برای لینک‌ها */
+    .ql-editor a {
+        color: #3b82f6;
+        text-decoration: underline;
+        transition: color 0.2s ease;
+    }
+
+        .ql-editor a:hover {
+            color: #1d4ed8;
+            text-decoration: none;
+        }
+
+    /* استایل برای متن رنگی */
+    .ql-editor .ql-color-red {
+        color: #ef4444 !important;
+    }
+
+    .ql-editor .ql-color-blue {
+        color: #3b82f6 !important;
+    }
+
+    .ql-editor .ql-color-green {
+        color: #10b981 !important;
+    }
+
+    .ql-editor .ql-color-orange {
+        color: #f59e0b !important;
+    }
+
+    .ql-editor .ql-color-purple {
+        color: #8b5cf6 !important;
+    }
+
+    /* استایل برای background رنگی */
+    .ql-editor .ql-bg-red {
+        background-color: #fef2f2 !important;
+    }
+
+    .ql-editor .ql-bg-blue {
+        background-color: #eff6ff !important;
+    }
+
+    .ql-editor .ql-bg-green {
+        background-color: #f0fdf4 !important;
+    }
+
+    .ql-editor .ql-bg-orange {
+        background-color: #fffbeb !important;
+    }
+
+    .ql-editor .ql-bg-purple {
+        background-color: #faf5ff !important;
+    }
+
+    /* استایل برای فونت‌های مختلف */
+    .ql-editor .ql-font-vazir {
+        font-family: 'Vazir', sans-serif;
+    }
+
+    .ql-editor .ql-font-tanha {
+        font-family: 'Tanha', sans-serif;
+    }
+
+    .ql-editor .ql-font-segoe {
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+    .ql-editor .ql-font-arial {
+        font-family: Arial, sans-serif;
+    }
+
+    /* استایل برای سایزهای مختلف */
+    .ql-editor .ql-size-small {
+        font-size: 0.75em;
+    }
+
+    .ql-editor .ql-size-large {
+        font-size: 1.25em;
+    }
+
+    .ql-editor .ql-size-huge {
+        font-size: 1.5em;
+    }
+</style>

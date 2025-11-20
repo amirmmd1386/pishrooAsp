@@ -50,16 +50,15 @@ namespace pishrooAsp.Controllers
 			IFormFile Usage2File, string Usage2Title,
 			IFormFile Usage3File, string Usage3Title,
 			IFormFile Usage4File, string Usage4Title,
-			IFormFile Usage5File, string Usage5Title,
-			  string SeoWord, string SeoDescription)
+			IFormFile Usage5File, string Usage5Title
+			)
 		{
 			try
 			{
 				product.Id = Guid.NewGuid();
 				product.CreatedAt = DateTime.UtcNow;
 
-				product.seoWord = SeoWord;
-				product.SeoDiscription = SeoDescription;
+				
 				// ذخیره تصویر اصلی
 				if (ImageFile != null && ImageFile.Length > 0)
 				{
@@ -314,6 +313,99 @@ namespace pishrooAsp.Controllers
 		private bool ProductExists(Guid id)
 		{
 			return _context.Products.Any(e => e.Id == id);
+		}
+
+		// GET: Product/Delete/5
+		public async Task<IActionResult> Delete(Guid? id)
+		{
+			if (id == null)
+			{
+				return NotFound();
+			}
+
+			var product = await _context.Products
+				.Include(p => p.Translations)
+				.ThenInclude(t => t.Lang)
+				.FirstOrDefaultAsync(p => p.Id == id);
+
+			if (product == null)
+			{
+				return NotFound();
+			}
+
+			return View(product);
+		}
+		// POST: Product/Delete/5
+		[HttpPost, ActionName("Delete")]
+		[ValidateAntiForgeryToken]
+		public async Task<IActionResult> DeleteConfirmed(Guid id)
+		{
+			try
+			{
+				var product = await _context.Products
+					.Include(p => p.Translations)
+					.FirstOrDefaultAsync(p => p.Id == id);
+
+				if (product == null)
+				{
+					return NotFound();
+				}
+
+				// حذف فایل‌های مرتبط
+				await DeleteRelatedFiles(product);
+
+				// حذف ترجمه‌ها
+				_context.ProductTranslations.RemoveRange(product.Translations);
+
+				// حذف خود محصول
+				_context.Products.Remove(product);
+
+				await _context.SaveChangesAsync();
+
+				TempData["SuccessMessage"] = "محصول با موفقیت حذف شد.";
+				return RedirectToAction(nameof(Index));
+			}
+			catch (Exception ex)
+			{
+				TempData["ErrorMessage"] = "خطا در حذف محصول: " + ex.Message;
+				return RedirectToAction(nameof(Delete), new { id });
+			}
+		}
+		private async Task DeleteRelatedFiles(Product product)
+		{
+			var filesToDelete = new List<string>();
+
+			// اضافه کردن فایل‌های اصلی
+			if (!string.IsNullOrEmpty(product.ImageUrl))
+				filesToDelete.Add(product.ImageUrl);
+
+			if (!string.IsNullOrEmpty(product.AttachmentUrl))
+				filesToDelete.Add(product.AttachmentUrl);
+
+			// اضافه کردن فایل‌های کاربردها
+			if (!string.IsNullOrEmpty(product.Usage1FileUrl))
+				filesToDelete.Add(product.Usage1FileUrl);
+			if (!string.IsNullOrEmpty(product.Usage2FileUrl))
+				filesToDelete.Add(product.Usage2FileUrl);
+			if (!string.IsNullOrEmpty(product.Usage3FileUrl))
+				filesToDelete.Add(product.Usage3FileUrl);
+			if (!string.IsNullOrEmpty(product.Usage4FileUrl))
+				filesToDelete.Add(product.Usage4FileUrl);
+			if (!string.IsNullOrEmpty(product.Usage5FileUrl))
+				filesToDelete.Add(product.Usage5FileUrl);
+
+			// حذف فایل‌ها از سرور
+			foreach (var fileUrl in filesToDelete)
+			{
+				if (!string.IsNullOrEmpty(fileUrl))
+				{
+					var filePath = Path.Combine(_env.WebRootPath, fileUrl.TrimStart('/'));
+					if (System.IO.File.Exists(filePath))
+					{
+						System.IO.File.Delete(filePath);
+					}
+				}
+			}
 		}
 	}
 }

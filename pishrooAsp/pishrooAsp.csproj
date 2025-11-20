@@ -47,8 +47,10 @@
     <Folder Include="Views\Shared\Components\Home\" />
     <Folder Include="Views\Shared\Components\Lang\" />
     <Folder Include="Views\Shared\Components\AboutUs\" />
+    <Folder Include="Views\Shared\Components\textEditor\" />
     <Folder Include="wwwroot\Admin\css\" />
     <Folder Include="wwwroot\Admin\js\" />
+    <Folder Include="wwwroot\uploads\editor\" />
   </ItemGroup>
 
 </Project>

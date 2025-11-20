@@ -1,0 +1,160 @@
+﻿@* Components/LastNews/Default.cshtml *@
+
+
+
+@model List<pishrooAsp.ModelViewer.NewsViewModelSecond>
+
+<section class="last-news-section py-16 bg-gradient-to-br from-gray-50 to-blue-50">
+    <div class="container mx-auto px-4">
+        <!-- هدر بخش اخبار -->
+        <div class="text-center mb-12">
+            <div class="inline-flex items-center justify-center w-16 h-16 bg-blue-600 rounded-full mb-4">
+                <i class="fas fa-newspaper text-2xl text-white"></i>
+            </div>
+            <h2 class="text-4xl font-black text-blue-800 mb-4">آخرین اخبار و مقالات</h2>
+            <div class="w-24 h-2 bg-green-500 rounded-full mx-auto mb-4"></div>
+            <p class="text-xl text-gray-600">تازه‌ترین اخبار و مطالب آموزشی از شهرک صنعتی شمس‌آباد</p>
+        </div>
+
+        @if (Model.Any())
+        {
+            <!-- خبر اصلی (اولین خبر) -->
+            <div class="mb-12">
+                <div class="bg-white rounded-3xl shadow-2xl overflow-hidden hover:shadow-2xl transition-all duration-300">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <!-- تصویر خبر اصلی -->
+                        <div class="relative overflow-hidden h-80 lg:h-full">
+                            <img src="@Model.First().ImageUrl"
+                                 alt="@Model.First().Title"
+                                 class="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
+                                 onerror="this.src='/images/default-news-large.jpg'">
+                            <div class="absolute top-4 right-4">
+                                <span class="bg-red-500 text-white px-3 py-1 rounded-full text-sm font-bold">
+                                    <i class="fas fa-fire mr-1"></i>
+                                    داغ ترین
+                                </span>
+                            </div>
+                            <div class="absolute bottom-4 right-4">
+                                <span class="bg-blue-600 text-white px-3 py-1 rounded-full text-sm font-bold">
+                                    @ViewBag.Language.ToUpper()
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- محتوای خبر اصلی -->
+                        <div class="p-8 flex flex-col justify-center">
+                            <div class="flex items-center text-sm text-gray-500 mb-4">
+                                <div class="flex items-center ml-6">
+                                    <i class="fas fa-calendar ml-1"></i>
+                                    <span>@Model.First().PublishDate.ToString("yyyy/MM/dd")</span>
+                                </div>
+                                <div class="flex items-center ml-6">
+                                    <i class="fas fa-eye ml-1"></i>
+                                    <span>@Model.First().ViewCount بازدید</span>
+                                </div>
+                                @if (!string.IsNullOrEmpty(Model.First().Category))
+                                {
+                                    <div class="flex items-center">
+                                        <i class="fas fa-tag ml-1"></i>
+                                        <span>@Model.First().Category</span>
+                                    </div>
+                                }
+                            </div>
+
+                            <h3 class="text-2xl lg:text-3xl font-black text-gray-800 mb-4 leading-tight">
+                                @Model.First().Title
+                            </h3>
+
+                            <p class="text-gray-600 text-lg leading-8 mb-6 line-clamp-3">
+                                @Model.First().Summary
+                            </p>
+
+                            <div class="flex items-center justify-between mt-auto">
+                                <a href="/@ViewBag.Language/news/@Model.First().Id"
+                                   class="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-3 rounded-xl font-semibold hover:from-blue-700 hover:to-purple-700 transition-all duration-300 flex items-center group">
+                                    <span>مطالعه کامل</span>
+                                    <i class="fas fa-arrow-left mr-3 group-hover:-translate-x-1 transition-transform"></i>
+                                </a>
+
+                                @if (!string.IsNullOrEmpty(Model.First().Author))
+                                {
+                                    <div class="text-right">
+                                        <p class="text-sm text-gray-500">نویسنده</p>
+                                        <p class="font-semibold text-gray-700">@Model.First().Author</p>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- لیست اخبار دیگر -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                @foreach (var news in Model.Skip(1))
+                {
+                    <div class="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-2 group">
+                        <!-- تصویر خبر -->
+                        <div class="relative overflow-hidden h-48">
+                            <img src="@news.ImageUrl"
+                                 alt="@news.Title"
+                                 class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                                 onerror="this.src='/images/default-news.jpg'">
+                            <div class="absolute top-3 right-3">
+                                <span class="bg-blue-600/90 text-white px-2 py-1 rounded-full text-xs font-bold backdrop-blur-sm">
+                                    @ViewBag.Language.ToUpper()
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- محتوای خبر -->
+                        <div class="p-6">
+                            <div class="flex items-center text-xs text-gray-500 mb-3">
+                                <div class="flex items-center ml-4">
+                                    <i class="fas fa-calendar ml-1"></i>
+                                    <span>@news.PublishDate.ToString("yyyy/MM/dd")</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fas fa-eye ml-1"></i>
+                                    <span>@news.ViewCount</span>
+                                </div>
+                            </div>
+
+                            <h4 class="text-lg font-bold text-gray-800 mb-3 line-clamp-2 leading-tight">
+                                @news.Title
+                            </h4>
+
+                            <p class="text-gray-600 text-sm leading-6 line-clamp-2 mb-4">
+                                @news.Summary
+                            </p>
+
+                            <a href="/@ViewBag.Language/news/@news.Id"
+                               class="w-full bg-gray-100 hover:bg-blue-100 text-blue-600 py-2 px-4 rounded-lg text-sm font-semibold transition-all duration-300 flex items-center justify-center group/btn">
+                                <span>ادامه مطلب</span>
+                                <i class="fas fa-arrow-left mr-2 group-hover/btn:-translate-x-1 transition-transform"></i>
+                            </a>
+                        </div>
+                    </div>
+                }
+            </div>
+
+          
+        }
+        else
+        {
+            <!-- حالت خالی -->
+            <div class="text-center py-16">
+                <div class="w-24 h-24 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <i class="fas fa-newspaper text-3xl text-blue-600"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-700 mb-4">خبری برای نمایش وجود ندارد</h3>
+                <p class="text-gray-500 mb-6">به زودی اخبار و مقالات جدید منتشر خواهد شد</p>
+                <button class="bg-blue-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-blue-700 transition-all duration-300">
+                    <i class="fas fa-sync-alt ml-2"></i>
+                    بارگذاری مجدد
+                </button>
+            </div>
+        }
+    </div>
+</section>
+

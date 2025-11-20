@@ -1,10 +1,11 @@
-﻿using System.Diagnostics;
-using System.Globalization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using pishrooAsp.Data;
 using pishrooAsp.Models;
 using pishrooAsp.Models.AboutUs;
+using pishrooAsp.ModelViewer;
+using System.Diagnostics;
+using System.Globalization;
 
 namespace pishrooAsp.Controllers
 {
@@ -135,5 +136,76 @@ namespace pishrooAsp.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
-    }
-}
+
+
+
+		public async Task<IActionResult> ProgramList()
+		{
+			var culture = RouteData.Values["culture"]?.ToString() ?? CultureInfo.CurrentCulture.TwoLetterISOLanguageName;
+
+			var products = await _context.Products
+				.Include(p => p.Translations)
+					.ThenInclude(t => t.Lang)
+
+				.ToListAsync();
+
+			var model = products.Select(p =>
+			{
+				var tr = p.Translations.FirstOrDefault(t => t.Lang != null && t.Lang.Code.ToLower() == culture.ToLower());
+				return new ProductViewModel
+				{
+					Id = p.Id,
+					ImageUrl = p.ImageUrl,
+					Title = tr?.Title ?? "",
+					Description = tr?.Description ?? "",
+					Language = culture.ToLower(),
+				};
+			}).ToList();
+
+
+			return View(model);
+		}
+		public async Task<IActionResult> NewsList()
+		{
+			var culture = RouteData.Values["culture"]?.ToString() ?? CultureInfo.CurrentCulture.TwoLetterISOLanguageName;
+
+			var lastNews = await _context.News
+				.Include(n => n.Translations)
+					.ThenInclude(t => t.Lang)
+				.OrderByDescending(n => n.PublishDate)
+				.Take(6) // گرفتن 6 خبر آخر
+				.ToListAsync();
+
+			if (!lastNews.Any())
+			{
+				return View(new List<NewsViewModelSecond>());
+			}
+
+			var model = lastNews.Select(news =>
+			{
+				var tr = news.Translations.FirstOrDefault(t =>
+					t.Lang != null &&
+					t.Lang.Code.ToLower() == culture.ToLower());
+
+				return new NewsViewModelSecond
+				{
+					Id = news.Id,
+					Title = tr?.Title ?? "No Title",
+					Summary = tr?.Summary ?? "No Summary",
+					Content = tr?.Content ?? "",
+					ImageUrl = news.DefaultImageUrl ?? "/images/default-news.jpg",
+					PublishDate = news.PublishDate,
+					Author = "آروین پلیمر",
+					ViewCount = 100,
+					Category = news.IsPublished ? "اخبار" : "مقاله"
+				};
+			}).ToList();
+
+			ViewBag.Language = culture.ToLower();
+			return View(model);
+		}
+	}
+
+
+	}
+

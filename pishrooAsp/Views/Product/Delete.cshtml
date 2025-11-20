@@ -5,39 +5,62 @@
 }
 
 <div class="container mx-auto px-4 py-8">
-    <h1 class="text-2xl font-bold text-gray-800 mb-6">حذف محصول</h1>
+    <div class="max-w-2xl mx-auto">
+        <h1 class="text-2xl font-bold text-red-600 mb-6">حذف محصول</h1>
 
-    <div class="bg-white shadow-md rounded-lg p-6">
-        <h3 class="text-lg font-medium text-red-600 mb-4">آیا از حذف این محصول مطمئن هستید؟</h3>
-
-        <div class="space-y-4">
-            <div>
-                <h4 class="text-sm font-medium text-gray-500">عنوان اصلی:</h4>
-                <p class="mt-1 text-sm text-gray-900">@Model.Translations?.FirstOrDefault()?.Title</p>
-            </div>
-
-            <div>
-                <h4 class="text-sm font-medium text-gray-500">تاریخ ایجاد:</h4>
-                <p class="mt-1 text-sm text-gray-900">@Model.CreatedAt.ToString("yyyy/MM/dd")</p>
-            </div>
-
-            @if (!string.IsNullOrEmpty(Model.ImageUrl))
-            {
-                <div>
-                    <h4 class="text-sm font-medium text-gray-500">تصویر:</h4>
-                    <img src="@Model.ImageUrl" class="mt-2 h-24 w-24 rounded-lg object-cover" alt="تصویر محصول" />
+        <div class="bg-white shadow-md rounded-lg p-6 border border-red-200">
+            <div class="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+                <div class="flex items-center">
+                    <svg class="w-5 h-5 text-red-600 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                    </svg>
+                    <h3 class="text-lg font-medium text-red-800">هشدار حذف محصول</h3>
                 </div>
-            }
-        </div>
+                <p class="mt-2 text-sm text-red-600">این عمل غیرقابل بازگشت است. آیا از حذف این محصول مطمئن هستید؟</p>
+            </div>
 
-        <form asp-action="Delete" class="mt-8 flex justify-end space-x-4 space-x-reverse">
-            <a asp-action="Index" class="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded-lg transition duration-200">
-                انصراف
-            </a>
-            <input type="hidden" asp-for="Id" />
-            <button type="submit" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition duration-200">
-                حذف محصول
-            </button>
-        </form>
+            <div class="space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <h4 class="text-sm font-medium text-gray-500">عنوان اصلی:</h4>
+                        <p class="mt-1 text-sm text-gray-900">@Model.Translations?.FirstOrDefault()?.Title</p>
+                    </div>
+
+                    <div>
+                        <h4 class="text-sm font-medium text-gray-500">تاریخ ایجاد:</h4>
+                        <p class="mt-1 text-sm text-gray-900">@Model.CreatedAt.ToString("yyyy/MM/dd")</p>
+                    </div>
+                </div>
+
+                @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                {
+                    <div>
+                        <h4 class="text-sm font-medium text-gray-500">تصویر محصول:</h4>
+                        <img src="@Model.ImageUrl" class="mt-2 h-24 w-24 rounded-lg object-cover border border-gray-200" alt="تصویر محصول" />
+                    </div>
+                }
+
+                @if (!string.IsNullOrEmpty(Model.AttachmentUrl))
+                {
+                    <div>
+                        <h4 class="text-sm font-medium text-gray-500">فایل ضمیمه:</h4>
+                        <p class="mt-1 text-sm text-blue-600">فایل ضمیمه موجود است</p>
+                    </div>
+                }
+            </div>
+
+            <form asp-action="Delete" class="mt-8 pt-6 border-t border-gray-200 flex justify-end space-x-4 space-x-reverse">
+                <a asp-action="Index" class="bg-gray-300 hover:bg-gray-400 text-gray-800 px-6 py-2 rounded-lg transition duration-200">
+                    انصراف
+                </a>
+                <input type="hidden" asp-for="Id" />
+                <button type="submit" class="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg transition duration-200 flex items-center">
+                    <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                    حذف محصول
+                </button>
+            </form>
+        </div>
     </div>
 </div>
