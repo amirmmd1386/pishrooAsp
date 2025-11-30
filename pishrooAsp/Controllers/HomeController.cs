@@ -6,6 +6,7 @@ using pishrooAsp.Models.AboutUs;
 using pishrooAsp.ModelViewer;
 using System.Diagnostics;
 using System.Globalization;
+using System.Text.Json;
 
 namespace pishrooAsp.Controllers
 {
@@ -13,6 +14,9 @@ namespace pishrooAsp.Controllers
     {
         private readonly ILogger<HomeController> _logger;
 		private readonly AppDbContext _context;
+
+
+
 		private readonly VisitService _visitService;
 		public HomeController(ILogger<HomeController> logger,AppDbContext context, VisitService visitService)
         {
@@ -26,14 +30,16 @@ namespace pishrooAsp.Controllers
 			return View();
 		}
 		public async Task<IActionResult> Index()
-        {
-
+		{
 			await _visitService.LogVisitAsync(HttpContext, "صفحه اصلی");
 
-			var culture = RouteData.Values["culture"]?.ToString();
+			var culture = RouteData.Values["culture"]?.ToString() ?? "fa";
 
-			var translation =_context.AboutUsTranslations.Include(p=>p.Lang).FirstOrDefault(p=>p.Lang.Code.ToLower() == culture.ToLower());
+			var translation = _context.AboutUsTranslations
+				.Include(p => p.Lang)
+				.FirstOrDefault(p => p.Lang.Code.ToLower() == culture.ToLower());
 
+			// بقیه کدهای شما...
 			var bg = _context.Backgrounds.FirstOrDefault(x => x.IsActive);
 			ViewBag.Background = bg?.FilePath;
 
@@ -46,23 +52,67 @@ namespace pishrooAsp.Controllers
 			ViewBag.MetaDescription = translation?.Description;
 			ViewBag.MetaKeywords = "پلیمر, لوله پلی اتیلن, اتصالات پلیمری, تولید کننده پلیمر";
 			ViewBag.OgImage = "/image/companyLogo.png";
+
+			// اسکیماهای ساده و بدون خطا
+			var baseUrl = $"{Request.Scheme}://{Request.Host}";
+
+			// 1. اسکیما سازمان
+			var organizationSchema = new
+			{
+				@context = "https://schema.org",
+				@type = "Organization",
+				name = "آروین پلیمر",
+				url = baseUrl,
+				logo = $"{baseUrl}/images/company-logo.png",
+				description = "تولید کننده محصولات پلیمری",
+				telephone = "+98-21-12345678",
+				address = new
+				{
+					@type = "PostalAddress",
+					addressCountry = "IR"
+				}
+			};
+
+			// 2. اسکیما وبسایت
+			var websiteSchema = new
+			{
+				@context = "https://schema.org",
+				@type = "WebSite",
+				name = "آروین پلیمر",
+				url = baseUrl,
+				potentialAction = new
+				{
+					@type = "SearchAction",
+					target = $"{baseUrl}/search?q={{search_term_string}}",
+					queryInput = "required name=search_term_string"
+				}
+			};
+
+			ViewBag.OrganizationSchema = JsonSerializer.Serialize(organizationSchema);
+			ViewBag.WebsiteSchema = JsonSerializer.Serialize(websiteSchema);
+
 			return View();
-        }
+		}
 
 		public string culture()
 		{
 			var culture = RouteData.Values["culture"]?.ToString() ?? CultureInfo.CurrentCulture.TwoLetterISOLanguageName;
 			return culture.ToLower();
 		}
-		public async Task<IActionResult> ProductDetail(Guid id)
+		public async Task<IActionResult> ProductDetail(string slug)
 		{
 			await _visitService.LogVisitAsync(HttpContext, "/جزییات محصول");
 
 			var culture = RouteData.Values["culture"]?.ToString() ?? CultureInfo.CurrentCulture.TwoLetterISOLanguageName;
 
-			var product = await _context.Products
-		.FirstOrDefaultAsync(p => p.Id == id);
+			// اول با روش ساده‌تر فیلتر کن
+			var potentialProducts = await _context.Products
+				.Where(p => p.seoWord != null && p.seoWord.Contains(slug))
+				.ToListAsync();
 
+			// سپس دقیق فیلتر کن
+			var product = potentialProducts
+				.FirstOrDefault(p => p.seoWord.Split(',')[0].Trim() == slug);
 			if (product == null)
 			{
 				return NotFound();
@@ -70,15 +120,15 @@ namespace pishrooAsp.Controllers
 
 			var translation = await _context.ProductTranslations
 				.Include(t => t.Lang)
-				.FirstOrDefaultAsync(t => t.ProductId == id && t.Lang.Code.ToLower() == culture.ToLower());
+				.FirstOrDefaultAsync(t => t.ProductId == product.Id && t.Lang.Code.ToLower() == culture.ToLower());
 
 			ViewData["Translation"] = translation;
 			ViewBag.dir = translation.Lang.dir;
 
 			ViewBag.lang = culture.ToLower();
-			ViewBag.MetaTitle = $"{translation.Title} | اروین پلیمر";
-			ViewBag.MetaDescription = translation.Description + product.SeoDiscription;
-			ViewBag.MetaKeywords = $"{translation.Title}, محصولات پلیمری,{product.seoWord}";
+			ViewBag.MetaTitle = $"{translation.Title} | آروین پلیمر";
+			ViewBag.MetaDescription =  product.SeoDiscription;
+			ViewBag.MetaKeywords = $"{translation.Title}, محصولات پلیمری,{product.seoWord.Split('|')?[0]}";
 			ViewBag.OgImage = product.ImageUrl;
 			ViewBag.CanonicalUrl = $"/products/{product.Id}";
 			return View(product);
@@ -157,12 +207,30 @@ namespace pishrooAsp.Controllers
 					Id = p.Id,
 					ImageUrl = p.ImageUrl,
 					Title = tr?.Title ?? "",
-					Description = tr?.Description ?? "",
 					Language = culture.ToLower(),
+					seoWord = p.seoWord
 				};
 			}).ToList();
 
+			// متا تگ‌های صفحه لیست محصولات
+			// متا تگ‌های صفحه لیست محصولات
+			if (culture == "fa")
+			{
+				ViewBag.MetaTitle = "محصولات پلیمری | تی پی ای، تی پی وی، اس بی اس، کامپاند | آروین پلیمر";
+				ViewBag.MetaDescription = "تولید تی پی ای (TPE)، تی پی وی (TPV)، اس بی اس (SBS)، اس بی ای اس (SEBS)، شور، سافت تاچ، کامپاند پلیمری، الاستومر، پلی پروپیلن، پلی اتیلن، همو پلیمر و کو پلیمر با کیفیت بالا";
+				ViewBag.MetaKeywords = "تی پی ای, TPE, تی پی وی, TPV, اس بی اس, SBS, اس بی ای اس, SEBS, شور, سافت تاچ, کامپاند, پلیمر, الاستومر, پلی پروپیلن, پلی اتیلن, همو پلیمر, کو پلیمر, آروین پلیمر";
+			}
+			else
+			{
+				ViewBag.MetaTitle = "Polymer Products | TPE, TPV, SBS, Compound | Arvin Polymer";
+				ViewBag.MetaDescription = "Production of TPE, TPV, SBS, SEBS, Shore, Soft Touch, Polymer Compound, Elastomer, Polypropylene, Polyethylene, Homo Polymer and Co Polymer with high quality";
+				ViewBag.MetaKeywords = "TPE, TPV, SBS, SEBS, Shore, Soft Touch, Compound, Polymer, Elastomer, Polypropylene, Polyethylene, Homo Polymer, Co Polymer, Arvin Polymer";
+			}
 
+			ViewBag.OgImage = "/images/products-banner.jpg";
+			ViewBag.CanonicalUrl = $"/{culture}/products";
+			ViewBag.OgUrl = $"https://arvinpolymer.com/{culture}/products";
+			ViewBag.OgType = "website";
 			return View(model);
 		}
 		public async Task<IActionResult> NewsList()

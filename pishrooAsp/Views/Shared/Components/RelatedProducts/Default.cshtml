@@ -1,0 +1,40 @@
+﻿@* Views/Shared/Components/RelatedProducts/Default.cshtml *@
+@model List<ProductViewModel>
+@{
+    string TitleChanger = "fa";
+    if (Model.Count > 0)
+    {
+        TitleChanger = Model[0].Language;
+    }
+    bool isPersian = TitleChanger == "fa";
+}
+
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    @foreach (var product in Model)
+    {
+        <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition duration-300 group">
+            <div class="overflow-hidden">
+                <img src="@product.ImageUrl" alt="@product.Title - @(isPersian ? "پیشرو آروین پلیمر" : "Pishro Arvin Polymer")"
+                     class="w-full h-48 object-cover group-hover:scale-110 transition duration-300">
+            </div>
+            <div class="p-4">
+                <h3 class="font-semibold text-gray-800 mb-2 text-lg leading-tight">@product.Title</h3>
+               
+                <a asp-controller="Products"
+                   asp-action="@product.seoWord.Split(',')[0]?.Trim()"
+                   class="inline-flex items-center px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition text-sm font-medium">
+                    @(isPersian ? "مشاهده جزئیات" : "View Details")
+                    <i class="fas fa-arrow-left mr-2 text-xs"></i>
+                </a>
+            </div>
+        </div>
+    }
+</div>
+
+@if (Model.Count == 0)
+{
+    <div class="col-span-full text-center py-8 text-gray-500">
+        <i class="fas fa-box-open text-4xl mb-4 opacity-50"></i>
+        <p class="text-lg">@(isPersian ? "محصول مرتبطی یافت نشد" : "No related products found")</p>
+    </div>
+}

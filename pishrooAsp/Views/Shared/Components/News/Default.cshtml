@@ -1,4 +1,5 @@
 ﻿@model IEnumerable<dynamic>  
+@using pishrooAsp.Utilities
 
 @{
     var news = Model?.FirstOrDefault();
@@ -25,12 +26,15 @@
             </div>
             <h3 class="text-2xl font-bold text-gray-800 mb-3">@news.Title</h3>
             <p class="text-gray-600 mb-4 leading-relaxed">@news.Summary</p>
-            <a href="@Url.Action("Details", "News", new { id = news.Id })" class="inline-flex items-center text-blue-600 font-medium hover:text-blue-800">
-                @(isPersian ? "ادامه مطلب":"Follow Summary")
+            <!-- لینک اول -->
+            <a href="/@ViewBag.lang/news/@news.Id/@SeoHelper.GenerateSeoTitle(news.Title)"
+               class="inline-flex items-center text-blue-600 font-medium hover:text-blue-800">
+                @(isPersian ? "ادامه مطلب" : "Follow Summary")
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                 </svg>
-            </a>
+            </a></svg>
+</a>
         </div>
     </div>
 </div>

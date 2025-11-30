@@ -35,17 +35,23 @@
             <textarea name="Translations[0].Summary" class="w-full border p-2 rounded"></textarea>
         </div>
 
-        <div>
+        @* <div>
             <label class="block font-medium">متن کامل</label>
             <textarea name="Translations[0].Content" class="w-full border p-2 rounded"></textarea>
-        </div>
+        </div> *@
 
         <div>
             <label class="block font-medium">کلمات کلیدی (SEO)</label>
             @* @Model.Translations[0].MetaKeywords *@
             <input type="text" name="Translations[0].MetaKeywords" class="w-full border p-2 rounded" />
         </div>
-
+        <partial name="_RichTextEditor"
+                 view-data="@(new ViewDataDictionary(ViewData) {
+                                                                  { "Name", $"Translations[{0}].Content" },
+                                                 { "Value", "" },
+                                                 { "Height", "300px" },
+                                                 { "Placeholder", "" }
+                                             })" />
         <div>
             <label class="block font-medium">توضیحات متا (SEO)</label>
             <input type="text" name="Translations[0].MetaDescription" class="w-full border p-2 rounded" />

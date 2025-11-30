@@ -2,6 +2,8 @@
 using Microsoft.EntityFrameworkCore;
 using pishrooAsp.Data;
 using pishrooAsp.Models.Newses;
+using pishrooAsp.Models.Newes; // استفاده از namespace فایل شما
+
 using pishrooAsp.ModelViewer;
 
 namespace pishrooAsp.Controllers
@@ -248,7 +250,8 @@ namespace pishrooAsp.Controllers
 			return $"/uploads/{file.FileName}";
 		}
 
-		public async Task<IActionResult> Details(int id)
+		
+		public async Task<IActionResult> Details(int id, string title)
 		{
 			var news = await _context.News
 				.Include(n => n.Translations)
@@ -259,8 +262,159 @@ namespace pishrooAsp.Controllers
 			if (news == null)
 				return NotFound();
 
+			var translation = news.Translations.FirstOrDefault();
+			var culture = RouteData.Values["culture"]?.ToString() ?? "fa";
+
+			// آخرین اخبار (5 تای آخر)
+			var latestNews = await _context.News
+				.Include(n => n.Translations)
+				.Where(n => n.IsPublished && n.Id != id)
+				.OrderByDescending(n => n.PublishDate)
+				.Take(5)
+				.Select(n => new NewsSidebarViewModel
+				{
+					Id = n.Id,
+					Title = n.Translations.FirstOrDefault(t => t.Lang.Code == culture).Title ??
+						   n.Translations.First().Title,
+					DefaultImageUrl = n.DefaultImageUrl,
+					PublishDate = n.PublishDate
+				})
+				.ToListAsync();
+
+			var latestArticle = await _context.News
+				.Include(n => n.Translations)
+				.Where(n => !n.IsPublished && n.Id != id)
+				.OrderByDescending(n => n.PublishDate)
+				.Take(5)
+				.Select(n => new NewsSidebarViewModel
+				{
+					Id = n.Id,
+					Title = n.Translations.FirstOrDefault(t => t.Lang.Code == culture).Title ??
+						   n.Translations.First().Title,
+					DefaultImageUrl = n.DefaultImageUrl,
+					PublishDate = n.PublishDate
+				})
+				.ToListAsync();
+			// آخرین محصولات (4 تای آخر)
+			var latestProducts = await _context.Products
+				.Include(p => p.Translations)
+				.OrderByDescending(p => p.CreatedAt)
+				.Take(4)
+				.Select(p => new ProductSidebarViewModel
+				{
+					Id = p.Id,
+					Title = p.Translations.FirstOrDefault(t => t.Lang.Code == culture).Title ??
+						   p.Translations.First().Title,
+					ImageUrl = p.ImageUrl,
+					SeoWord = p.seoWord
+				})
+				.ToListAsync();
+
+			// دسته‌بندی‌های اخبار
+			var categories = await _context.News
+				.Include(n => n.Translations)
+				.Where(n => n.IsPublished)
+				.SelectMany(n => n.Translations)
+				.Where(t => !string.IsNullOrEmpty(t.MetaKeywords))
+				.Select(t => t.MetaKeywords)
+				.ToListAsync();
+
+			// متا تگ‌ها
+			ViewBag.MetaTitle = $"{translation?.Title} | آروین پلیمر";
+			ViewBag.MetaDescription = translation?.Summary?.Length > 160 ?
+				translation.Summary.Substring(0, 160) + "..." :
+				translation?.Summary;
+			ViewBag.MetaKeywords = $"{translation?.Title}, اخبار پلیمر, صنعت پلیمر, تی پی ای, تی پی وی, کامپاند";
+			ViewBag.OgImage = news.DefaultImageUrl;
+			ViewBag.CanonicalUrl = $"/{culture}/news/details/{id}";
+
+			// داده‌های سایدبار
+			ViewBag.LatestNews = latestNews;
+			ViewBag.LatestProducts = latestProducts;
+			ViewBag.latestArticle = latestArticle;
+			ViewBag.Categories = ProcessCategories(categories);
+			ViewBag.Tags = GetPopularTags(categories);
+
 			return View(news);
 		}
+		// متد کمکی برای پردازش دسته‌بندی‌ها
+		private Dictionary<string, int> ProcessCategories(List<string> metaKeywordsList)
+		{
+			var categories = new Dictionary<string, int>();
 
+			foreach (var keywords in metaKeywordsList)
+			{
+				if (!string.IsNullOrEmpty(keywords))
+				{
+					var keywordArray = keywords.Split(',', StringSplitOptions.RemoveEmptyEntries);
+					foreach (var keyword in keywordArray)
+					{
+						var trimmedKeyword = keyword.Trim();
+						if (categories.ContainsKey(trimmedKeyword))
+						{
+							categories[trimmedKeyword]++;
+						}
+						else
+						{
+							categories[trimmedKeyword] = 1;
+						}
+					}
+				}
+			}
+
+			return categories.OrderByDescending(x => x.Value).Take(8).ToDictionary(x => x.Key, x => x.Value);
+		}
+
+		// متد کمکی برای برچسب‌های محبوب
+		private List<string> GetPopularTags(List<string> metaKeywordsList)
+		{
+			var allTags = new List<string>();
+
+			foreach (var keywords in metaKeywordsList)
+			{
+				if (!string.IsNullOrEmpty(keywords))
+				{
+					var tags = keywords.Split(',', StringSplitOptions.RemoveEmptyEntries)
+									 .Select(t => t.Trim())
+									 .Where(t => t.Length > 2);
+					allTags.AddRange(tags);
+				}
+			}
+
+			return allTags.GroupBy(t => t)
+						 .OrderByDescending(g => g.Count())
+						 .Select(g => g.Key)
+						 .Take(12)
+						 .ToList();
+		}
+
+
+		//public async Task<IActionResult> Details(int id, string title)
+		//{
+		//	var news = await _context.News
+		//		.Include(n => n.Translations)
+		//		.Include(n => n.Images)
+		//		.Include(n => n.Attachments)
+		//		.FirstOrDefaultAsync(n => n.Id == id);
+
+		//	if (news == null)
+		//		return NotFound();
+
+		//	var translation = news.Translations.FirstOrDefault();
+		//	var culture = RouteData.Values["culture"]?.ToString() ?? "fa";
+
+		//	// متا تگ‌ها
+		//	ViewBag.MetaTitle = $"{translation?.Title} | آروین پلیمر";
+		//	ViewBag.MetaDescription = translation?.Summary?.Length > 160 ?
+		//		translation.Summary.Substring(0, 160) + "..." :
+		//		translation?.Summary;
+		//	ViewBag.MetaKeywords = $"{translation?.Title}, اخبار پلیمر, صنعت پلیمر, تی پی ای, تی پی وی, کامپاند";
+		//	ViewBag.OgImage = news.DefaultImageUrl;
+		//	ViewBag.CanonicalUrl = $"/{culture}/news/{id}/{System.Web.HttpUtility.UrlEncode(translation?.Title?.Replace(" ", "-"))}";
+		//	ViewBag.OgUrl = $"https://arvinpolymer.com/{culture}/news/{id}/{System.Web.HttpUtility.UrlEncode(translation?.Title?.Replace(" ", "-"))}";
+		//	 ViewBag.product = _context
+
+		//	return View(news);
+		//}
 	}
 }

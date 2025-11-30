@@ -5,9 +5,7 @@
     var labels = ViewBag.Labels as Dictionary<string, string>;
     var culture = ViewBag.Culture;
 }
-@{
-    Layout = "~/Views/Shared/_AdminLayout.cshtml";
-}
+
 <div dir="@(isRtl ? "rtl" : "ltr")" class="max-w-4xl mx-auto p-6">
     @if (TempData["Success"] != null)
     {

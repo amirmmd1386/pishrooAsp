@@ -39,11 +39,14 @@
             <label class="block font-medium">خلاصه خبر</label>
             <textarea name="Translations[0].Summary" class="w-full border p-2 rounded">@Model.Translations[0].Summary</textarea>
         </div>
-
-        <div>
-            <label class="block font-medium">متن کامل</label>
-            <textarea name="Translations[0].Content" class="w-full border p-2 rounded">@Model.Translations[0].Content</textarea>
-        </div>
+        <partial name="_RichTextEditor"
+                 view-data="@(new ViewDataDictionary(ViewData) {
+                                                                                   { "Name", Model.Translations[0].Content },
+                                                                  { "Value", Model.Translations[0].Content },
+                                                 { "Height", "300px" },
+                                                 { "Placeholder", $"" }
+                                             })" />
+        
         <div>
             <label class="block font-medium">کلمات کلیدی (SEO)</label>
             <input type="text" name="Translations[0].MetaKeywords" value="@Model.Translations[0].MetaKeywords" class="w-full border p-2 rounded" />

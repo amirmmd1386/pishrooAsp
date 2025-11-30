@@ -1,19 +1,71 @@
 ﻿@model pishrooAsp.Models.Products.Product
 @{
+    var pipeSplitted = Model.seoWord?.Split('|')
+       .Select(k => k.Trim())
+       .Where(k => !string.IsNullOrEmpty(k))
+       .Skip(1) // از ایندکس ۱ شروع کن
+       .FirstOrDefault(); // اولین آیتم بعد از ایندکس ۱ رو بگیر
+
+    var keywords = pipeSplitted?.Split(',')
+        .Select(k => k.Trim())
+        .Where(k => !string.IsNullOrEmpty(k))
+        .ToList() ?? new List<string>();
+
     var translation = Model.Translations?.FirstOrDefault();
     var culture = ViewContext.HttpContext.GetRouteValue("culture")?.ToString() ?? "fa";
     var isPersian = culture == "fa";
     var url = " /" + culture + "/ProductRequests/create";
+
+    // داده‌های ساختاریافته
+    var productSchema = new
+    {
+        context = "https://schema.org",
+        type = "Product",
+        name = translation?.Title,
+        description = translation?.Description?.Length > 160 ?
+                     translation.Description.Substring(0, 160) + "..." :
+                     translation?.Description,
+        image = Model.ImageUrl,
+        brand = new
+        {
+            type = "Brand",
+            name = "اروین پلیمر"
+        },
+        offers = new
+        {
+            type = "Offer",
+            priceCurrency = "IRR",
+            availability = "https://schema.org/InStock"
+        }
+    };
 }
 
+<!-- افزودن Schema Markup -->
+<script type="application/ld+json">
+    @Html.Raw(Json.Serialize(productSchema))
+</script>
+
 <div class="container mx-auto px-4 py-8">
-    <!-- Breadcrumb navigation -->
-    <nav class="flex mb-6 text-sm text-gray-600">
-        <a href="/" class="text-indigo-600 hover:text-indigo-800">@(isPersian ? "خانه" : "Home")</a>
+    <!-- Breadcrumb navigation با Schema -->
+    <nav class="flex mb-6 text-sm text-gray-600" itemscope itemtype="https://schema.org/BreadcrumbList">
+        <span itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+            <a href="/@culture" itemprop="item" class="text-indigo-600 hover:text-indigo-800">
+                <span itemprop="name">@(isPersian ? "خانه" : "Home")</span>
+            </a>
+            <meta itemprop="position" content="1" />
+        </span>
         <span class="mx-2">/</span>
-        <a href="/products" class="text-indigo-600 hover:text-indigo-800">@(isPersian ? "محصولات" : "Products")</a>
+        <span itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+            <a href="/@culture/products" itemprop="item" class="text-indigo-600 hover:text-indigo-800">
+                <span itemprop="name">@(isPersian ? "محصولات" : "Products")</span>
+            </a>
+            <meta itemprop="position" content="2" />
+        </span>
         <span class="mx-2">/</span>
-        <span class="text-gray-500">@translation?.Title</span>
+        <span itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+            <span itemprop="name" class="text-gray-500">@translation?.Title</span>
+            <meta itemprop="position" content="3" />
+        </span>
     </nav>
 
     <!-- Main product section -->
@@ -21,7 +73,10 @@
         <!-- Product image gallery -->
         <div class="lg:w-1/2">
             <div class="bg-white rounded-xl shadow-md overflow-hidden">
-                <img src="@Model.ImageUrl" alt="@translation?.Title"
+                <img src="@Model.ImageUrl"
+                     alt="@translation?.Title - @(isPersian ? "کامپاند پلی پروپیلن" : "PP Compound")"
+                     title="@translation?.Title"
+                     loading="lazy"
                      class="w-full h-140 object-cover product-image">
             </div>
 
@@ -44,14 +99,42 @@
             <div class="bg-white rounded-xl shadow-md p-6">
                 <h1 class="text-2xl font-bold text-gray-800 mb-2">@translation?.Title</h1>
 
+                <!-- محتوای اصلی محصول -->
                 <div class="prose max-w-none text-gray-700 my-6 whitespace-pre-line">
                     @Html.Raw(translation?.Description)
                 </div>
 
+                <!-- بخش ویژگی‌های کلیدی -->
+                <div class="mt-6 p-4 bg-blue-50 rounded-lg">
+                    <h3 class="text-lg font-bold text-blue-800 mb-3">
+                        <i class="fas fa-star @(isPersian ? "ml-2" : "mr-2")"></i>
+                        @(isPersian ? "ویژگی‌های کلیدی" : "Key Features")
+                    </h3>
+                    <ul class="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-blue-700">
+                        <li class="flex items-center">
+                            <i class="fas fa-check @(isPersian ? "ml-2" : "mr-2") text-green-500"></i>
+                            @(isPersian ? "کیفیت تولید بالا" : "High Production Quality")
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check @(isPersian ? "ml-2" : "mr-2") text-green-500"></i>
+                            @(isPersian ? "قیمت رقابتی" : "Competitive Price")
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check @(isPersian ? "ml-2" : "mr-2") text-green-500"></i>
+                            @(isPersian ? "کاربردهای متنوع" : "Various Applications")
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check @(isPersian ? "ml-2" : "mr-2") text-green-500"></i>
+                            @(isPersian ? "تحویل سریع" : "Fast Delivery")
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- اطلاعات فنی -->
                 <div class="mt-6 pt-4 border-t border-gray-200">
                     <div class="flex items-center text-sm text-gray-500 mb-2">
                         <i class="fas fa-calendar-alt @(isPersian ? "ml-2" : "mr-2")"></i>
-                        <span>@(isPersian ? $"تاریخ ثبت: {Model.CreatedAt}" : $"Registration Date: {Model.CreatedAt}")</span>
+                        <span>@(isPersian ? $"تاریخ ثبت: {Model.CreatedAt:yyyy/MM/dd}" : $"Registration Date: {Model.CreatedAt:yyyy/MM/dd}")</span>
                     </div>
 
                     <div class="flex items-center text-sm text-gray-500">
@@ -62,7 +145,8 @@
 
                 <!-- Action buttons -->
                 <div class="mt-8 flex flex-wrap gap-3">
-                    <a href="@url" class="px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition flex-1">
+                    <a href="@url"
+                       class="px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition flex-1 text-center">
                         <i class="fas fa-shopping-cart @(isPersian ? "ml-2" : "mr-2")"></i>
                         @(isPersian ? "افزودن به سبد خرید" : "Add to Cart")
                     </a>
@@ -73,15 +157,17 @@
                     </button>
                 </div>
             </div>
+
             <!-- Usage Files Section -->
             @if (!string.IsNullOrEmpty(Model.Usage1FileUrl) ||
-            !string.IsNullOrEmpty(Model.Usage2FileUrl) ||
-            !string.IsNullOrEmpty(Model.Usage3FileUrl) ||
-            !string.IsNullOrEmpty(Model.Usage4FileUrl) ||
-            !string.IsNullOrEmpty(Model.Usage5FileUrl))
+                        !string.IsNullOrEmpty(Model.Usage2FileUrl) ||
+                        !string.IsNullOrEmpty(Model.Usage3FileUrl) ||
+                        !string.IsNullOrEmpty(Model.Usage4FileUrl) ||
+                        !string.IsNullOrEmpty(Model.Usage5FileUrl))
             {
-                <div class="mt-10">
+                <div class="mt-6">
                     <h2 class="text-xl font-bold text-gray-800 mb-4">
+                        <i class="fas fa-industry @(isPersian ? "ml-2" : "mr-2")"></i>
                         @(isPersian ? "کاربردهای محصول" : "Product Usages")
                     </h2>
 
@@ -89,73 +175,70 @@
                         @* کاربرد ۱ *@
                         @if (!string.IsNullOrEmpty(Model.Usage1FileUrl))
                         {
-                            <div class="bg-white shadow rounded-lg p-4 flex items-center justify-between">
+                            <div class="bg-white shadow rounded-lg p-4 flex items-center justify-between hover:shadow-md transition">
                                 <div>
                                     <h3 class="font-semibold text-gray-800">@Model.Usage1Title</h3>
                                     <p class="text-sm text-gray-500">@Model.Usage1FileType</p>
                                 </div>
                                 <a href="@Model.Usage1FileUrl" target="_blank"
-                                   class="px-3 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700">
+                                   class="px-3 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 text-sm">
                                     @(isPersian ? "مشاهده / دانلود" : "View / Download")
                                 </a>
                             </div>
                         }
 
-                        @* کاربرد ۲ *@
+                        <!-- تکرار برای سایر کاربردها -->
                         @if (!string.IsNullOrEmpty(Model.Usage2FileUrl))
                         {
-                            <div class="bg-white shadow rounded-lg p-4 flex items-center justify-between">
+                            <div class="bg-white shadow rounded-lg p-4 flex items-center justify-between hover:shadow-md transition">
                                 <div>
                                     <h3 class="font-semibold text-gray-800">@Model.Usage2Title</h3>
                                     <p class="text-sm text-gray-500">@Model.Usage2FileType</p>
                                 </div>
                                 <a href="@Model.Usage2FileUrl" target="_blank"
-                                   class="px-3 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700">
+                                   class="px-3 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 text-sm">
                                     @(isPersian ? "مشاهده / دانلود" : "View / Download")
                                 </a>
                             </div>
                         }
 
-                        @* کاربرد ۳ *@
                         @if (!string.IsNullOrEmpty(Model.Usage3FileUrl))
                         {
-                            <div class="bg-white shadow rounded-lg p-4 flex items-center justify-between">
+                            <div class="bg-white shadow rounded-lg p-4 flex items-center justify-between hover:shadow-md transition">
                                 <div>
                                     <h3 class="font-semibold text-gray-800">@Model.Usage3Title</h3>
                                     <p class="text-sm text-gray-500">@Model.Usage3FileType</p>
                                 </div>
                                 <a href="@Model.Usage3FileUrl" target="_blank"
-                                   class="px-3 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700">
+                                   class="px-3 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 text-sm">
                                     @(isPersian ? "مشاهده / دانلود" : "View / Download")
                                 </a>
                             </div>
                         }
 
-                        @* کاربرد ۴ *@
                         @if (!string.IsNullOrEmpty(Model.Usage4FileUrl))
                         {
-                            <div class="bg-white shadow rounded-lg p-4 flex items-center justify-between">
+                            <div class="bg-white shadow rounded-lg p-4 flex items-center justify-between hover:shadow-md transition">
                                 <div>
                                     <h3 class="font-semibold text-gray-800">@Model.Usage4Title</h3>
                                     <p class="text-sm text-gray-500">@Model.Usage4FileType</p>
                                 </div>
                                 <a href="@Model.Usage4FileUrl" target="_blank"
-                                   class="px-3 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700">
+                                   class="px-3 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 text-sm">
                                     @(isPersian ? "مشاهده / دانلود" : "View / Download")
                                 </a>
                             </div>
                         }
 
-                        @* کاربرد ۵ (اختیاری) *@
                         @if (!string.IsNullOrEmpty(Model.Usage5FileUrl))
                         {
-                            <div class="bg-white shadow rounded-lg p-4 flex items-center justify-between">
+                            <div class="bg-white shadow rounded-lg p-4 flex items-center justify-between hover:shadow-md transition">
                                 <div>
                                     <h3 class="font-semibold text-gray-800">@Model.Usage5Title</h3>
                                     <p class="text-sm text-gray-500">@Model.Usage5FileType</p>
                                 </div>
                                 <a href="@Model.Usage5FileUrl" target="_blank"
-                                   class="px-3 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700">
+                                   class="px-3 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 text-sm">
                                     @(isPersian ? "مشاهده / دانلود" : "View / Download")
                                 </a>
                             </div>
@@ -163,8 +246,83 @@
                     </div>
                 </div>
             }
+        </div>
+    </div>
 
-           
+    <!-- بخش‌های جدید برای سئو -->
+    <div class="mt-12 space-y-8">
+
+        <!-- محصولات مرتبط -->
+        <section class="bg-gray-50 p-6 rounded-xl">
+            <h2 class="text-2xl font-bold mb-6 text-gray-800">
+                <i class="fas fa-link @(isPersian ? "ml-2" : "mr-2")"></i>
+                @(isPersian ? "محصولات مرتبط" : "Related Products")
+            </h2>
+                <!-- این بخش می‌تواند با AJAX پر شود -->
+            @await Component.InvokeAsync("RelatedProducts", new {
+            currentProductId = Model.Id,
+                        count = 3
+                        })
+
+
+
+
+
+            
+        </section>
+
+        <!-- کلمات کلیدی و لینک‌های مرتبط -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+            <!-- کلمات کلیدی مرتبط -->
+            <div class="bg-blue-50 p-6 rounded-xl">
+                <h3 class="text-xl font-bold mb-4 text-blue-800">
+                    <i class="fas fa-search @(isPersian ? "ml-2" : "mr-2")"></i>
+                    @(isPersian ? "جستجوهای مرتبط" : "Related Searches")
+                </h3>
+                @if (keywords.Any())
+                {
+                    <div class="flex flex-wrap gap-3">
+                        @foreach (var keyword in keywords)
+                        {
+                            <span class="px-3 py-2 bg-white text-blue-700 rounded-full text-sm border border-blue-200 hover:bg-blue-100 cursor-pointer transition duration-200">
+                                @keyword
+                            </span>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="flex flex-wrap gap-3">
+                        <span class="px-3 py-2 bg-white text-blue-700 rounded-full text-sm border border-blue-200 hover:bg-blue-100 cursor-pointer">
+                            @(isPersian ? "قیمت کامپاند PP" : "PP Compound Price")
+                        </span>
+                        <span class="px-3 py-2 bg-white text-blue-700 rounded-full text-sm border border-blue-200 hover:bg-blue-100 cursor-pointer">
+                            @(isPersian ? "خرید پلی پروپیلن" : "Buy Polypropylene")
+                        </span>
+                        <span class="px-3 py-2 bg-white text-blue-700 rounded-full text-sm border border-blue-200 hover:bg-blue-100 cursor-pointer">
+                            @(isPersian ? "کامپاند پلیمری" : "Polymer Compound")
+                        </span>
+                    </div>
+                }
+            </div>
+
+            <!-- مقاله‌های مرتبط -->
+            <section class="bg-green-50 p-6 rounded-xl">
+                <h2 class="text-2xl font-bold mb-6 text-gray-800">
+                    <i class="fas fa-book @(isPersian ? "ml-2" : "mr-2") text-green-600"></i>
+                    @(isPersian ? "مقاله‌های مرتبط" : "Related Articles")
+                </h2>
+                @await Component.InvokeAsync("RelatedArticles", new {
+                                productKeywords = Model.seoWord.Split(',')[0]?.Trim(),
+                                count = 3
+                                })
+            </section>
+
+            <!-- لینک‌های داخلی مرتبط -->
+            
         </div>
     </div>
 </div>
+
+<!-- اسکریپت برای لود محصولات مرتبط -->

@@ -1,70 +1,370 @@
 ﻿@model pishrooAsp.Models.Newses.News
+@using pishrooAsp.Models.Newes;
+@using pishrooAsp.Utilities
+
 
 @{
-    ViewData["Title"] = "جزئیات خبر";
+    var culture = ViewContext.HttpContext.GetRouteValue("culture")?.ToString() ?? "fa";
+    var translation = Model.Translations.FirstOrDefault();
+    var isPersian = culture == "fa";
+
+    // داده‌های سایدبار با Cast ایمن
+    var latestNews = ViewBag.LatestNews as List<NewsSidebarViewModel> ?? new List<NewsSidebarViewModel>();
+    var latestArticle = ViewBag.latestArticle as List<NewsSidebarViewModel> ?? new List<NewsSidebarViewModel>();
+    var latestProducts = ViewBag.LatestProducts as List<ProductSidebarViewModel> ?? new List<ProductSidebarViewModel>();
+    var categories = ViewBag.Categories as Dictionary<string, int> ?? new Dictionary<string, int>();
+    var tags = ViewBag.Tags as List<string> ?? new List<string>();
 }
 
-<div class="max-w-5xl lg:mx-auto my-6 mx-3 bg-white p-6 rounded-lg shadow-lg">
-    <h2 class="text-3xl font-bold mb-6">@(Model.Translations.FirstOrDefault()?.Title ?? "بدون عنوان")</h2>
 
-    <p class="text-sm text-gray-500 mb-4">
-        منتشر شده در: @Model.PublishDate.ToString("yyyy/MM/dd") |
-        وضعیت انتشار: @(Model.IsPublished ? "منتشر شده" : "منتشر نشده") |
-        نویسنده: @(Model.AuthorId?.ToString() ?? "نامشخص")
-    </p>
 
-    <div class="mb-6">
-        @if (!string.IsNullOrEmpty(Model.DefaultImageUrl))
-        {
-            <img src="@Model.DefaultImageUrl" alt="تصویر پیش‌فرض" class="w-full max-h-96 object-cover rounded" />
+<!-- Schema Markup -->
+<script type="application/ld+json">
+    {
+        "@@context": "https://schema.org",
+        "@@type": "NewsArticle",
+        "headline": "@translation?.Title",
+        "description": "@translation?.Summary",
+        "image": "@Model.DefaultImageUrl",
+        "datePublished": "@Model.PublishDate.ToString("yyyy-MM-ddTHH:mm:ssZ")",
+        "dateModified": "@Model.PublishDate.ToString("yyyy-MM-ddTHH:mm:ssZ")",
+        "author": {
+            "@@type": "Organization",
+            "name": "آروین پلیمر"
+        },
+        "publisher": {
+            "@@type": "Organization",
+            "name": "آروین پلیمر",
+            "logo": {
+                "@@type": "ImageObject",
+                "url": "https://arvinpolymer.com/images/companyLogo.png"
+            }
+        },
+        "mainEntityOfPage": {
+            "@@type": "WebPage",
+            "@@id": "https://arvinpolymer.com/@culture/news/details/@Model.Id"
         }
-    </div>
+    }
+</script>
 
-    <div class="mb-6">
-        <h3 class="text-xl font-semibold mb-2">خلاصه خبر</h3>
-        <p>@Model.Translations.FirstOrDefault()?.Summary</p>
-    </div>
+<div class="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 py-8">
+    <div class="max-w-6xl mx-auto px-4">
 
-    <div class="mb-6">
-        <h3 class="text-xl font-semibold mb-2">متن کامل</h3>
-        <p>@Html.Raw(Model.Translations.FirstOrDefault()?.Content)</p>
-    </div>
+        <!-- Breadcrumb -->
+        <nav class="flex items-center text-sm text-gray-600 mb-8" aria-label="breadcrumb">
+            <a href="/@culture" class="hover:text-blue-600 transition-colors">خانه</a>
+            <span class="mx-3">/</span>
+            <a href="/@culture/news" class="hover:text-blue-600 transition-colors">اخبار و مقالات</a>
+            <span class="mx-3">/</span>
+            <span class="text-gray-400 truncate">@translation?.Title</span>
+        </nav>
 
-    <div class="mb-6">
-        <h3 class="text-xl font-semibold mb-2">تصاویر مرتبط</h3>
-        @if (Model.Images != null && Model.Images.Any())
-        {
-            <div class="grid grid-cols-3 gap-4">
-                @foreach (var img in Model.Images)
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+
+            <!-- محتوای اصلی -->
+            <main class="lg:col-span-3">
+                <article class="bg-white rounded-2xl shadow-xl overflow-hidden">
+
+                    <!-- هدر مقاله -->
+                    <div class="relative">
+                        @if (!string.IsNullOrEmpty(Model.DefaultImageUrl))
+                        {
+                            <img src="@Model.DefaultImageUrl"
+                                 alt="@translation?.Title"
+                                 class="w-full h-64 lg:h-80 object-cover"
+                                 loading="eager">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+                        }
+
+                        <div class="absolute bottom-0 left-0 right-0 p-6 text-white">
+                            <div class="flex items-center flex-wrap gap-4 text-sm mb-3">
+                                <div class="flex items-center bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full">
+                                    <i class="fas fa-calendar ml-2"></i>
+                                    <time>@Model.PublishDate.ToString("dd MMMM yyyy")</time>
+                                </div>
+                                <div class="flex items-center bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full">
+                                    <i class="fas fa-user ml-2"></i>
+                                    <span>آروین پلیمر</span>
+                                </div>
+                                <div class="flex items-center bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full">
+                                    <i class="fas fa-eye ml-2"></i>
+                                    <span>@(Model.IsPublished ? "منتشر شده" : "پیش‌نویس")</span>
+                                </div>
+                            </div>
+
+                            <h1 class="text-2xl lg:text-4xl font-black leading-tight" itemprop="headline">
+                                @translation?.Title
+                            </h1>
+                        </div>
+                    </div>
+
+                    <!-- خلاصه -->
+                    <div class="p-6 border-b border-gray-100">
+                        <div class="flex items-start">
+                            <div class="flex-shrink-0 w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center ml-4">
+                                <i class="fas fa-newspaper text-blue-600 text-lg"></i>
+                            </div>
+                            <div>
+                                <h2 class="text-lg font-semibold text-gray-800 mb-2">خلاصه خبر</h2>
+                                <p class="text-gray-600 leading-relaxed" itemprop="description">@translation?.Summary</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- محتوای اصلی -->
+                    <div class="p-6 lg:p-8">
+                        <div class="prose prose-lg max-w-none text-gray-700 leading-relaxed" itemprop="articleBody">
+                            @Html.Raw(translation?.Content)
+                        </div>
+                    </div>
+
+                    <!-- گالری تصاویر -->
+                    @if (Model.Images != null && Model.Images.Any())
+                    {
+                        <div class="p-6 lg:p-8 border-t border-gray-100">
+                            <h3 class="text-xl font-bold text-gray-800 mb-6 flex items-center">
+                                <i class="fas fa-images ml-3 text-blue-600"></i>
+                                گالری تصاویر
+                            </h3>
+                            <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                                @foreach (var img in Model.Images)
+                                {
+                                    <div class="group relative overflow-hidden rounded-xl cursor-pointer">
+                                        <img src="@img.ImageUrl"
+                                             alt="@(img.AltText ?? translation?.Title)"
+                                             class="w-full h-32 object-cover group-hover:scale-110 transition-transform duration-300"
+                                             loading="lazy">
+                                        <div class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300"></div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    }
+
+                    <!-- فایل‌های پیوست -->
+                    @if (Model.Attachments != null && Model.Attachments.Any())
+                    {
+                        <div class="p-6 lg:p-8 border-t border-gray-100">
+                            <h3 class="text-xl font-bold text-gray-800 mb-6 flex items-center">
+                                <i class="fas fa-paperclip ml-3 text-blue-600"></i>
+                                فایل‌های پیوست
+                            </h3>
+                            <div class="space-y-3">
+                                @foreach (var attach in Model.Attachments)
+                                {
+                                    <div class="flex items-center justify-between p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors group">
+                                        <div class="flex items-center">
+                                            <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center ml-3">
+                                                <i class="fas fa-file-download text-blue-600"></i>
+                                            </div>
+                                            <div>
+                                                <p class="font-medium text-gray-800">@attach.FileName</p>
+                                                <p class="text-sm text-gray-500">فایل پیوست</p>
+                                            </div>
+                                        </div>
+                                        <a href="@attach.FileUrl"
+                                           download
+                                           class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center group-hover:scale-105 transform transition-transform">
+                                            <i class="fas fa-download ml-2"></i>
+                                            دانلود
+                                        </a>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    }
+
+                    <!-- اشتراک‌گذاری -->
+                    <div class="p-6 lg:p-8 border-t border-gray-100 bg-gray-50">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-lg font-semibold text-gray-800">اشتراک‌گذاری این مطلب:</h3>
+                            <div class="flex space-x-3 space-x-reverse">
+                                <a href="https://telegram.me/share/url?url=@Context.Request.Host@Context.Request.Path"
+                                   target="_blank"
+                                   class="w-10 h-10 bg-blue-500 text-white rounded-full flex items-center justify-center hover:bg-blue-600 transition-colors hover:scale-110 transform">
+                                    <i class="fab fa-telegram"></i>
+                                </a>
+                                <a href="https://twitter.com/share?url=@Context.Request.Host@Context.Request.Path"
+                                   target="_blank"
+                                   class="w-10 h-10 bg-blue-400 text-white rounded-full flex items-center justify-center hover:bg-blue-500 transition-colors hover:scale-110 transform">
+                                    <i class="fab fa-twitter"></i>
+                                </a>
+                                <a href="https://www.linkedin.com/shareArticle?url=@Context.Request.Host@Context.Request.Path"
+                                   target="_blank"
+                                   class="w-10 h-10 bg-blue-600 text-white rounded-full flex items-center justify-center hover:bg-blue-700 transition-colors hover:scale-110 transform">
+                                    <i class="fab fa-linkedin"></i>
+                                </a>
+                                <a href="whatsapp://send?text=@Context.Request.Host@Context.Request.Path"
+                                   target="_blank"
+                                   class="w-10 h-10 bg-green-500 text-white rounded-full flex items-center justify-center hover:bg-green-600 transition-colors hover:scale-110 transform">
+                                    <i class="fab fa-whatsapp"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                </article>
+
+                <!-- مقالات مرتبط -->
+                <section class="mt-8">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6">مقالات مرتبط</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        @if (latestArticle != null)
+                        {
+                            foreach (var relatedNews in latestArticle.Take(2))
+                            {
+                                <div class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow group">
+                                    <div class="flex items-center mb-3">
+                                        <div class="w-3 h-3 bg-blue-500 rounded-full ml-2"></div>
+                                        <span class="text-sm text-gray-500">اخبار پلیمر</span>
+                                    </div>
+                                    <h3 class="font-semibold text-gray-800 mb-2 line-clamp-2">@relatedNews.Title</h3>
+                                    <p class="text-gray-600 text-sm mb-3">@relatedNews.PublishDate.ToString("dd MMMM yyyy")</p>
+                                    <a href="/@culture/news/@relatedNews.Id/@SeoHelper.GenerateSeoTitle(relatedNews.Title)"
+                                       class="text-blue-600 hover:text-blue-700 text-sm font-medium group-hover:translate-x-1 transition-transform inline-flex items-center">
+                                        مطالعه بیشتر
+                                        <i class="fas fa-arrow-left mr-2 text-xs mt-1"></i>
+                                    </a>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <div class="col-span-2 text-center py-8 text-gray-500">
+                                <i class="fas fa-newspaper text-4xl mb-4 text-gray-300"></i>
+                                <p>مقاله مرتبط دیگری یافت نشد</p>
+                            </div>
+                        }
+                    </div>
+                </section>
+            </main>
+
+            <aside class="lg:col-span-1 space-y-6">
+
+                <!-- جستجو -->
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <h3 class="font-semibold text-gray-800 mb-4">جستجو در اخبار</h3>
+                    <form action="/@culture/news/search" method="get" class="relative">
+                        <input type="text" name="q" placeholder="عبارت مورد نظر..."
+                               class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        <button type="submit" class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-blue-600 transition-colors">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </form>
+                </div>
+
+                <!-- دسته‌بندی‌ها -->
+                @if (categories != null && categories.Any())
                 {
-                    <img src="@img.ImageUrl" alt="@img.AltText" class="rounded shadow" />
+                    <div class="bg-white rounded-xl shadow-lg p-6">
+                        <h3 class="font-semibold text-gray-800 mb-4">دسته‌بندی‌ها</h3>
+                        <ul class="space-y-2">
+                            @foreach (var category in categories)
+                            {
+                                <li>
+                                    <a href="/@culture/news?category=@Uri.EscapeDataString(category.Key)"
+                                       class="flex items-center justify-between text-gray-600 hover:text-blue-600 transition-colors py-2">
+                                        <span>@category.Key</span>
+                                        <span class="bg-gray-100 px-2 py-1 rounded text-xs">@category.Value</span>
+                                    </a>
+                                </li>
+                            }
+                        </ul>
+                    </div>
                 }
-            </div>
-        }
-        else
-        {
-            <p>هیچ تصویری موجود نیست.</p>
-        }
-    </div>
 
-    <div class="mb-6">
-        <h3 class="text-xl font-semibold mb-2">فایل‌های پیوست</h3>
-        @if (Model.Attachments != null && Model.Attachments.Any())
-        {
-            <ul class="list-disc list-inside">
-                @foreach (var attach in Model.Attachments)
+                <!-- آخرین اخبار -->
+                @if (latestNews != null && latestNews.Any())
                 {
-                    <li>
-                        <a href="@attach.FileUrl" target="_blank" class="text-blue-600 underline">
-                            @attach.FileName
-                        </a>
-                    </li>
+                    <div class="bg-white rounded-xl shadow-lg p-6">
+                        <h3 class="font-semibold text-gray-800 mb-4">آخرین اخبار</h3>
+                        <div class="space-y-4">
+                            @foreach (var newsItem in latestNews)
+                            {
+                                <div class="flex items-start space-x-3 space-x-reverse group">
+                                    <div class="flex-shrink-0 w-16 h-16 bg-gray-200 rounded-lg overflow-hidden">
+                                        @if (!string.IsNullOrEmpty(newsItem.DefaultImageUrl))
+                                        {
+                                            <img src="@newsItem.DefaultImageUrl"
+                                                 alt="@newsItem.Title"
+                                                 class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                                                 loading="lazy">
+                                        }
+                                        else
+                                        {
+                                            <div class="w-full h-full bg-blue-100 flex items-center justify-center">
+                                                <i class="fas fa-newspaper text-blue-600 text-lg"></i>
+                                            </div>
+                                        }
+                                    </div>
+                                    <div class="flex-1 min-w-0">
+                                        <a href="/@culture/news/@newsItem.Id/@SeoHelper.GenerateSeoTitle(newsItem.Title)"
+                                           class="font-medium text-gray-800 text-sm mb-1 line-clamp-2 hover:text-blue-600 transition-colors block">
+                                            @newsItem.Title
+                                        </a>
+                                        <span class="text-xs text-gray-500">@newsItem.PublishDate.ToString("dd MMMM")</span>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
                 }
-            </ul>
-        }
-        else
-        {
-            <p>هیچ فایلی موجود نیست.</p>
-        }
+
+                <!-- آخرین محصولات -->
+                @if (latestProducts != null && latestProducts.Any())
+                {
+                    <div class="bg-white rounded-xl shadow-lg p-6">
+                        <h3 class="font-semibold text-gray-800 mb-4">جدیدترین محصولات</h3>
+                        <div class="space-y-4">
+                            @foreach (var product in latestProducts)
+                            {
+                                <div class="flex items-start space-x-3 space-x-reverse group">
+                                    <div class="flex-shrink-0 w-16 h-16 bg-gray-200 rounded-lg overflow-hidden">
+                                        @if (!string.IsNullOrEmpty(product.ImageUrl))
+                                        {
+                                            <img src="@product.ImageUrl"
+                                                 alt="@product.Title"
+                                                 class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                                                 loading="lazy">
+                                        }
+                                        else
+                                        {
+                                            <div class="w-full h-full bg-green-100 flex items-center justify-center">
+                                                <i class="fas fa-box text-green-600 text-lg"></i>
+                                            </div>
+                                        }
+                                    </div>
+                                    <div class="flex-1 min-w-0">
+                                        <a href="/@culture/products/@product.SeoWord?.Split(',')?[0]?.Trim()"
+                                           class="font-medium text-gray-800 text-sm mb-1 line-clamp-1 overflow-hidden text-ellipsis whitespace-nowrap hover:text-green-600 transition-colors block">
+                                            @product.Title
+                                        </a>
+                                        <span class="text-xs text-gray-500">محصول پلیمری</span>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                }
+
+                <!-- تگ‌ها -->
+                @if (tags != null && tags.Any())
+                {
+                    <div class="bg-white rounded-xl shadow-lg p-6">
+                        <h3 class="font-semibold text-gray-800 mb-4">برچسب‌های محبوب</h3>
+                        <div class="flex flex-wrap gap-2">
+                            @foreach (var tag in tags)
+                            {
+                                <a href="/@culture/news?tag=@Uri.EscapeDataString(tag)"
+                                   class="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm hover:bg-blue-100 hover:text-blue-700 transition-colors">
+                                    @tag
+                                </a>
+                            }
+                        </div>
+                    </div>
+                }
+
+            </aside>
+        </div>
     </div>
 </div>

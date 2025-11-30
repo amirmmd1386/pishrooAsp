@@ -24,8 +24,8 @@ public class NavbarViewComponent : ViewComponent
 		if (culture == "fa")
 		{
 			items.Add(new NavbarItem { Title = "خانه", Url = "/fa" });
-			items.Add(new NavbarItem { Title = "محصولات", Url = "/fa/#products" });
-			items.Add(new NavbarItem { Title = "اخبار و مقالات", Url = "/fa/#news" });
+			items.Add(new NavbarItem { Title = "محصولات", Url = "/fa/products" });
+			items.Add(new NavbarItem { Title = "اخبار و مقالات", Url = "/fa/home/newsList" });
 			items.Add(new NavbarItem { Title = "سفارش محصولات", Url = "/fa/ProductRequests/create" });
 			items.Add(new NavbarItem { Title = "درباره ما", Url = "/fa/home/aboutuspage" });
 			items.Add(new NavbarItem { Title = "تماس با ما", Url = "/fa/home/aboutuspage" });
@@ -35,8 +35,8 @@ public class NavbarViewComponent : ViewComponent
 		else
 		{
 			items.Add(new NavbarItem { Title = "Home", Url = "/" + culture });
-			items.Add(new NavbarItem { Title = "Products", Url = "/" + culture + "#products" });
-			items.Add(new NavbarItem { Title = "News & Articles", Url = "/" + culture + "#news" });
+			items.Add(new NavbarItem { Title = "Products", Url = "/" + culture + "/products" });
+			items.Add(new NavbarItem { Title = "News & Articles", Url = "/" + culture + "/home/newsList" });
 			items.Add(new NavbarItem { Title = "ProductRequests", Url = "/" + culture + "/ProductRequests/create" });
 			items.Add(new NavbarItem { Title = "About Us", Url = "/" + culture + "/home/aboutuspage" });
 			items.Add(new NavbarItem { Title = "Contact Us", Url = "/" + culture + "/home/aboutuspage" });

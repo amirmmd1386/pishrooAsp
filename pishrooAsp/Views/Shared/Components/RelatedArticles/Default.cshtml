@@ -1,0 +1,106 @@
+﻿@* Views/Shared/Components/RelatedArticles/Default.cshtml *@
+@model dynamic
+@using pishrooAsp.Utilities
+
+@{
+    var isPersian = ViewBag.Language == "fa";
+    var articles = Model as IEnumerable<dynamic>;
+}
+
+@if (articles != null && articles.Any())
+{
+    <div class="bg-white rounded-xl shadow-lg p-6">
+        <div class="flex items-center justify-between mb-6">
+            <h3 class="text-xl font-bold text-gray-800">
+                <i class="fas fa-book @(isPersian ? "ml-2" : "mr-2") text-green-600"></i>
+                @(isPersian ? "مقاله‌های مرتبط" : "Related Articles")
+            </h3>
+            <span class="text-sm text-gray-500 bg-gray-100 px-3 py-1 rounded-full">
+                @articles.Count() @(isPersian ? "مقاله" : "Articles")
+            </span>
+        </div>
+
+        <div class="space-y-4">
+            @foreach (var article in articles)
+            {
+                <div class="flex flex-col md:flex-row gap-4 p-4 border border-gray-200 rounded-lg hover:border-green-300 hover:bg-green-50 transition-all duration-300 group">
+                    <!-- تصویر مقاله -->
+                    <div class="md:w-1/4">
+                        @if (!string.IsNullOrEmpty(article.ImageUrl))
+                        {
+                            <div class="overflow-hidden rounded-lg">
+                                <img src="@article.ImageUrl"
+                                     alt="@article.Title"
+                                     class="w-full h-32 md:h-24 object-cover group-hover:scale-105 transition duration-300">
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="w-full h-32 md:h-24 bg-gradient-to-r from-green-50 to-emerald-100 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-newspaper text-2xl text-green-300"></i>
+                            </div>
+                        }
+                    </div>
+
+                    <!-- محتوای مقاله -->
+                    <div class="md:w-3/4 flex flex-col justify-between">
+                        <div>
+                            <h4 class="font-bold text-gray-800 mb-2 text-lg leading-tight group-hover:text-green-700 transition">
+                                @article.Title
+                            </h4>
+
+                            @if (!string.IsNullOrEmpty(article.Summary))
+                            {
+                                <p class="text-gray-600 text-sm mb-3 line-clamp-2 leading-relaxed">
+                                    @article.Summary
+                                </p>
+                            }
+                        </div>
+
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center text-xs text-gray-500">
+                                <i class="fas fa-calendar @(isPersian ? "ml-1" : "mr-1")"></i>
+                                <span>@article.PublishDate.ToString("yyyy/MM/dd")</span>
+                            </div>
+
+                            <!-- لینک دوم -->
+                            <a href="/@ViewBag.Language/news/@article.Id/@SeoHelper.GenerateSeoTitle(article.Title)"
+                               class="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition font-medium text-sm group-hover:shadow-md">
+                                <i class="fas fa-book-open @(isPersian ? "ml-2" : "mr-2") text-xs"></i>
+                                @(isPersian ? "مطالعه مقاله" : "Read Article")
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <!-- دکمه مشاهده همه مقالات -->
+        <div class="mt-6 pt-4 border-t border-gray-200 text-center">
+            <a href="/@ViewBag.Language/home/Newslist"
+               class="inline-flex items-center text-green-600 hover:text-green-800 font-medium text-sm">
+                @(isPersian ? "مشاهده همه مقالات" : "View All Articles")
+                <i class="fas fa-arrow-left @(isPersian ? "mr-2" : "ml-2") text-xs"></i>
+            </a>
+        </div>
+    </div>
+}
+else
+{
+    <div class="bg-white rounded-xl shadow-lg p-8 text-center">
+        <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <i class="fas fa-file-alt text-2xl text-green-500"></i>
+        </div>
+        <h4 class="text-lg font-semibold text-gray-700 mb-2">
+            @(isPersian ? "مقاله مرتبطی یافت نشد" : "No related articles found")
+        </h4>
+        <p class="text-gray-500 text-sm mb-4">
+            @(isPersian ? "در حال حاضر مقاله‌ای مرتبط با این محصول وجود ندارد." : "Currently there are no articles related to this product.")
+        </p>
+        <a href="/@ViewBag.Language/home/Newslist"
+           class="inline-flex items-center px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition text-sm">
+            <i class="fas fa-newspaper @(isPersian ? "ml-2" : "mr-2")"></i>
+            @(isPersian ? "مشاهده همه مقالات" : "View All Articles")
+        </a>
+    </div>
+}

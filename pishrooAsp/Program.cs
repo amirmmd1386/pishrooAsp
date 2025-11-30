@@ -113,6 +113,23 @@ app.MapControllerRoute(
 	name: "default",
 	pattern: "{culture=fa}/{controller=Home}/{action=Index}/{id?}");
 
+
+app.MapControllerRoute(
+	name: "productRoute",
+	pattern: "{culture=fa}/products/{slug}",
+	defaults: new { controller = "Home", action = "ProductDetail" });
+
+app.MapControllerRoute(
+	name: "news-details",
+	pattern: "{culture}/news/{id}/{title}",
+	defaults: new { controller = "News", action = "Details" }
+);
+
+app.MapControllerRoute(
+	name: "productRoute",
+	pattern: "{culture=fa}/products",
+	defaults: new { controller = "Home", action = "ProgramList" });
+
 app.MapStaticAssets(); // حالا اینجا درست است
 
 

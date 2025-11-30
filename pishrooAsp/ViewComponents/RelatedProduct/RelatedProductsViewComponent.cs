@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿// RelatedProductsViewComponent.cs
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using pishrooAsp.Data;
 using pishrooAsp.Models;
@@ -6,23 +7,26 @@ using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 
-public class ProductsViewComponent : ViewComponent
+public class RelatedProductsViewComponent : ViewComponent
 {
 	private readonly AppDbContext _context;
 
-	public ProductsViewComponent(AppDbContext context)
+	public RelatedProductsViewComponent(AppDbContext context)
 	{
 		_context = context;
 	}
 
-	public async Task<IViewComponentResult> InvokeAsync()
+	public async Task<IViewComponentResult> InvokeAsync(Guid currentProductId, int count = 3)
 	{
 		var culture = RouteData.Values["culture"]?.ToString() ?? CultureInfo.CurrentCulture.TwoLetterISOLanguageName;
 
+		// دریافت محصولات مرتبط (به جز محصول جاری)
 		var products = await _context.Products
+			.Where(p => p.Id != currentProductId)
 			.Include(p => p.Translations)
 				.ThenInclude(t => t.Lang)
-				
+			.OrderByDescending(p => p.CreatedAt) // یا هر منطق دیگری برای مرتبط بودن
+			.Take(count)
 			.ToListAsync();
 
 		var model = products.Select(p =>
@@ -33,24 +37,11 @@ public class ProductsViewComponent : ViewComponent
 				Id = p.Id,
 				ImageUrl = p.ImageUrl,
 				Title = tr?.Title ?? "",
-				//Description = tr?.Description ?? "",
 				Language = culture.ToLower(),
-				seoWord = p.seoWord.Split(new char[] { ',' }, StringSplitOptions.None)?[0].Trim() ?? "none"
+				seoWord = p.seoWord?.Split(new char[] { ',' }, StringSplitOptions.None)?[0].Trim() ?? "none"
 			};
 		}).ToList();
-	
 
 		return View(model);
 	}
-
-}
-
-public class ProductViewModel
-{
-	public Guid Id { get; set; }
-	public string ImageUrl { get; set; }
-	public string Title { get; set; }
-	//public string Description { get; set; }
-	public string Language { get; set; }
-	public string seoWord { get; set; }
 }
