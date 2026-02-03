@@ -1,0 +1,528 @@
+﻿@* Views/AdminInvoice/Index.cshtml *@
+@model List<pishrooAsp.Models.Invoice.Invoice>
+
+@{
+    ViewData["Title"] = "مدیریت فاکتورها";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="min-h-screen bg-gray-50 p-4 md:p-6">
+    <!-- هدر -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between mb-6">
+        <div>
+            <h1 class="text-2xl md:text-3xl font-bold text-gray-800 flex items-center gap-3">
+                <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                </svg>
+                مدیریت فاکتورها
+            </h1>
+            <p class="text-gray-600 mt-2">مدیریت و ارسال فاکتورهای مشتریان</p>
+        </div>
+
+        <a asp-action="Upload" class="mt-4 md:mt-0 inline-flex items-center gap-2 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold py-3 px-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+            </svg>
+            آپلود فاکتور جدید
+        </a>
+    </div>
+
+    <!-- کارت اصلی -->
+    <div class="bg-white rounded-2xl shadow-xl overflow-hidden">
+        <!-- هدر جدول -->
+        <div class="px-6 py-4 bg-gradient-to-r from-gray-50 to-gray-100 border-b border-gray-200">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="p-2 bg-blue-100 rounded-lg">
+                        <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h2 class="text-lg font-semibold text-gray-800">لیست فاکتورها</h2>
+                        <p class="text-sm text-gray-600">@Model.Count فاکتور یافت شد</p>
+                    </div>
+                </div>
+
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                    </div>
+                    <input type="text" id="searchInput" placeholder="جستجوی فاکتور..."
+                           class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition">
+                </div>
+            </div>
+        </div>
+
+        <!-- جدول -->
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">#</th>
+                        <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">کد پیگیری</th>
+                        <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">مشتری</th>
+                        <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">تلفن</th>
+                        <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">مبلغ</th>
+                        <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">تاریخ</th>
+                        <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">لینک پیگیری</th>
+                        <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">عملیات</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    @foreach (var invoice in Model)
+                    {
+                        var trackingUrl = $"{Context.Request.Scheme}://{Context.Request.Host}/fa/PublicInvoice/Detail?code={invoice.TrackingCode}";
+                        <tr class="hover:bg-gray-50 transition-colors duration-200" id="invoice-row-@invoice.Id">
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm font-medium text-gray-900">@invoice.Id</div>
+                            </td>
+
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex items-center gap-2">
+                                    <code class="px-2 py-1 bg-blue-50 text-blue-700 rounded-md text-sm font-mono">@invoice.TrackingCode</code>
+                                    @if (invoice.SentDate.HasValue)
+                                    {
+                                        <span class="relative group">
+                                            <span class="px-2 py-1 bg-green-100 text-green-800 text-xs font-semibold rounded-full flex items-center gap-1">
+                                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+                                                </svg>
+                                                ارسال شده
+                                            </span>
+                                            <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 hidden group-hover:block">
+                                                <div class="bg-gray-900 text-white text-xs rounded py-1 px-2 whitespace-nowrap">
+                                                    @invoice.SentDate.Value.ToString("yyyy/MM/dd HH:mm")
+                                                </div>
+                                            </div>
+                                        </span>
+                                    }
+                                </div>
+                            </td>
+
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm text-gray-900">@invoice.CustomerName</div>
+                            </td>
+
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm text-gray-900 dir-ltr">@invoice.CustomerPhone</div>
+                            </td>
+
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="px-3 py-1 bg-gradient-to-r from-green-50 to-green-100 text-green-800 rounded-full text-sm font-semibold">
+                                    @invoice.Amount.ToString("N0") تومان
+                                </span>
+                            </td>
+
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm text-gray-500">
+                                    <div class="flex items-center gap-2">
+                                        <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                        </svg>
+                                        @invoice.InvoiceDate.ToString("yyyy/MM/dd")
+                                    </div>
+                                </div>
+                            </td>
+
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex items-center gap-2">
+                                    <input type="text" id="url-@invoice.Id"
+                                           value="@trackingUrl"
+                                           readonly
+                                           class="flex-1 px-3 py-2 bg-gray-50 border border-gray-300 rounded-lg text-sm text-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+                                    <button onclick="copyTrackingUrl(@invoice.Id)"
+                                            class="p-2 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded-lg transition-all duration-300 transform hover:scale-105 active:scale-95">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </td>
+
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex items-center gap-2">
+                                    <!-- دکمه ارسال پیامک -->
+                                    <button onclick="showSmsModal(@invoice.Id, '@invoice.TrackingCode')"
+                                            class="p-2 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white rounded-lg transition-all duration-300 transform hover:scale-105 active:scale-95 group relative">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+                                        </svg>
+                                        <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 hidden group-hover:block">
+                                            <div class="bg-gray-900 text-white text-xs rounded py-1 px-2 whitespace-nowrap">
+                                                ارسال پیامک
+                                            </div>
+                                        </div>
+                                    </button>
+
+                                    <!-- دکمه دانلود -->
+                                    <a href="@Url.Action("Download", "PublicInvoice", new { id = invoice.Id, trackingCode = invoice.TrackingCode })"
+                                       class="p-2 bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white rounded-lg transition-all duration-300 transform hover:scale-105 active:scale-95 group relative">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                        </svg>
+                                        <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 hidden group-hover:block">
+                                            <div class="bg-gray-900 text-white text-xs rounded py-1 px-2 whitespace-nowrap">
+                                                دانلود فاکتور
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <!-- فوتر جدول -->
+        @if (!Model.Any())
+        {
+            <div class="text-center py-12">
+                <svg class="w-16 h-16 mx-auto text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                </svg>
+                <h3 class="mt-4 text-lg font-medium text-gray-900">فاکتوری یافت نشد</h3>
+                <p class="mt-1 text-gray-500">هنوز هیچ فاکتوری آپلود نکرده‌اید.</p>
+                <a asp-action="Upload" class="mt-4 inline-flex items-center gap-2 text-blue-600 hover:text-blue-800 font-semibold">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                    </svg>
+                    افزودن اولین فاکتور
+                </a>
+            </div>
+        }
+    </div>
+</div>
+
+<!-- مدال ارسال پیامک -->
+<div class="fixed inset-0 overflow-y-auto z-50 hidden" id="smsModal">
+    <div class="flex items-center justify-center min-h-screen p-4">
+        <!-- Backdrop -->
+        <div class="fixed inset-0 bg-gray-900 bg-opacity-75 transition-opacity" onclick="closeModal()"></div>
+
+        <!-- Modal Content -->
+        <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-md transform transition-all">
+            <!-- Header -->
+            <div class="px-6 py-4 border-b border-gray-200">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <div class="p-2 bg-gradient-to-r from-green-500 to-green-600 rounded-lg">
+                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-800">ارسال پیامک</h3>
+                    </div>
+                    <button onclick="closeModal()"
+                            class="p-2 hover:bg-gray-100 rounded-lg transition-colors">
+                        <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Body -->
+            <div class="px-6 py-4" id="smsModalContent">
+                <!-- محتوای مدال با AJAX لود می‌شود -->
+                <div class="animate-pulse">
+                    <div class="space-y-4">
+                        <div class="h-4 bg-gray-200 rounded w-3/4"></div>
+                        <div class="h-4 bg-gray-200 rounded w-1/2"></div>
+                        <div class="h-24 bg-gray-200 rounded"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="px-6 py-4 border-t border-gray-200 bg-gray-50 rounded-b-2xl">
+                <div class="flex items-center justify-between">
+                    <button onclick="closeModal()"
+                            class="px-4 py-2 text-gray-700 hover:text-gray-900 font-medium transition-colors">
+                        انصراف
+                    </button>
+                    <button onclick="sendSmsFromModal()"
+                            class="px-6 py-2 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-semibold rounded-lg transition-all duration-300 transform hover:scale-105 active:scale-95">
+                        <span class="flex items-center gap-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+                            </svg>
+                            ارسال پیامک
+                        </span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Toast Notification -->
+<div id="toastContainer" class="fixed top-4 right-4 z-50 space-y-3"></div>
+
+@section Scripts {
+    <script>
+                // تابع کپی لینک
+                function copyTrackingUrl(invoiceId) {
+                    const input = document.getElementById(`url-${invoiceId}`);
+                    input.select();
+                    navigator.clipboard.writeText(input.value);
+
+                    // نمایش توست
+                    showToast('success', 'لینک با موفقیت کپی شد!');
+
+                    // انیمیشن دکمه
+                    const button = event.currentTarget;
+                    const originalHTML = button.innerHTML;
+                    button.innerHTML = `
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                    `;
+                    button.classList.remove('from-blue-500', 'to-blue-600');
+                    button.classList.add('from-green-500', 'to-green-600');
+
+                    setTimeout(() => {
+                        button.innerHTML = originalHTML;
+                        button.classList.remove('from-green-500', 'to-green-600');
+                        button.classList.add('from-blue-500', 'to-blue-600');
+                    }, 2000);
+                }
+
+                // تابع نمایش مدال
+                let currentInvoiceId = null;
+
+                     function showSmsModal(invoiceId, trackingCode) {
+            currentInvoiceId = invoiceId;
+
+            // ساخت URL مشابه با بالای صفحه
+            const baseUrl = window.location.origin;
+            const trackingUrl = `${baseUrl}/fa/PublicInvoice/Detail?code=${trackingCode}`;
+
+            // نمایش مدال با انیمیشن
+            const modal = document.getElementById('smsModal');
+            modal.classList.remove('hidden');
+            document.body.classList.add('overflow-hidden');
+
+            // لود اطلاعات
+            $.get('@Url.Action("GetInvoiceInfo", "AdminInvoice")', { id: invoiceId }, function(data) {
+                if (data.success) {
+                    const content = `
+                        <div class="space-y-4">
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="bg-gray-50 p-3 rounded-lg">
+                                    <p class="text-sm text-gray-600">مشتری</p>
+                                    <p class="font-semibold text-gray-900">${data.customerName}</p>
+                                </div>
+                                <div class="bg-gray-50 p-3 rounded-lg">
+                                    <p class="text-sm text-gray-600">تلفن</p>
+                                    <p class="font-semibold text-gray-900 dir-ltr">${data.customerPhone}</p>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="bg-gradient-to-r from-green-50 to-green-100 p-3 rounded-lg">
+                                    <p class="text-sm text-gray-600">مبلغ</p>
+                                    <p class="font-bold text-green-700">${data.amount} تومان</p>
+                                </div>
+                                <div class="bg-gradient-to-r from-blue-50 to-blue-100 p-3 rounded-lg">
+                                    <p class="text-sm text-gray-600">کد پیگیری</p>
+                                    <p class="font-mono font-bold text-blue-700">${data.trackingCode}</p>
+                                </div>
+                            </div>
+
+                            <div class="bg-gradient-to-r from-purple-50 to-purple-100 p-3 rounded-lg">
+                                <p class="text-sm text-gray-600">لینک پیگیری</p>
+                                <div class="flex items-center gap-2 mt-2">
+                                    <input type="text" id="modalTrackingUrl"
+                                           value="${trackingUrl}" readonly
+                                           class="flex-1 px-3 py-2 bg-white border border-purple-200 rounded-lg text-sm text-gray-600">
+                                    <button onclick="copyModalUrl()"
+                                            class="p-2 bg-gradient-to-r from-purple-500 to-purple-600 text-white rounded-lg">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">متن پیامک</label>
+                                <textarea id="modalSmsMessage"
+                                          class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition text-sm"
+                                          rows="5">
+        آروین پلیمر
+        فاکتور شما آماده است
+        کد پیگیری: ${data.trackingCode}
+        لینک مشاهده: ${trackingUrl}
+        مبلغ: ${data.amount} تومان
+        با تشکر 🌹</textarea>
+                                <p class="text-xs text-gray-500 mt-2">تعداد کاراکتر: <span id="charCount">0</span></p>
+                            </div>
+                        </div>
+                    `;
+
+                    $('#smsModalContent').html(content);
+
+                    // شمارش کاراکترها
+                    const textarea = document.getElementById('modalSmsMessage');
+                    const charCount = document.getElementById('charCount');
+
+                    textarea.addEventListener('input', function() {
+                        charCount.textContent = this.value.length;
+                    });
+
+                    // مقداردهی اولیه
+                    charCount.textContent = textarea.value.length;
+                } else {
+                    $('#smsModalContent').html(`
+                        <div class="text-center py-8">
+                            <svg class="w-12 h-12 mx-auto text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            <p class="mt-4 text-gray-700">خطا در دریافت اطلاعات فاکتور</p>
+                        </div>
+                    `);
+                }
+            });
+        }
+
+                // بستن مدال
+                function closeModal() {
+                    const modal = document.getElementById('smsModal');
+                    modal.classList.add('hidden');
+                    document.body.classList.remove('overflow-hidden');
+                    currentInvoiceId = null;
+                }
+
+                // کپی لینک در مدال
+                function copyModalUrl() {
+                    const input = document.getElementById('modalTrackingUrl');
+                    input.select();
+                    navigator.clipboard.writeText(input.value);
+                    showToast('success', 'لینک کپی شد!');
+                }
+
+                // ارسال پیامک
+                function sendSmsFromModal() {
+                    if (!currentInvoiceId) return;
+
+                    const message = document.getElementById('modalSmsMessage').value;
+
+                    $.post('@Url.Action("SendSms", "AdminInvoice")', {
+                        invoiceId: currentInvoiceId,
+                        message: message
+                    }, function(data) {
+                        if (data.success) {
+                            showToast('success', '✅ پیامک با موفقیت ارسال شد');
+                            closeModal();
+
+                            // آپدیت وضعیت در جدول
+                            const row = document.getElementById(`invoice-row-${currentInvoiceId}`);
+                            if (row) {
+                                const statusBadge = row.querySelector('.bg-green-100');
+                                if (!statusBadge) {
+                                    const badge = document.createElement('span');
+                                    badge.className = 'px-2 py-1 bg-green-100 text-green-800 text-xs font-semibold rounded-full flex items-center gap-1';
+                                    badge.innerHTML = `
+                                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+                                        </svg>
+                                        ارسال شده
+                                    `;
+                                    row.querySelector('td:nth-child(2)').appendChild(badge);
+                                }
+                            }
+                        } else {
+                            showToast('error', `❌ ${data.message}`);
+                        }
+                    }).fail(function() {
+                        showToast('error', '❌ خطا در ارسال درخواست');
+                    });
+                }
+
+                // نمایش توست
+                function showToast(type, message) {
+                    const container = document.getElementById('toastContainer');
+                    const id = Date.now();
+
+                    const toast = document.createElement('div');
+                    toast.id = `toast-${id}`;
+                    toast.className = `animate-slide-in-right p-4 rounded-lg shadow-lg transform transition-all duration-300 ${type === 'success' ? 'bg-gradient-to-r from-green-500 to-green-600' : 'bg-gradient-to-r from-red-500 to-red-600'} text-white`;
+                    toast.innerHTML = `
+                        <div class="flex items-center gap-3">
+                            ${type === 'success' ?
+                                '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>' :
+                                '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>'
+                            }
+                            <span>${message}</span>
+                            <button onclick="document.getElementById('toast-${id}').remove()"
+                                    class="ml-auto hover:bg-white hover:bg-opacity-20 rounded-full p-1">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    `;
+
+                    container.appendChild(toast);
+
+                    // حذف خودکار پس از 5 ثانیه
+                    setTimeout(() => {
+                        const toastElement = document.getElementById(`toast-${id}`);
+                        if (toastElement) {
+                            toastElement.classList.add('animate-slide-out-right');
+                            setTimeout(() => toastElement.remove(), 300);
+                        }
+                    }, 5000);
+                }
+
+                // جستجوی فاکتورها
+                document.getElementById('searchInput')?.addEventListener('input', function(e) {
+                    const searchTerm = e.target.value.toLowerCase();
+                    const rows = document.querySelectorAll('tbody tr');
+
+                    rows.forEach(row => {
+                        const text = row.textContent.toLowerCase();
+                        row.style.display = text.includes(searchTerm) ? '' : 'none';
+                    });
+                });
+
+                // انیمیشن‌های CSS
+                const style = document.createElement('style');
+                style.textContent = `
+                    .animate-slide-in-right {
+                        animation: slideInRight 0.3s ease-out;
+                    }
+                    .animate-slide-out-right {
+                        animation: slideOutRight 0.3s ease-in forwards;
+                    }
+                    @@keyframes slideInRight {
+                        from {
+                            transform: translateX(100%);
+                            opacity: 0;
+                        }
+                        to {
+                            transform: translateX(0);
+                            opacity: 1;
+                        }
+                    }
+                    @@keyframes slideOutRight {
+                        from {
+                            transform: translateX(0);
+                            opacity: 1;
+                        }
+                        to {
+                            transform: translateX(100%);
+                            opacity: 0;
+                        }
+                    }
+                    .dir-ltr {
+                        direction: ltr;
+                    }
+                `;
+                document.head.appendChild(style);
+    </script>
+}

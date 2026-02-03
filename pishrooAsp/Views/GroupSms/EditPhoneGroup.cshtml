@@ -1,0 +1,345 @@
+﻿@* Views/GroupSms/EditPhoneGroup.cshtml *@
+@model pishrooAsp.Models.GroupSms.PhoneGroup
+
+@{
+    ViewData["Title"] = "ویرایش گروه تلفن";
+    Layout = "_AdminLayout";
+}
+
+<div class="min-h-screen bg-gray-50">
+    <!-- هدر -->
+    <div class="bg-white border-b">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center py-6">
+                <div>
+                    <h1 class="text-2xl font-bold text-gray-900">ویرایش گروه تلفن</h1>
+                    <p class="text-gray-500 mt-1">ویرایش اطلاعات گروه: @Model.Name</p>
+                </div>
+                <div class="flex items-center space-x-4 space-x-reverse">
+                    <a asp-action="PhoneGroups" class="btn-secondary flex items-center">
+                        <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                        </svg>
+                        بازگشت
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- فرم ویرایش -->
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="bg-white rounded-xl border p-6">
+            <form asp-action="EditPhoneGroup" method="post" id="editGroupForm">
+                @Html.AntiForgeryToken()
+                <input type="hidden" asp-for="Id" />
+
+                @if (ViewData.ModelState.ErrorCount > 0)
+                {
+                    <div class="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+                        <div class="flex">
+                            <div class="flex-shrink-0">
+                                <svg class="h-5 w-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                            </div>
+                            <div class="mr-3">
+                                <h3 class="text-sm font-medium text-red-800">خطاهای زیر را بررسی کنید:</h3>
+                                <div class="mt-2 text-sm text-red-700">
+                                    <ul class="list-disc pr-5 space-y-1">
+                                        @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                                        {
+                                            <li>@error.ErrorMessage</li>
+                                        }
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+
+                <div class="space-y-6">
+                    <!-- نام گروه -->
+                    <div>
+                        <label asp-for="Name" class="block text-sm font-medium text-gray-700 mb-2"></label>
+                        <input asp-for="Name"
+                               class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                               placeholder="نام گروه" />
+                        <span asp-validation-for="Name" class="text-red-500 text-sm mt-1"></span>
+                    </div>
+
+                    <!-- توضیحات -->
+                    <div>
+                        <label asp-for="Description" class="block text-sm font-medium text-gray-700 mb-2"></label>
+                        <textarea asp-for="Description"
+                                  class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                  rows="3"
+                                  placeholder="توضیحات گروه"></textarea>
+                        <span asp-validation-for="Description" class="text-red-500 text-sm mt-1"></span>
+                    </div>
+
+                    <!-- شماره‌ها -->
+                    <div>
+                        <div class="flex justify-between items-center mb-4">
+                            <label class="block text-sm font-medium text-gray-700">شماره‌های تلفن</label>
+                            <button type="button"
+                                    onclick="addPhoneNumberField()"
+                                    class="text-blue-600 hover:text-blue-800 text-sm font-medium flex items-center">
+                                <svg class="w-5 h-5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                                </svg>
+                                افزودن شماره جدید
+                            </button>
+                        </div>
+
+                        <div id="phoneNumbersContainer" class="space-y-4">
+                            @if (Model.PhoneNumbers != null && Model.PhoneNumbers.Any())
+                            {
+                                @for (int i = 0; i < Model.PhoneNumbers.Count; i++)
+                                {
+                                    <div class="grid grid-cols-1 md:grid-cols-12 gap-3">
+                                        <input type="hidden" asp-for="PhoneNumbers[i].Id" />
+                                        <input type="hidden" asp-for="@Model.Id" />
+                                        <div class="md:col-span-5">
+                                            <input asp-for="PhoneNumbers[i].Name"
+                                                   class="w-full border border-gray-300 rounded-lg px-3 py-2"
+                                                   placeholder="نام (اختیاری)" />
+                                        </div>
+                                        <div class="md:col-span-6">
+                                            <input asp-for="PhoneNumbers[i].Number"
+                                                   class="w-full border border-gray-300 rounded-lg px-3 py-2"
+                                                   placeholder="شماره تلفن *"
+                                                   required />
+                                        </div>
+                                        <div class="md:col-span-1 flex items-center">
+                                            <button type="button"
+                                                    onclick="removePhoneField(this)"
+                                                    class="text-red-600 hover:text-red-800 p-2 @(Model.PhoneNumbers.Count == 1 ? "opacity-50 cursor-not-allowed" : "")"
+                                                    @(Model.PhoneNumbers.Count == 1 ? "disabled" : "")>
+                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                                </svg>
+                                            </button>
+                                        </div>
+                                    </div>
+                                }
+                            }
+                            else
+                            {
+                                <!-- اگر شماره‌ای وجود ندارد -->
+                                <div class="grid grid-cols-1 md:grid-cols-12 gap-3">
+                                    <div class="md:col-span-5">
+                                        <input type="text"
+                                               name="PhoneNumbers[0].Name"
+                                               class="w-full border border-gray-300 rounded-lg px-3 py-2"
+                                               placeholder="نام (اختیاری)" />
+                                    </div>
+                                    <div class="md:col-span-6">
+                                        <input type="text"
+                                               name="PhoneNumbers[0].Number"
+                                               class="w-full border border-gray-300 rounded-lg px-3 py-2"
+                                               placeholder="شماره تلفن * (مثال: 09123456789)"
+                                               required />
+                                    </div>
+                                    <div class="md:col-span-1 flex items-center">
+                                        <button type="button"
+                                                onclick="removePhoneField(this)"
+                                                class="text-red-600 hover:text-red-800 p-2 opacity-50 cursor-not-allowed"
+                                                disabled>
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+
+                        <p class="text-sm text-gray-500 mt-2">
+                            شماره‌ها باید با 09 شروع شوند و 11 رقمی باشند
+                        </p>
+                    </div>
+                </div>
+
+                <!-- دکمه‌ها -->
+                <div class="flex space-x-4 space-x-reverse mt-8 pt-6 border-t">
+                    <button type="submit"
+                            class="btn-primary flex-1 flex items-center justify-center">
+                        <svg id="submitSpinner" class="w-5 h-5 ml-2 hidden animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                        </svg>
+                        <span id="submitText">ذخیره تغییرات</span>
+                    </button>
+                    <a asp-action="PhoneGroups"
+                       class="btn-secondary flex-1 text-center">
+                        انصراف
+                    </a>
+                    <button type="button"
+                            onclick="confirmDelete(@Model.Id, '@Model.Name')"
+                            class="bg-red-50 text-red-700 hover:bg-red-100 border border-red-300 rounded-lg px-4 py-2 text-sm font-medium transition">
+                        حذف گروه
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- مودال تایید حذف -->
+<div id="deleteModal" class="fixed inset-0 z-50 hidden">
+    <div class="fixed inset-0 bg-black bg-opacity-50"></div>
+    <div class="fixed inset-0 flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl w-full max-w-md">
+            <div class="border-b p-6">
+                <h3 class="text-xl font-bold text-gray-900">تایید حذف گروه</h3>
+            </div>
+            <div class="p-6">
+                <p class="text-gray-700" id="deleteMessage">
+                    آیا از حذف این گروه مطمئن هستید؟
+                </p>
+                <p class="text-sm text-gray-500 mt-2">
+                    این عمل قابل بازگشت نیست و تمام شماره‌های موجود در گروه نیز حذف خواهند شد.
+                </p>
+            </div>
+            <div class="border-t p-6 flex space-x-3 space-x-reverse">
+                <form id="deleteForm" method="post" class="flex-1">
+                    @Html.AntiForgeryToken()
+                    <button type="submit"
+                            class="w-full bg-red-600 text-white hover:bg-red-700 rounded-lg px-4 py-2 text-sm font-medium transition">
+                        بله، حذف شود
+                    </button>
+                </form>
+                <button type="button"
+                        onclick="closeDeleteModal()"
+                        class="flex-1 btn-secondary">
+                    انصراف
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        let phoneCounter = @(Model.PhoneNumbers?.Count ?? 1);
+
+        // افزودن فیلد شماره جدید
+        function addPhoneNumberField() {
+            const container = document.getElementById('phoneNumbersContainer');
+
+            const template = `
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-3">
+                    <div class="md:col-span-5">
+                        <input type="text"
+                               name="PhoneNumbers[${phoneCounter}].Name"
+                               class="w-full border border-gray-300 rounded-lg px-3 py-2"
+                               placeholder="نام (اختیاری)" />
+                    </div>
+                    <div class="md:col-span-6">
+                        <input type="text"
+                               name="PhoneNumbers[${phoneCounter}].Number"
+                               class="w-full border border-gray-300 rounded-lg px-3 py-2"
+                               placeholder="شماره تلفن * (مثال: 09123456789)"
+                               required />
+                    </div>
+                    <div class="md:col-span-1 flex items-center">
+                        <button type="button"
+                                onclick="removePhoneField(this)"
+                                class="text-red-600 hover:text-red-800 p-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            container.insertAdjacentHTML('beforeend', template);
+            phoneCounter++;
+
+            // فعال کردن دکمه حذف همه ردیف‌ها
+            const removeButtons = container.querySelectorAll('button[onclick="removePhoneField(this)"]');
+            removeButtons.forEach(btn => {
+                btn.disabled = false;
+                btn.classList.remove('opacity-50', 'cursor-not-allowed');
+            });
+        }
+
+        // حذف فیلد شماره
+        function removePhoneField(button) {
+            const container = document.getElementById('phoneNumbersContainer');
+            const rows = container.querySelectorAll('.grid');
+
+            if (rows.length > 1) {
+                const row = button.closest('.grid');
+                if (row) {
+                    row.remove();
+                    updatePhoneIndexes();
+                }
+            }
+        }
+
+        // به روز رسانی اندیس‌ها
+        function updatePhoneIndexes() {
+            const container = document.getElementById('phoneNumbersContainer');
+            const rows = container.querySelectorAll('.grid');
+
+            phoneCounter = 0;
+            rows.forEach((row, index) => {
+                const hiddenId = row.querySelector('input[type="hidden"][name$=".Id"]');
+                const hiddenGroupId = row.querySelector('input[type="hidden"][name$=".PhoneGroupId"]');
+                const nameInput = row.querySelector('input[name$=".Name"]');
+                const numberInput = row.querySelector('input[name$=".Number"]');
+
+                if (hiddenId) {
+                    hiddenId.name = `PhoneNumbers[${index}].Id`;
+                }
+                if (hiddenGroupId) {
+                    hiddenGroupId.name = `PhoneNumbers[${index}].PhoneGroupId`;
+                }
+                if (nameInput) {
+                    nameInput.name = `PhoneNumbers[${index}].Name`;
+                }
+                if (numberInput) {
+                    numberInput.name = `PhoneNumbers[${index}].Number`;
+                }
+
+                phoneCounter = index + 1;
+            });
+        }
+
+        // مدیریت حذف گروه
+        function confirmDelete(groupId, groupName) {
+            const deleteModal = document.getElementById('deleteModal');
+            const deleteMessage = document.getElementById('deleteMessage');
+            const deleteForm = document.getElementById('deleteForm');
+
+            deleteMessage.textContent = `آیا از حذف گروه "${groupName}" مطمئن هستید؟`;
+            deleteForm.action = `@Url.Action("DeletePhoneGroup", "GroupSms")/${groupId}`;
+
+            deleteModal.classList.remove('hidden');
+        }
+
+        function closeDeleteModal() {
+            document.getElementById('deleteModal').classList.add('hidden');
+        }
+
+        // مدیریت ارسال فرم ویرایش
+        document.getElementById('editGroupForm').addEventListener('submit', function(e) {
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const spinner = document.getElementById('submitSpinner');
+            const submitText = document.getElementById('submitText');
+
+            submitBtn.disabled = true;
+            spinner.classList.remove('hidden');
+            submitText.textContent = 'در حال ذخیره...';
+        });
+
+        // بستن مودال با کلیک خارج
+        document.getElementById('deleteModal').addEventListener('click', function(e) {
+            if (e.target.id === 'deleteModal') {
+                closeDeleteModal();
+            }
+        });
+    </script>
+}

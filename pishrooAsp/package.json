@@ -3,10 +3,13 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "build:tailwind": "tailwindcss -i ./wwwroot/css/site.css -o ./wwwroot/css/output.css",
-    "watch:tailwind": "tailwindcss -i ./wwwroot/css/site.css -o ./wwwroot/css/output.css --watch"
+    "build:css": "tailwindcss -i ./wwwroot/css/input.css -o ./wwwroot/css/site.css --minify",
+    "watch:css": "tailwindcss -i ./wwwroot/css/input.css -o ./wwwroot/css/site.css --watch"
   },
   "devDependencies": {
-    "tailwindcss": "^3.3.0"
+    "autoprefixer": "^10.4.23",
+    "eslint": "^9.39.2",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^3.4.19"
   }
 }

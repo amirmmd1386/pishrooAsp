@@ -1,0 +1,108 @@
+﻿@model User
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+<div class="min-h-screen bg-gray-50 p-4 md:p-6">
+    <div class="max-w-md mx-auto">
+        <!-- هدر -->
+        <div class="mb-8">
+            <div class="flex items-center mb-4">
+                <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center ml-3">
+                    <i class="fas fa-user-edit text-blue-600"></i>
+                </div>
+                <div>
+                    <h1 class="text-2xl font-bold text-gray-800">ویرایش کاربر</h1>
+                    <p class="text-gray-600 text-sm">ویرایش اطلاعات کاربر</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- فرم ویرایش -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <form method="post" class="space-y-6">
+                <!-- اطلاعات کاربر -->
+                <div class="mb-6 p-4 bg-gray-50 rounded-lg">
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center ml-3">
+                            <i class="fas fa-user text-blue-600"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-500">نام کاربری</p>
+                            <p class="font-bold text-gray-800">@Model.Username</p>
+                        </div>
+                    </div>
+                </div>
+
+
+               
+
+                <!-- نقش کاربر -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        <i class="fas fa-user-tag ml-2 text-blue-500"></i>
+                        نقش کاربر
+                    </label>
+                    <select name="role"
+                            class="w-full border border-gray-300 rounded-lg p-3 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 focus:outline-none transition duration-200">
+                        <option value="Admin" selected="@(Model.Role == "Admin")">ادمین (دسترسی کامل)</option>
+                        <option value="Limited" selected="@(Model.Role == "Limited")">کاربر محدود</option>
+                    </select>
+                </div>
+
+                <!-- وضعیت فعال بودن -->
+                <div class="p-4 border border-gray-200 rounded-lg">
+                    <label class="flex items-center justify-between cursor-pointer">
+                        <div class="flex items-center">
+                            <div class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center ml-3">
+                                <i class="fas @(Model.IsActive ? "fa-toggle-on text-green-600" : "fa-toggle-off text-gray-400")"></i>
+                            </div>
+                            <div>
+                                <p class="font-medium text-gray-700">وضعیت حساب</p>
+                                <p class="text-sm text-gray-500">
+                                    @(Model.IsActive ? "حساب فعال است" : "حساب غیرفعال است")
+                                </p>
+                            </div>
+                        </div>
+                        <input type="checkbox"
+                               name="isActive"
+                               value="true"
+                               @(Model.IsActive ? "checked" : "")
+                               class="w-6 h-6 text-blue-600 rounded focus:ring-blue-500">
+                    </label>
+                </div>
+
+                <!-- دکمه‌ها -->
+                <div class="flex gap-3 pt-4">
+                    <button type="submit"
+                            class="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-medium transition duration-200 flex items-center justify-center">
+                        <i class="fas fa-save ml-2"></i>
+                        ذخیره تغییرات
+                    </button>
+                    <a href="/fa/User"
+                       class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 py-3 rounded-lg font-medium transition duration-200 flex items-center justify-center">
+                        <i class="fas fa-times ml-2"></i>
+                        انصراف
+                    </a>
+                </div>
+            </form>
+        </div>
+
+        <!-- راهنما -->
+        <div class="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
+            <h4 class="font-medium text-blue-800 mb-2">
+                <i class="fas fa-info-circle ml-2"></i>
+                راهنمای نقش‌ها
+            </h4>
+            <ul class="text-sm text-gray-600 space-y-2">
+                <li class="flex items-center">
+                    <i class="fas fa-user-shield text-blue-500 ml-2"></i>
+                    <span>ادمین: دسترسی کامل به همه بخش‌ها</span>
+                </li>
+                <li class="flex items-center">
+                    <i class="fas fa-user text-green-500 ml-2"></i>
+                    <span>کاربر محدود: دسترسی به بخش‌های محدود</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,47 @@
+﻿@model pishrooAsp.Models.Company.Company
+@{
+    ViewData["Title"] = "ثبت شرکت جدید";
+}
+
+<div class="max-w-3xl mx-auto p-6">
+    <h1 class="text-xl font-bold mb-6">ثبت شرکت جدید</h1>
+    <div asp-validation-summary="All"
+         class="bg-red-100 text-red-700 p-3 rounded-lg mb-4">
+    </div>
+
+    <form asp-action="Create" method="post"
+          class="bg-white p-6 rounded-xl shadow space-y-4">
+
+        <div>
+            <label class="block mb-1">نام شرکت</label>
+            <input asp-for="Name" class="border rounded-lg w-full px-3 py-2" />
+            <span asp-validation-for="Name" class="text-red-600 text-sm"></span>
+        </div>
+
+        <div>
+            <label class="block mb-1">ایمیل</label>
+            <input asp-for="Email" class="border rounded-lg w-full px-3 py-2" />
+            <span asp-validation-for="Email" class="text-red-600 text-sm"></span>
+        </div>
+
+        <div>
+            <label class="block mb-1">تلفن</label>
+            <input asp-for="Phone" class="border rounded-lg w-full px-3 py-2" />
+        </div>
+
+        <div>
+            <label class="block mb-1">شخص تماس</label>
+            <input asp-for="ContactPerson" class="border rounded-lg w-full px-3 py-2" />
+        </div>
+
+        <div class="flex justify-end gap-3">
+            <a asp-action="Index"
+               class="px-4 py-2 rounded-lg bg-gray-300">
+                انصراف
+            </a>
+            <button class="px-4 py-2 rounded-lg bg-blue-600 text-white">
+                ذخیره
+            </button>
+        </div>
+    </form>
+</div>

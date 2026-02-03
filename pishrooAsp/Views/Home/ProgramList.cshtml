@@ -1,6 +1,101 @@
 ﻿@* Components/Products/Luxury.cshtml *@
 @model List<ProductViewModel>
 
+@{
+    var lang = ViewBag.Language as string ?? "fa";
+
+    // متون ترجمه شده
+    string polymerProducts = lang switch
+    {
+        "fa" => "محصولات پلیمری",
+        "en" => "Polymer Products",
+        "ru" => "Полимерные продукты",
+        "tr" => "Polimer Ürünleri",
+        "ar" => "منتجات البوليمر",
+        _ => "Polymer Products"
+    };
+
+    string productsDesc = lang switch
+    {
+        "fa" => "تولید تی پی ای (TPE)، تی پی وی (TPV)، اس بی اس (SBS)، اس بی ای اس (SBS)، شور، سافت تاچ، کامپاند، الاستومر، پلی پروپیلن، پلی اتیلن، همو پلیمر و کو پلیمر با استانداردهای بین‌المللی",
+        "en" => "Production of TPE, TPV, SBS, SEBS, Shore, Soft Touch, Compound, Elastomer, Polypropylene, Polyethylene, Homo Polymer and Co Polymer with international standards",
+        "ru" => "Производство TPE, TPV, SBS, SEBS, Shore, Soft Touch, Compound, Elastomer, Polypropylene, Polyethylene, Homo Polymer и Co Polymer по международным стандартам",
+        "tr" => "TPE, TPV, SBS, SEBS, Shore, Soft Touch, Compound, Elastomer, Polypropylene, Polyethylene, Homo Polymer ve Co Polymer üretimi uluslararası standartlarla",
+        "ar" => "إنتاج TPE و TPV و SBS و SEBS و Shore و Soft Touch و Compound و Elastomer و Polypropylene و Polyethylene و Homo Polymer و Co Polymer وفق المعايير الدولية",
+        _ => "Production of TPE, TPV, SBS, SEBS, Shore, Soft Touch, Compound, Elastomer, Polypropylene, Polyethylene, Homo Polymer and Co Polymer with international standards"
+    };
+
+    string homePage = lang switch
+    {
+        "fa" => "صفحه اصلی",
+        "en" => "Home",
+        "ru" => "Главная",
+        "tr" => "Ana Sayfa",
+        "ar" => "الصفحة الرئيسية",
+        _ => "Home"
+    };
+
+    string productsText = lang switch
+    {
+        "fa" => "محصولات",
+        "en" => "Products",
+        "ru" => "Продукты",
+        "tr" => "Ürünler",
+        "ar" => "المنتجات",
+        _ => "Products"
+    };
+
+    string premiumLabel = lang switch
+    {
+        "fa" => "پریمیوم",
+        "en" => "Premium",
+        "ru" => "Премиум",
+        "tr" => "Premium",
+        "ar" => "متميز",
+        _ => "Premium"
+    };
+
+    string viewLabel = lang switch
+    {
+        "fa" => "مشاهده",
+        "en" => "View",
+        "ru" => "Просмотр",
+        "tr" => "Görüntüle",
+        "ar" => "عرض",
+        _ => "View"
+    };
+
+    string noProductsFound = lang switch
+    {
+        "fa" => "محصولی یافت نشد",
+        "en" => "No Products Found",
+        "ru" => "Продукты не найдены",
+        "tr" => "Ürün Bulunamadı",
+        "ar" => "لم يتم العثور على منتجات",
+        _ => "No Products Found"
+    };
+
+    string noProductsDesc = lang switch
+    {
+        "fa" => "در حال حاضر هیچ محصولی برای نمایش وجود ندارد",
+        "en" => "There are currently no products to display",
+        "ru" => "В настоящее время нет продуктов для отображения",
+        "tr" => "Şu anda görüntülenecek ürün yok",
+        "ar" => "لا توجد منتجات لعرضها حالياً",
+        _ => "There are currently no products to display"
+    };
+
+    string reloadText = lang switch
+    {
+        "fa" => "بارگذاری مجدد",
+        "en" => "Reload",
+        "ru" => "Перезагрузить",
+        "tr" => "Yeniden Yükle",
+        "ar" => "إعادة تحميل",
+        _ => "Reload"
+    };
+}
+
 <section class="luxury-products py-20 bg-gradient-to-br from-blue-50 to-indigo-50">
     <div class="container mx-auto px-4">
         <!-- هدر لوکس -->
@@ -9,33 +104,49 @@
                 <i class="fas fa-gem text-2xl text-white"></i>
             </div>
 
-            @{
-                // تشخیص زبان به صورت ایمن
-                var currentLanguage = "fa"; // زبان پیش‌فرض
-                if (Model != null && Model.Any() && !string.IsNullOrEmpty(Model[0].Language))
-                {
-                    currentLanguage = Model[0].Language.ToLower();
-                }
-                else
-                {
-                    // استفاده از ViewBag یا RouteData اگر موجود باشد
-                    currentLanguage = ViewBag.lang?.ToLower() ?? "fa";
-                }
-            }
-
-            @if (currentLanguage == "fa")
-            {
-                <h2 class="text-5xl font-black text-blue-800 mb-4">محصولات پلیمری</h2>
-                <div class="w-32 h-1 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full mx-auto mb-4"></div>
-                <p class="text-xl text-gray-600 max-w-2xl mx-auto">تولید تی پی ای (TPE)، تی پی وی (TPV)، اس بی اس (SBS)، اس بی ای اس (SBS)، شور، سافت تاچ، کامپاند، الاستومر، پلی پروپیلن، پلی اتیلن، همو پلیمر و کو پلیمر با استانداردهای بین‌المللی</p>
-            }
-            else
-            {
-                <h2 class="text-5xl font-black text-blue-800 mb-4">Polymer Products</h2>
-                <div class="w-32 h-1 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full mx-auto mb-4"></div>
-                <p class="text-xl text-gray-600 max-w-2xl mx-auto">Production of TPE, TPV, SBS, SEBS, Shore, Soft Touch, Compound, Elastomer, Polypropylene, Polyethylene, Homo Polymer and Co Polymer with international standards</p>
-            }
+            <h2 class="text-5xl font-black text-blue-800 mb-4">@polymerProducts</h2>
+            <div class="w-32 h-1 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full mx-auto mb-4"></div>
+            <p class="text-xl text-gray-600 max-w-2xl mx-auto">@productsDesc</p>
         </div>
+
+        <nav class="mb-8" aria-label="breadcrumb">
+            <div class="relative">
+                <div class="absolute right-0 top-1/2 w-full h-0.5 bg-gradient-to-l from-blue-100 to-gray-100 transform -translate-y-1/2 z-0"></div>
+
+                <ol class="flex items-center space-x-3 space-x-reverse relative z-10">
+                    <!-- آیتم اول (خانه) -->
+                    <li>
+                        <a href="/@lang" class="group flex items-center transition-all duration-200">
+                            <span class="flex items-center justify-center w-8 h-8 rounded-full bg-blue-50 group-hover:bg-blue-100 transition-colors duration-200">
+                                <svg class="w-4 h-4 text-blue-600" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path>
+                                </svg>
+                            </span>
+                            <span class="mr-2 font-medium text-gray-700 group-hover:text-blue-600 transition-colors duration-200">@homePage</span>
+                        </a>
+                    </li>
+
+                    <!-- جداکننده -->
+                    <li class="flex items-center">
+                        <svg class="w-5 h-5 text-gray-300" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
+                        </svg>
+                    </li>
+
+                    <!-- آیتم دوم (محصولات) -->
+                    <li>
+                        <a href="/@lang/products" class="group flex items-center transition-all duration-200">
+                            <span class="flex items-center justify-center w-8 h-8 rounded-full bg-blue-50 group-hover:bg-blue-100 transition-colors duration-200">
+                                <svg class="w-4 h-4 text-blue-600" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M7 3a1 1 0 000 2h6a1 1 0 100-2H7zM4 7a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zM2 11a2 2 0 012-2h12a2 2 0 012 2v4a2 2 0 01-2 2H4a2 2 0 01-2-2v-4z"></path>
+                                </svg>
+                            </span>
+                            <span class="mr-2 font-medium text-gray-700 group-hover:text-blue-600 transition-colors duration-200">@productsText</span>
+                        </a>
+                    </li>
+                </ol>
+            </div>
+        </nav>
 
         <!-- محصولات با کارت‌های لوکس -->
         @if (Model != null && Model.Any())
@@ -43,25 +154,24 @@
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 @foreach (var product in Model)
                 {
-                    <div class="luxury-card group" data-language="@product.Language">
+                    <div class="luxury-card group">
                         <!-- کارت محصول -->
                         <div class="bg-white rounded-3xl shadow-2xl overflow-hidden border border-white/20 backdrop-blur-sm">
                             <!-- هدر کارت -->
                             <div class="relative overflow-hidden h-56">
                                 <img src="@(product.ImageUrl ?? "/images/default-luxury-product.jpg")"
                                      alt="@(product.Title ?? "Product")"
-                                     class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                                    >
+                                     class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
                                 <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
                                 <div class="absolute top-4 right-4">
                                     <span class="bg-blue-600/90 text-white px-3 py-1 rounded-full text-xs font-bold backdrop-blur-sm">
-                                        @(product.Language?.ToUpper() ?? "FA")
+                                        @lang.ToUpper()
                                     </span>
                                 </div>
                                 <div class="absolute bottom-4 right-4">
                                     <span class="bg-green-500/90 text-white px-3 py-1 rounded-full text-xs font-bold backdrop-blur-sm">
                                         <i class="fas fa-star mr-1"></i>
-                                        @(currentLanguage == "fa" ? "پریمیوم" : "Premium")
+                                        @premiumLabel
                                     </span>
                                 </div>
                             </div>
@@ -72,15 +182,12 @@
 
                                 <!-- اکشن‌های کارت -->
                                 <div class="flex items-center justify-between">
-                                    
-
-                                    
                                     <a asp-controller="Products"
                                        asp-action="@product.seoWord?.Split(',')?[0]?.Trim()"
+                                       asp-route-culture="@lang"
                                        class="flex-1 bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 px-6 rounded-xl font-semibold hover:from-blue-700 hover:to-purple-700 transition-all duration-300 flex items-center justify-center group/btn mr-3">
-                                        @(currentLanguage == "fa" ? "مشاهده" : "View")
+                                        @viewLabel
                                         <i class="fas fa-arrow-left mr-2 group-hover/btn:-translate-x-1 transition-transform"></i>
-
                                     </a>
                                     <button class="w-12 h-12 bg-gray-100 hover:bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center transition-all duration-300 group/fav">
                                         <i class="far fa-heart group-hover/fav:scale-110"></i>
@@ -100,41 +207,129 @@
                 <div class="w-32 h-32 bg-gradient-to-br from-blue-100 to-purple-100 rounded-full flex items-center justify-center mx-auto mb-6">
                     <i class="fas fa-box-open text-5xl text-blue-600"></i>
                 </div>
-                <h3 class="text-3xl font-bold text-gray-700 mb-4">@(currentLanguage == "fa" ? "محصولی یافت نشد" : "No Products Found")</h3>
-                <p class="text-gray-500 text-lg mb-6">@(currentLanguage == "fa" ? "در حال حاضر هیچ محصولی برای نمایش وجود ندارد" : "There are currently no products to display")</p>
+                <h3 class="text-3xl font-bold text-gray-700 mb-4">@noProductsFound</h3>
+                <p class="text-gray-500 text-lg mb-6">@noProductsDesc</p>
                 <button class="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-3 rounded-xl font-semibold hover:from-blue-700 hover:to-purple-700 transition-all duration-300">
                     <i class="fas fa-sync-alt ml-2"></i>
-                    @(currentLanguage == "fa" ? "بارگذاری مجدد" : "Reload")
+                    @reloadText
                 </button>
             </div>
         }
-
     </div>
 </section>
 @{
+    // نام Schema بر اساس زبان
+    string schemaName = lang switch
+    {
+        "fa" => "محصولات پلیمری تی پی ای، تی پی وی، اس بی اس",
+        "en" => "Polymer Products TPE, TPV, SBS",
+        "ru" => "Полимерные продукты TPE, TPV, SBS",
+        "tr" => "Polimer Ürünleri TPE, TPV, SBS",
+        "ar" => "منتجات البوليمر TPE و TPV و SBS",
+        _ => "Polymer Products TPE, TPV, SBS"
+    };
+
+    string schemaDescription = lang switch
+    {
+        "fa" => "تولید تی پی ای (TPE)، تی پی وی (TPV)، اس بی اس (SBS)، اس بی ای اس (SEBS)، شور، سافت تاچ، کامپاند پلیمری، الاستومر، پلی پروپیلن، پلی اتیلن، همو پلیمر و کو پلیمر",
+        "en" => "Production of TPE, TPV, SBS, SEBS, Shore, Soft Touch, Polymer Compound, Elastomer, Polypropylene, Polyethylene, Homo Polymer and Co Polymer",
+        "ru" => "Производство TPE, TPV, SBS, SEBS, Shore, Soft Touch, Polymer Compound, Elastomer, Polypropylene, Polyethylene, Homo Polymer и Co Polymer",
+        "tr" => "TPE, TPV, SBS, SEBS, Shore, Soft Touch, Polymer Compound, Elastomer, Polypropylene, Polyethylene, Homo Polymer ve Co Polymer üretimi",
+        "ar" => "إنتاج TPE و TPV و SBS و SEBS و Shore و Soft Touch و Polymer Compound و Elastomer و Polypropylene و Polyethylene و Homo Polymer و Co Polymer",
+        _ => "Production of TPE, TPV, SBS, SEBS, Shore, Soft Touch, Polymer Compound, Elastomer, Polypropylene, Polyethylene, Homo Polymer and Co Polymer"
+    };
+
+    string brandName = lang switch
+    {
+        "fa" => "آروین پلیمر",
+        "en" => "Arvin Polymer",
+        "ru" => "Арвин Полимер",
+        "tr" => "Arvin Polimer",
+        "ar" => "أربين بوليمر",
+        _ => "Arvin Polymer"
+    };
+
+    string companyDesc = lang switch
+    {
+        "fa" => "شرکت پیشرو در تولید محصولات پلیمری با کیفیت",
+        "en" => "Leading company in production of high quality polymer products",
+        "ru" => "Ведущая компания по производству высококачественных полимерных продуктов",
+        "tr" => "Yüksek kaliteli polimer ürünlerin üretiminde öncü şirket",
+        "ar" => "شركة رائدة في إنتاج منتجات البوليمر عالية الجودة",
+        _ => "Leading company in production of high quality polymer products"
+    };
+
+    string categoryName = lang switch
+    {
+        "fa" => "مواد پلیمری صنعتی",
+        "en" => "Industrial Polymer Materials",
+        "ru" => "Промышленные полимерные материалы",
+        "tr" => "Endüstriyel Polimer Malzemeler",
+        "ar" => "مواد البوليمر الصناعية",
+        _ => "Industrial Polymer Materials"
+    };
+
+    string qualityStandard = lang switch
+    {
+        "fa" => "استاندارد کیفیت",
+        "en" => "Quality Standard",
+        "ru" => "Стандарт качества",
+        "tr" => "Kalite Standardı",
+        "ar" => "معيار الجودة",
+        _ => "Quality Standard"
+    };
+
+    string polymerType = lang switch
+    {
+        "fa" => "نوع پلیمر",
+        "en" => "Polymer Type",
+        "ru" => "Тип полимера",
+        "tr" => "Polimer Tipi",
+        "ar" => "نوع البوليمر",
+        _ => "Polymer Type"
+    };
+
+    string polymerTypeValue = lang switch
+    {
+        "fa" => "صنعتی",
+        "en" => "Industrial",
+        "ru" => "Промышленный",
+        "tr" => "Endüstriyel",
+        "ar" => "صناعي",
+        _ => "Industrial"
+    };
+
+    string cityName = lang switch
+    {
+        "fa" => "تهران",
+        "en" => "Tehran",
+        "ru" => "Тегеран",
+        "tr" => "Tahran",
+        "ar" => "طهران",
+        _ => "Tehran"
+    };
+
     var advancedSchema = new
     {
         context = "https://schema.org",
         type = "ItemList",
-        name = currentLanguage == "fa" ? "محصولات پلیمری تی پی ای، تی پی وی، اس بی اس" : "Polymer Products TPE, TPV, SBS",
-        description = currentLanguage == "fa" ?
-        "تولید تی پی ای (TPE)، تی پی وی (TPV)، اس بی اس (SBS)، اس بی ای اس (SEBS)، شور، سافت تاچ، کامپاند پلیمری، الاستومر، پلی پروپیلن، پلی اتیلن، همو پلیمر و کو پلیمر" :
-        "Production of TPE, TPV, SBS, SEBS, Shore, Soft Touch, Polymer Compound, Elastomer, Polypropylene, Polyethylene, Homo Polymer and Co Polymer",
-        url = $"https://arvinpolymer.com/{(currentLanguage == "en" ? "en/" : "")}products",
-        numberOfItems = Model.Count,
+        name = schemaName,
+        description = schemaDescription,
+        url = $"https://arvinpolymer.com/{(lang == "en" ? "en/" : lang == "fa" ? "" : $"{lang}/")}products",
+        numberOfItems = Model?.Count ?? 0,
         mainEntityOfPage = new
         {
             type = "CollectionPage",
-            id = $"https://arvinpolymer.com/{(currentLanguage == "en" ? "en/" : "")}products"
+            id = $"https://arvinpolymer.com/{(lang == "en" ? "en/" : lang == "fa" ? "" : $"{lang}/")}products"
         },
-        itemListElement = Model.Select((product, index) => new
+        itemListElement = Model?.Select((product, index) => new
         {
             type = "ListItem",
             position = index + 1,
             item = new
             {
                 type = "Product",
-                id = $"https://arvinpolymer.com/{(currentLanguage == "fa" ? "fa/" : "en/")}products/{product.seoWord?.Split(',')?[0]?.Trim()}",
+                id = $"https://arvinpolymer.com/{lang}/products/{product.seoWord?.Split(',')?[0]?.Trim()}",
                 name = product.Title,
                 description = product.Title,
                 image = product.ImageUrl ?? "/images/default-luxury-product.jpg",
@@ -142,21 +337,21 @@
                 brand = new
                 {
                     type = "Brand",
-                    name = currentLanguage == "fa" ? "آروین پلیمر" : "Arvin Polymer",
+                    name = brandName,
                     logo = "https://arvinpolymer.com/images/companyLogo.png",
                     url = "https://arvinpolymer.com"
                 },
                 manufacturer = new
                 {
                     type = "Organization",
-                    name = currentLanguage == "fa" ? "آروین پلیمر" : "Arvin Polymer",
+                    name = brandName,
                     url = "https://arvinpolymer.com"
                 },
-                category = currentLanguage == "fa" ? "مواد پلیمری صنعتی" : "Industrial Polymer Materials",
+                category = categoryName,
                 offers = new
                 {
                     type = "Offer",
-                    url = $"https://arvinpolymer.com/{(currentLanguage == "fa" ? "fa/" : "en/")}products/{product.seoWord?.Split(',')?[0]?.Trim()}",
+                    url = $"https://arvinpolymer.com/{lang}/products/{product.seoWord?.Split(',')?[0]?.Trim()}",
                     priceCurrency = "IRR",
                     price = "0",
                     priceValidUntil = DateTime.Now.AddYears(1).ToString("yyyy-MM-dd"),
@@ -165,50 +360,26 @@
                     seller = new
                     {
                         type = "Organization",
-                        name = currentLanguage == "fa" ? "آروین پلیمر" : "Arvin Polymer",
+                        name = brandName,
                         url = "https://arvinpolymer.com"
                     }
                 },
-                aggregateRating = new
-                {
-                    type = "AggregateRating",
-                    ratingValue = "4.8",
-                    bestRating = "5",
-                    worstRating = "1",
-                    ratingCount = "150"
-                },
-                additionalProperty = new[]
-                {
-                    new
-                    {
-                        type = "PropertyValue",
-                        name = currentLanguage == "fa" ? "استاندارد کیفیت" : "Quality Standard",
-                        value = currentLanguage == "fa" ? "ISO 9001" : "ISO 9001"
-                    },
-                    new
-                    {
-                        type = "PropertyValue",
-                        name = currentLanguage == "fa" ? "نوع پلیمر" : "Polymer Type",
-                        value = currentLanguage == "fa" ? "صنعتی" : "Industrial"
-                    }
-                }
+            
             }
         }).ToArray(),
         publisher = new
         {
             type = "Organization",
-            name = currentLanguage == "fa" ? "آروین پلیمر" : "Arvin Polymer",
-            description = currentLanguage == "fa" ?
-                "شرکت پیشرو در تولید محصولات پلیمری با کیفیت" :
-                "Leading company in production of high quality polymer products",
+            name = brandName,
+            description = companyDesc,
             url = "https://arvinpolymer.com",
             logo = "https://arvinpolymer.com/images/companyLogo.png",
             address = new
             {
                 type = "PostalAddress",
                 addressCountry = "IR",
-                addressLocality = currentLanguage == "fa" ? "تهران" : "Tehran",
-                addressRegion = currentLanguage == "fa" ? "تهران" : "Tehran"
+                addressLocality = cityName,
+                addressRegion = cityName
             },
             contactPoint = new
             {
@@ -216,12 +387,11 @@
                 telephone = "+98-912-363-3723",
                 contactType = "customer service",
                 areaServed = "IR",
-                availableLanguage = new[] { "fa", "en" }
+                availableLanguage = new[] { "fa", "en", "ru", "tr", "ar" }
             }
         }
     };
 }
-
 <script type="application/ld+json">
     @Html.Raw(Json.Serialize(advancedSchema))
 </script>

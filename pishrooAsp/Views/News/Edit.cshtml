@@ -1,4 +1,4 @@
-﻿@model pishrooAsp.ModelViewer.NewsViewModel
+﻿@model pishrooAsp.ModelViewer.NewsViewModel  // ✅ درسته
 @{
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
     ViewData["Title"] = "ویرایش خبر";
@@ -41,7 +41,7 @@
         </div>
         <partial name="_RichTextEditor"
                  view-data="@(new ViewDataDictionary(ViewData) {
-                                                                                   { "Name", Model.Translations[0].Content },
+                                                                                   { "Name", $"Translations[0].Content" },
                                                                   { "Value", Model.Translations[0].Content },
                                                  { "Height", "300px" },
                                                  { "Placeholder", $"" }

@@ -1,0 +1,184 @@
+﻿@model List<pishrooAsp.Models.Sms.SmsTemplate>
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+<div class="min-h-screen bg-gradient-to-br from-indigo-50 to-purple-50 py-8 px-4">
+    <div class="max-w-4xl mx-auto">
+        <!-- هدر صفحه -->
+        <div class="text-center mb-10">
+            <div class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full mb-6 shadow-xl">
+                <i class="fas fa-sms text-3xl text-white"></i>
+            </div>
+            <h1 class="text-4xl font-bold text-gray-800 mb-4">انتخاب قالب پیامک</h1>
+            <p class="text-gray-600 text-lg max-w-2xl mx-auto">
+                قالب مناسب را انتخاب کنید تا به مرحله بعدی ارسال پیامک بروید
+            </p>
+        </div>
+
+        <!-- کارت اصلی -->
+        <div class="bg-white rounded-3xl shadow-2xl p-6 mb-8">
+            <div class="flex items-center justify-between mb-6">
+                <div class="flex items-center">
+                    <div class="w-12 h-12 bg-blue-100 rounded-2xl flex items-center justify-center ml-3">
+                        <i class="fas fa-filter text-blue-600 text-xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-bold text-gray-800">قالب‌های موجود</h3>
+                        <p class="text-sm text-gray-500">@Model.Count قالب پیامک</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-3 space-x-reverse">
+                    <button class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-xl font-medium transition duration-300 flex items-center">
+                        <i class="fas fa-sort ml-2"></i>
+                        مرتب‌سازی
+                    </button>
+                    <button class="bg-blue-50 hover:bg-blue-100 text-blue-600 px-4 py-2 rounded-xl font-medium transition duration-300 flex items-center">
+                        <i class="fas fa-search ml-2"></i>
+                        جستجو
+                    </button>
+                </div>
+            </div>
+
+            <!-- لیست قالب‌ها -->
+            <div class="space-y-4">
+                @foreach (var template in Model)
+                {
+                    <div class="group bg-gradient-to-r from-white to-gray-50 border border-gray-200 rounded-2xl p-6 hover:border-purple-300 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+                        <div class="flex justify-between items-start">
+                            <!-- محتوای قالب -->
+                            <div class="flex-1">
+                                <div class="flex items-center mb-3">
+                                    <div class="w-10 h-10 bg-gradient-to-r from-blue-100 to-indigo-100 rounded-xl flex items-center justify-center ml-3">
+                                        <i class="fas fa-file-alt text-blue-600"></i>
+                                    </div>
+                                    <h3 class="text-xl font-bold text-gray-800">@template.Title</h3>
+                                    <span class="mr-auto bg-blue-100 text-blue-600 text-xs px-3 py-1 rounded-full font-medium">
+                                        ID: @template.Id
+                                    </span>
+                                </div>
+
+                                <p class="text-gray-600 text-lg leading-relaxed mb-4 border-r-4 border-blue-200 pr-4">
+                                    @template.Body
+                                </p>
+
+                                <div class="flex items-center text-sm text-gray-500">
+                                    <div class="flex items-center ml-6">
+                                        <i class="fas fa-hashtag ml-1"></i>
+                                        <span>@(template.Body?.Length ?? 0) کاراکتر</span>
+                                    </div>
+                                    <div class="flex items-center ml-6">
+                                        <i class="fas fa-calendar ml-1"></i>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- دکمه انتخاب -->
+                            <a href="@Url.Action("Create", "CompanySms", new { companyId = ViewBag.CompanyId, templateId = template.Id })"
+                               class="bg-gradient-to-r from-green-500 to-emerald-600 text-white px-8 py-3 rounded-xl font-bold hover:from-green-600 hover:to-emerald-700 transition-all duration-300 shadow-lg hover:shadow-xl flex items-center group/btn transform hover:scale-105 ml-6">
+                                <i class="fas fa-check-circle ml-2 group-hover/btn:rotate-12 transition-transform"></i>
+                                انتخاب
+                            </a>
+                        </div>
+                    </div>
+                }
+
+                <!-- حالت خالی -->
+                @if (!Model.Any())
+                {
+                    <div class="text-center py-16 bg-gradient-to-br from-gray-50 to-blue-50 rounded-2xl">
+                        <div class="w-24 h-24 bg-gradient-to-r from-gray-200 to-gray-300 rounded-full flex items-center justify-center mx-auto mb-6">
+                            <i class="fas fa-inbox text-3xl text-gray-400"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-gray-600 mb-4">قالب پیامکی یافت نشد</h3>
+                        <p class="text-gray-500 mb-6 max-w-md mx-auto">
+                            در حال حاضر هیچ قالب پیامکی برای نمایش وجود ندارد. می‌توانید قالب جدید ایجاد کنید.
+                        </p>
+                        <a href="@Url.Action("CreateTemplate", "CompanySms")"
+                           class="bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-8 py-3 rounded-xl font-bold hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 inline-flex items-center shadow-lg hover:shadow-xl">
+                            <i class="fas fa-plus-circle ml-2"></i>
+                            ساخت قالب جدید
+                        </a>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- کارت راهنما -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- کارت راهنمای انتخاب -->
+            <div class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-6 shadow-lg">
+                <div class="flex items-center mb-4">
+                    <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center ml-3">
+                        <i class="fas fa-hand-pointer text-blue-600 text-xl"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-800">راهنمای انتخاب</h3>
+                </div>
+                <p class="text-gray-600 text-sm">
+                    قالب مناسب را با توجه به نوع پیام و مخاطب انتخاب کنید. هر قالب برای هدف خاصی طراحی شده است.
+                </p>
+            </div>
+
+            <!-- کارت پیش‌نمایش -->
+            <div class="bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl p-6 shadow-lg">
+                <div class="flex items-center mb-4">
+                    <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center ml-3">
+                        <i class="fas fa-eye text-green-600 text-xl"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-800">پیش‌نمایش</h3>
+                </div>
+                <p class="text-gray-600 text-sm">
+                    قبل از ارسال، می‌توانید پیش‌نمایش پیام را مشاهده و در صورت نیاز ویرایش کنید.
+                </p>
+            </div>
+
+            <!-- کارت مرحله بعد -->
+            <div class="bg-gradient-to-br from-purple-50 to-pink-50 rounded-2xl p-6 shadow-lg">
+                <div class="flex items-center mb-4">
+                    <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center ml-3">
+                        <i class="fas fa-arrow-right text-purple-600 text-xl"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-800">مرحله بعد</h3>
+                </div>
+                <p class="text-gray-600 text-sm">
+                    پس از انتخاب قالب، به صفحه ویرایش و ارسال پیامک منتقل می‌شوید.
+                </p>
+            </div>
+        </div>
+
+        <!-- دکمه بازگشت -->
+        <div class="text-center mt-8">
+            <a href="@Url.Action("Index", "CompanySms")"
+               class="inline-flex items-center bg-gradient-to-r from-gray-200 to-gray-300 text-gray-700 px-8 py-3 rounded-xl font-bold hover:from-gray-300 hover:to-gray-400 transition-all duration-300 shadow hover:shadow-md">
+                <i class="fas fa-arrow-right ml-2"></i>
+                بازگشت به لیست شرکت‌ها
+            </a>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* انیمیشن‌های سفارشی */
+    .group:hover .group-hover\:rotate-12 {
+        transform: rotate(12deg);
+    }
+
+    .transform {
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* سایه‌های نرم */
+    .shadow-2xl {
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+    }
+
+    /* حاشیه گرد */
+    .rounded-3xl {
+        border-radius: 1.5rem;
+    }
+
+    /* گرادیانت زیبا */
+    .bg-gradient-to-br {
+        background-size: 200% 200%;
+        animation: gradient 15s ease infinite;
+    }
+</style>

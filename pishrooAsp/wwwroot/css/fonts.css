@@ -1,0 +1,60 @@
+﻿/* فونت وزیرمتن - فونت فارسی */
+@font-face {
+    font-family: 'Vazirmatn';
+    font-style: normal;
+    font-weight: 100;
+    src: url('../fonts/vazirmatn-thin.woff2') format('woff2'), url('../fonts/vazirmatn-thin.woff') format('woff'), url('../fonts/vazirmatn-thin.ttf') format('truetype');
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Vazirmatn';
+    font-style: normal;
+    font-weight: 200;
+    src: url('../fonts/vazirmatn-extralight.woff2') format('woff2'), url('../fonts/vazirmatn-extralight.woff') format('woff'), url('../fonts/vazirmatn-extralight.ttf') format('truetype');
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Vazirmatn';
+    font-style: normal;
+    font-weight: 300;
+    src: url('../fonts/vazirmatn-light.woff2') format('woff2'), url('../fonts/vazirmatn-light.woff') format('woff'), url('../fonts/vazirmatn-light.ttf') format('truetype');
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Vazirmatn';
+    font-style: normal;
+    font-weight: 400;
+    src: url('../fonts/vazirmatn-regular.woff2') format('woff2'), url('../fonts/vazirmatn-regular.woff') format('woff'), url('../fonts/vazirmatn-regular.ttf') format('truetype');
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Vazirmatn';
+    font-style: normal;
+    font-weight: 500;
+    src: url('../fonts/vazirmatn-medium.woff2') format('woff2'), url('../fonts/vazirmatn-medium.woff') format('woff'), url('../fonts/vazirmatn-medium.ttf') format('truetype');
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Vazirmatn';
+    font-style: normal;
+    font-weight: 600;
+    src: url('../fonts/vazirmatn-semibold.woff2') format('woff2'), url('../fonts/vazirmatn-semibold.woff') format('woff'), url('../fonts/vazirmatn-semibold.ttf') format('truetype');
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Vazirmatn';
+    font-style: normal;
+    font-weight: 700;
+    src: url('../fonts/vazirmatn-bold.woff2') format('woff2'), url('../fonts/vazirmatn-bold.woff') format('woff');
+    font-display: swap;
+}
+
+        body{
+            font-family :Vazirmatn ,Arial;
+            }

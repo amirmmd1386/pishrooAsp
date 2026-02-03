@@ -1,0 +1,72 @@
+﻿@model List<pishrooAsp.Models.MessageTemplate.MessageTemplate>
+
+@{
+    ViewData["Title"] = "قالب‌های پیام";
+}
+
+<div class="p-6 space-y-6">
+
+    <div class="flex justify-between items-center">
+        <h1 class="text-xl font-bold">
+            قالب‌های پیام – @ViewBag.CompanyName
+        </h1>
+
+        <a asp-action="Create"
+           asp-route-companyId="@ViewBag.CompanyId"
+           class="bg-blue-600 text-white px-4 py-2 rounded-lg">
+            + قالب جدید
+        </a>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="bg-green-100 text-green-700 p-3 rounded-lg">
+            @TempData["Success"]
+        </div>
+    }
+
+    <div class="bg-white rounded-xl shadow overflow-x-auto">
+        <table class="w-full text-sm text-right">
+            <thead class="bg-gray-100">
+                <tr>
+                    <th class="p-3">نام قالب</th>
+                    <th class="p-3">دسته‌بندی</th>
+                    <th class="p-3">آخرین ویرایش</th>
+                    <th class="p-3 text-center">عملیات</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr class="border-t">
+                        <td class="p-3 font-medium">@item.Name</td>
+                        <td class="p-3">@item.Category</td>
+                        <td class="p-3">
+                            @(item.LastModified?.ToString("yyyy/MM/dd") ?? "-")
+                        </td>
+                        <td class="p-3 flex gap-2 justify-center">
+                            <a asp-action="Edit" asp-route-id="@item.Id"
+                               class="px-3 py-1 text-xs bg-yellow-500 text-white rounded">
+                                ویرایش
+                            </a>
+
+                            <a asp-action="ManageTokens" asp-route-id="@item.Id"
+                               class="px-3 py-1 text-xs bg-indigo-600 text-white rounded">
+                                توکن‌ها
+                            </a>
+                        </td>
+                    </tr>
+                }
+
+                @if (!Model.Any())
+                {
+                    <tr>
+                        <td colspan="4" class="p-4 text-center text-gray-500">
+                            قالبی ثبت نشده است
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

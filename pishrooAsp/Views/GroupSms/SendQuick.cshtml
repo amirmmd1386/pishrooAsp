@@ -1,0 +1,177 @@
+﻿@* Views/GroupSms/SendQuick.cshtml *@
+@model pishrooAsp.Controllers.QuickSendModel
+
+@{
+    ViewData["Title"] = "ارسال سریع پیامک";
+    Layout = "_AdminLayout";
+}
+
+<div class="min-h-screen bg-gray-50">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="mb-8">
+            <a asp-action="Index" class="text-blue-600 hover:text-blue-900 flex items-center">
+                <svg class="w-5 h-5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+                بازگشت
+            </a>
+            <h1 class="text-2xl font-bold text-gray-900 mt-4">ارسال سریع پیامک</h1>
+            <p class="text-gray-500 mt-2">پیامک فوری بدون ایجاد کمپین</p>
+        </div>
+
+        <div class="bg-white rounded-xl border shadow-sm">
+            <form asp-action="SendQuick" method="post" class="p-6">
+                <div class="space-y-6">
+                    <!-- عنوان اختیاری -->
+                    <div>
+                        <label asp-for="Title" class="block text-sm font-medium text-gray-700 mb-2">
+                            عنوان (اختیاری)
+                            <span class="text-gray-400 text-xs mr-2">برای آرشیو</span>
+                        </label>
+                        <input asp-for="Title"
+                               class="block w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                               placeholder="عنوان این ارسال" />
+                    </div>
+
+                    <!-- شماره‌ها -->
+                    <div>
+                        <label asp-for="Mobiles" class="block text-sm font-medium text-gray-700 mb-2">
+                            شماره موبایل‌ها
+                            <span class="text-gray-400 text-xs mr-2">(با کاما یا Enter جدا کنید)</span>
+                        </label>
+                        <textarea asp-for="Mobiles"
+                                  rows="6"
+                                  class="block w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-mono text-sm"
+                                  placeholder="09123456789, 09129876543, 09127777777&#10;یا هر شماره در یک خط"></textarea>
+                        <span asp-validation-for="Mobiles" class="text-red-500 text-sm mt-1"></span>
+                        <div class="flex justify-between items-center mt-2">
+                            <p class="text-gray-500 text-sm">تعداد شماره‌ها: <span id="mobileCount">0</span></p>
+                            <button type="button" onclick="clearMobiles()" class="text-sm text-red-600 hover:text-red-900">
+                                پاک کردن همه
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- متن پیام -->
+                    <div>
+                        <div class="flex justify-between items-center mb-2">
+                            <label asp-for="Message" class="block text-sm font-medium text-gray-700">متن پیامک</label>
+                            <span id="charCount" class="text-sm text-gray-500">0/500</span>
+                        </div>
+                        <textarea asp-for="Message"
+                                  rows="5"
+                                  class="block w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                  placeholder="متن پیامک را اینجا بنویسید..."></textarea>
+                        <span asp-validation-for="Message" class="text-red-500 text-sm mt-1"></span>
+                    </div>
+
+                    <!-- پیش نمایش -->
+                    <div class="bg-gray-50 rounded-lg p-4 border">
+                        <div class="flex items-center mb-3">
+                            <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
+                                <svg class="w-4 h-4 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                                </svg>
+                            </div>
+                            <div class="mr-3">
+                                <div class="text-sm font-medium text-gray-900">پیام شما</div>
+                                <div class="text-xs text-gray-500">ارسال سریع</div>
+                            </div>
+                        </div>
+                        <div id="messagePreview" class="text-gray-700">
+                            متن پیامک اینجا نمایش داده می‌شود...
+                        </div>
+                    </div>
+
+                    <!-- دکمه‌ها -->
+                    <div class="pt-6 border-t">
+                        <div class="flex justify-between items-center">
+                            <button type="button" onclick="sendTest()" class="btn-secondary">
+                                <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                                </svg>
+                                ارسال تست
+                            </button>
+                            <div class="flex space-x-4 space-x-reverse">
+                                <button type="button" onclick="clearForm()" class="btn-secondary">
+                                    پاک کردن فرم
+                                </button>
+                                <button type="submit" class="btn-primary">
+                                    <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                                    </svg>
+                                    ارسال پیامک‌ها
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // شمارش کاراکترها و نمایش پیش‌نمایش
+        const messageInput = document.getElementById('Message');
+        const charCount = document.getElementById('charCount');
+        const preview = document.getElementById('messagePreview');
+        const mobileInput = document.getElementById('Mobiles');
+        const mobileCount = document.getElementById('mobileCount');
+
+        messageInput.addEventListener('input', function(e) {
+            const length = e.target.value.length;
+            charCount.textContent = length + '/500';
+
+            if (length > 500) {
+                charCount.classList.add('text-red-500');
+            } else {
+                charCount.classList.remove('text-red-500');
+            }
+
+            preview.textContent = e.target.value || 'متن پیامک اینجا نمایش داده می‌شود...';
+        });
+
+        // شمارش شماره‌ها
+        mobileInput.addEventListener('input', function(e) {
+            const text = e.target.value;
+            const mobiles = text.split(/[\n,]+/).map(m => m.trim()).filter(m => m);
+            mobileCount.textContent = mobiles.length;
+        });
+
+        // پاک کردن شماره‌ها
+        function clearMobiles() {
+            if (confirm('آیا می‌خواهید همه شماره‌ها پاک شوند؟')) {
+                mobileInput.value = '';
+                mobileCount.textContent = '0';
+            }
+        }
+
+        // پاک کردن کل فرم
+        function clearForm() {
+            if (confirm('آیا می‌خواهید کل فرم پاک شود؟')) {
+                document.getElementById('Title').value = '';
+                mobileInput.value = '';
+                messageInput.value = '';
+                mobileCount.textContent = '0';
+                charCount.textContent = '0/500';
+                preview.textContent = 'متن پیامک اینجا نمایش داده می‌شود...';
+            }
+        }
+
+        // ارسال تست
+        function sendTest() {
+            const mobilesText = mobileInput.value;
+            const message = messageInput.value;
+
+            if (!message.trim()) {
+                alert('لطفا متن پیامک را وارد کنید');
+                return;
+            }
+
+            // نمایش شبیه‌سازی ارسال تست
+            alert('پیام تست ارسال شد (این یک شبیه‌سازی است)');
+        }
+    </script>
+}

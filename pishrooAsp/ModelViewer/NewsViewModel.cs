@@ -18,6 +18,8 @@
 		public DateTime PublishDate { get; set; }
 		public bool IsPublished { get; set; }
 		public int AuthorId { get; set; }
+		public IFormFile DefaultImage { get; set; }
+
 		public string DefaultImageUrl { get; set; }
 
 		public List<NewsTranslationViewModel> Translations { get; set; }

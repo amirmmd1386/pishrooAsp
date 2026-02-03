@@ -1,0 +1,357 @@
+﻿@model List<User>
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+<div class="min-h-screen bg-gray-50 p-4 md:p-6">
+    <div class="max-w-7xl mx-auto">
+        <!-- هدر -->
+        <div class="mb-6">
+            <h1 class="text-2xl md:text-3xl font-bold text-gray-800">مدیریت کاربران</h1>
+            <p class="text-gray-600 mt-2">لیست تمام کاربران سیستم</p>
+        </div>
+
+        <!-- پیام موفقیت -->
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="mb-6 bg-green-50 border-r-4 border-green-500 p-4 rounded-lg">
+                <div class="flex items-center">
+                    <i class="fas fa-check-circle text-green-500 ml-2"></i>
+                    <span class="text-green-700">@TempData["SuccessMessage"]</span>
+                </div>
+            </div>
+        }
+
+        <!-- کارت اصلی -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+            <!-- هدر کارت -->
+            <div class="px-6 py-4 border-b border-gray-200 flex flex-col md:flex-row justify-between items-start md:items-center">
+                <div class="mb-4 md:mb-0">
+                    <h2 class="text-lg font-semibold text-gray-800">کاربران سیستم</h2>
+                    <p class="text-sm text-gray-500">تعداد: <span id="userCount">@Model.Count</span> کاربر</p>
+                </div>
+                <a href="/fa/User/Create"
+                   class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition duration-200 inline-flex items-center">
+                    <i class="fas fa-plus ml-2"></i>
+                    افزودن کاربر جدید
+                </a>
+            </div>
+
+            <!-- جدول -->
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead>
+                        <tr class="bg-gray-50 border-b border-gray-200">
+                            <th class="px-6 py-3 text-right text-xs font-medium text-gray-700 uppercase tracking-wider">
+                                نام کاربری
+                            </th>
+                            <th class="px-6 py-3 text-right text-xs font-medium text-gray-700 uppercase tracking-wider">
+                                نقش
+                            </th>
+                            <th class="px-6 py-3 text-right text-xs font-medium text-gray-700 uppercase tracking-wider">
+                                وضعیت
+                            </th>
+                            <th class="px-6 py-3 text-right text-xs font-medium text-gray-700 uppercase tracking-wider">
+                                عملیات
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200" id="usersTableBody">
+                        @foreach (var u in Model)
+                        {
+                            <tr class="hover:bg-gray-50 transition duration-150" id="user-row-@u.Id">
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center">
+                                        <div class="flex-shrink-0 h-10 w-10 bg-blue-100 rounded-full flex items-center justify-center ml-3">
+                                            <i class="fas fa-user text-blue-600"></i>
+                                        </div>
+                                        <div>
+                                            <div class="text-sm font-medium text-gray-900">@u.Username</div>
+                                            <div class="text-xs text-gray-500">ID: @u.Id</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    @if (u.Role == "Admin")
+                                    {
+                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
+                                            <i class="fas fa-user-shield ml-1"></i>
+                                            ادمین
+                                        </span>
+                                    }
+                                    else if (u.Role == "Limited")
+                                    {
+                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
+                                            <i class="fas fa-user ml-1"></i>
+                                            کاربر محدود
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-800">
+                                            @u.Role
+                                        </span>
+                                    }
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    @if (u.IsActive)
+                                    {
+                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
+                                            <i class="fas fa-check ml-1"></i>
+                                            فعال
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-red-100 text-red-800">
+                                            <i class="fas fa-times ml-1"></i>
+                                            غیرفعال
+                                        </span>
+                                    }
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center justify-end space-x-1 space-x-reverse">
+                                        <!-- تغییر رمز -->
+                                        <a href="/fa/User/ChangePassword/@u.Id"
+                                           class="group relative p-2 rounded-lg transition-all duration-200 hover:bg-blue-50"
+                                           title="تغییر رمز عبور">
+                                            <svg class="w-4 h-4 text-blue-500 group-hover:text-blue-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                      d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
+                                            </svg>
+                                            <span class="absolute top-full right-0 mt-1 hidden group-hover:block px-2 py-1 text-xs bg-gray-800 text-white rounded whitespace-nowrap">
+                                                تغییر رمز
+                                            </span>
+                                        </a>
+
+                                        <!-- ویرایش -->
+                                        <a href="/fa/User/Edit/@u.Id"
+                                           class="group relative p-2 rounded-lg transition-all duration-200 hover:bg-blue-50"
+                                           title="ویرایش کاربر">
+                                            <i class="fas fa-edit text-sm text-blue-500 group-hover:text-blue-700"></i>
+                                            <span class="absolute top-full right-0 mt-1 hidden group-hover:block px-2 py-1 text-xs bg-gray-800 text-white rounded whitespace-nowrap">
+                                                ویرایش
+                                            </span>
+                                        </a>
+
+                                        <!-- حذف -->
+                                        <button onclick="deleteUser(@u.Id, '@u.Username')"
+                                                class="group relative p-2 rounded-lg transition-all duration-200 hover:bg-red-50"
+                                                title="حذف کاربر">
+                                            <i class="fas fa-trash text-sm text-red-500 group-hover:text-red-700"></i>
+                                            <span class="absolute top-full right-0 mt-1 hidden group-hover:block px-2 py-1 text-xs bg-gray-800 text-white rounded whitespace-nowrap">
+                                                حذف
+                                            </span>
+                                        </button>
+                                    </div>
+                                </td>
+
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- پیام خالی -->
+            @if (!Model.Any())
+            {
+                <div class="text-center py-12">
+                    <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-users text-2xl text-gray-400"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-gray-600">کاربری یافت نشد</h3>
+                    <p class="text-gray-500 mt-1">هنوز هیچ کاربری در سیستم ثبت نشده است.</p>
+                </div>
+            }
+
+            <!-- فوتر جدول -->
+            @if (Model.Any())
+            {
+                <div class="px-6 py-4 border-t border-gray-200">
+                    <div class="flex justify-between items-center">
+                        <div class="text-sm text-gray-600">
+                            نمایش <span id="displayCount">@Model.Count</span> کاربر
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <!-- کارت آمار -->
+        @if (Model.Any())
+        {
+            <div class="mt-6 grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div class="bg-white rounded-lg border border-gray-200 p-4">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm text-gray-600">کل کاربران</p>
+                            <p class="text-2xl font-bold text-gray-800">@Model.Count</p>
+                        </div>
+                        <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                            <i class="fas fa-users text-blue-600"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-lg border border-gray-200 p-4">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm text-gray-600">کاربران فعال</p>
+                            <p class="text-2xl font-bold text-gray-800">@Model.Count(u => u.IsActive)</p>
+                        </div>
+                        <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+                            <i class="fas fa-check-circle text-green-600"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-lg border border-gray-200 p-4">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm text-gray-600">ادمین‌ها</p>
+                            <p class="text-2xl font-bold text-gray-800">@Model.Count(u => u.Role == "Admin")</p>
+                        </div>
+                        <div class="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
+                            <i class="fas fa-user-shield text-red-600"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-lg border border-gray-200 p-4">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm text-gray-600">کاربران محدود</p>
+                            <p class="text-2xl font-bold text-gray-800">@Model.Count(u => u.Role == "Limited")</p>
+                        </div>
+                        <div class="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center">
+                            <i class="fas fa-user text-purple-600"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<!-- Modal تایید حذف -->
+<div id="deleteModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-50">
+    <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+        <div class="mt-3 text-center">
+            <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 mb-4">
+                <i class="fas fa-exclamation-triangle text-red-600 text-xl"></i>
+            </div>
+            <h3 class="text-lg leading-6 font-medium text-gray-900" id="modalTitle">حذف کاربر</h3>
+            <div class="mt-2 px-7 py-3">
+                <p class="text-sm text-gray-500" id="modalMessage">
+                    آیا از حذف این کاربر اطمینان دارید؟
+                </p>
+            </div>
+            <div class="items-center px-4 py-3 flex gap-3 justify-center">
+                <button id="confirmDelete"
+                        class="px-4 py-2 bg-red-600 text-white text-base font-medium rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-300">
+                    بله، حذف شود
+                </button>
+                <button onclick="closeModal()"
+                        class="px-4 py-2 bg-gray-200 text-gray-700 text-base font-medium rounded-lg hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-300">
+                    انصراف
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        let userIdToDelete = null;
+        let usernameToDelete = '';
+
+        // نمایش مدال حذف
+        function deleteUser(id, username) {
+            userIdToDelete = id;
+            usernameToDelete = username;
+
+            document.getElementById('modalMessage').textContent =
+                `آیا از حذف کاربر "${username}" اطمینان دارید؟ این عمل غیرقابل بازگشت است.`;
+
+            document.getElementById('deleteModal').classList.remove('hidden');
+        }
+
+        // بستن مدال
+        function closeModal() {
+            document.getElementById('deleteModal').classList.add('hidden');
+            userIdToDelete = null;
+            usernameToDelete = '';
+        }
+
+        // تایید حذف
+        document.getElementById('confirmDelete').addEventListener('click', async function() {
+            if (!userIdToDelete) return;
+
+            try {
+                const response = await fetch(`/fa/User/Delete/${userIdToDelete}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value
+                    }
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    // حذف ردیف از جدول
+                    const row = document.getElementById(`user-row-${userIdToDelete}`);
+                    if (row) {
+                        row.remove();
+
+                        // آپدیت شمارش‌گرها
+                        const userCount = document.getElementById('userCount');
+                        const displayCount = document.getElementById('displayCount');
+                        const currentCount = parseInt(userCount.textContent);
+
+                        userCount.textContent = currentCount - 1;
+                        displayCount.textContent = currentCount - 1;
+
+                        // پیام موفقیت
+                        showToast('success', result.message);
+                    }
+                } else {
+                    showToast('error', result.message);
+                }
+            } catch (error) {
+                showToast('error', 'خطا در ارتباط با سرور');
+            }
+
+            closeModal();
+        });
+
+        // نمایش نوتیفیکیشن
+        function showToast(type, message) {
+            const toast = document.createElement('div');
+            toast.className = `fixed top-4 right-4 px-6 py-3 rounded-lg shadow-lg text-white font-medium z-50 transform transition-all duration-300 ${
+                type === 'success' ? 'bg-green-500' : 'bg-red-500'
+            }`;
+            toast.innerHTML = `
+                <div class="flex items-center">
+                    <i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'} ml-2"></i>
+                    <span>${message}</span>
+                </div>
+            `;
+
+            document.body.appendChild(toast);
+
+            // حذف خودکار بعد از 3 ثانیه
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateX(100%)';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // بستن مدال با کلیک خارج
+        document.getElementById('deleteModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+    </script>
+}

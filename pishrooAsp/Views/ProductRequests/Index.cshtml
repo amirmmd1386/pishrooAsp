@@ -44,7 +44,7 @@
                                 <div>@item.PhoneNumber</div>
                                 <a href="tel:@item.PhoneNumber" class="text-blue-600 hover:underline text-xs">📞 تماس</a>
                             </td>
-                            <td class="px-6 py-4">@item.ProductType</td>
+                            <td class="px-6 py-4">@Html.Raw(@item.ProductType)</td>
                             <td class="px-6 py-4">@item.RequiredAmountKg کیلو</td>
 
                             <!-- وضعیت -->

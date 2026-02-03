@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using pishrooAsp.Data;
 using pishrooAsp.Models;
+using pishrooAsp.Models.Products;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -38,6 +39,7 @@ namespace pishrooAsp.Controllers
 			var catalogs = await _context.Catalogs
 				.OrderByDescending(c => c.UploadDate)
 				.ToListAsync();
+			ViewBag.dir = true;
 
 			return View(catalogs);
 		}

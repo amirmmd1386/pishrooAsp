@@ -1,50 +1,132 @@
 ﻿@model pishrooAsp.Models.AboutUs.AboutUsViewModel
 
 @{
-    string TitleChanger = Model?.Translation?.Lang?.Code ?? "fa";
-        
-    
-    bool isPersian = TitleChanger == "fa";
+    string culture = Model?.Translation?.Lang?.Code?.ToLower() ?? "fa";
+    bool isPersian = culture == "fa";
+    bool isArabic = culture == "ar";
+    bool isRtl = isPersian || isArabic;
+
+    // تابع کمکی برای ترجمه
+    string GetLocalizedText(string key)
+    {
+        return key switch
+        {
+            "ContactUs" => culture switch
+            {
+                "fa" => "تماس با ما",
+                "en" => "Contact Us",
+                "ru" => "Связаться с нами",
+                "tr" => "Bize Ulaşın",
+                "ar" => "اتصل بنا",
+                _ => "Contact Us"
+            },
+            "QuickLinks" => culture switch
+            {
+                "fa" => "لینک‌های سریع",
+                "en" => "Quick Links",
+                "ru" => "Быстрые ссылки",
+                "tr" => "Hızlı Bağlantılar",
+                "ar" => "روابط سريعة",
+                _ => "Quick Links"
+            },
+            "FollowUs" => culture switch
+            {
+                "fa" => "ما را دنبال کنید",
+                "en" => "Follow Us",
+                "ru" => "Следите за нами",
+                "tr" => "Bizi Takip Edin",
+                "ar" => "تابعنا",
+                _ => "Follow Us"
+            },
+            "Home" => culture switch
+            {
+                "fa" => "خانه",
+                "en" => "Home",
+                "ru" => "Главная",
+                "tr" => "Ana Sayfa",
+                "ar" => "الرئيسية",
+                _ => "Home"
+            },
+            "Products" => culture switch
+            {
+                "fa" => "محصولات",
+                "en" => "Products",
+                "ru" => "Продукты",
+                "tr" => "Ürünler",
+                "ar" => "المنتجات",
+                _ => "Products"
+            },
+            "News" => culture switch
+            {
+                "fa" => "اخبار",
+                "en" => "News",
+                "ru" => "Новости",
+                "tr" => "Haberler",
+                "ar" => "الأخبار",
+                _ => "News"
+            },
+            "AboutUs" => culture switch
+            {
+                "fa" => "درباره ما",
+                "en" => "About Us",
+                "ru" => "О нас",
+                "tr" => "Hakkımızda",
+                "ar" => "من نحن",
+                _ => "About Us"
+            },
+            
+            "AllRightsReserved" => culture switch
+            {
+                "fa" => "تمامی حقوق محفوظ است.",
+                "en" => "All rights reserved.",
+                "ru" => "Все права защищены.",
+                "tr" => "Tüm hakları saklıdır.",
+                "ar" => ".جميع الحقوق محفوظة",
+                _ => "All rights reserved."
+            },
+            _ => key
+        };
+    }
 }
 
-<footer id="contact" class="custom-blue py-12 text-custom-white">
+<footer id="contact" class="custom-blue py-12 text-custom-white" dir="@(isRtl ? "rtl" : "ltr")">
     <div class="container mx-auto px-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
 
         <!-- Company Info -->
         <div class="col-span-full lg:col-span-1 mb-6 lg:mb-0">
-            <a href="@Model.Item.Website" class="text-custom-white text-3xl font-bold flex items-center mb-4">
+            <a href="@Model.Item.Website" class="text-custom-white text-3xl font-bold flex items-center mb-4 @(isRtl ? "flex-row-reverse" : "")">
                 <img src="~/image/companyLogo.png"
                      alt="@Model.Translation.CompanyName"
-                     class="h-20  ml-2">
+                     class="h-20 @(isRtl ? "mr-2" : "ml-2")">
                 @Model.Translation.CompanyName
             </a>
-            <p class="text-custom-white text-sm leading-relaxed max-w-xs">
+            <p class="text-custom-white text-sm leading-relaxed max-w-xs @(isRtl ? "text-right" : "")">
                 @Model.Translation.Slogan
             </p>
         </div>
 
         <!-- Contact Info -->
         <div class="col-span-1 sm:col-span-1 lg:col-span-1">
-            <h4 class="text-xl font-semibold mb-4 border-b-2 border-custom-yellow pb-2 inline-block">
-                @(isPersian ? "تماس با ما" : "Contact Us")
+            <h4 class="text-xl font-semibold mb-4 border-b-2 border-custom-yellow pb-2 inline-block @(isRtl ? "text-right" : "")">
+                @GetLocalizedText("ContactUs")
             </h4>
             <ul class="space-y-3 text-sm">
-                <li class="flex items-center">
-                    <i class="fas fa-map-marker-alt text-custom-yellow text-lg ml-2"></i>
-                    <span>@Model.Translation.Address</span>
+                <li class="flex items-center @(isRtl ? "flex-row-reverse" : "")">
+                    <i class="fas fa-map-marker-alt text-custom-yellow text-lg @(isRtl ? "mr-2" : "ml-2")"></i>
+                    <span class="@(isRtl ? "text-right" : "")">@Model.Translation.Address</span>
                 </li>
                 @if (!string.IsNullOrEmpty(Model.Item.Phone1))
                 {
-                    <li class="flex items-center">
-                        <i class="fas fa-phone-alt text-custom-yellow text-lg ml-2"></i>
-                        <span>@Model.Item.Phone1</span>
+                    <li class="flex items-center @(isRtl ? "flex-row-reverse" : "")">
+                        <i class="fas fa-phone-alt text-custom-yellow text-lg @(isRtl ? "mr-2" : "ml-2")"></i>
+                        <span class="@(isRtl ? "text-right" : "")">@Model.Item.Phone1</span>
                     </li>
                 }
                 @if (!string.IsNullOrEmpty(Model.Item.Email1))
                 {
-                    <li class="flex items-center">
-                        <i class="fas fa-envelope text-custom-yellow text-lg ml-2"></i>
-                        <span>@Model.Item.Email1</span>
+                    <li class="flex items-center @(isRtl ? "flex-row-reverse" : "")">
+                        <i class="fas fa-envelope text-custom-yellow text-lg @(isRtl ? "mr-2" : "ml-2")"></i>
+                        <span class="@(isRtl ? "text-right" : "")">@Model.Item.Email1</span>
                     </li>
                 }
             </ul>
@@ -52,49 +134,65 @@
 
         <!-- Quick Links -->
         <div class="col-span-1 sm:col-span-1 lg:col-span-1">
-            <h4 class="text-xl font-semibold mb-4 border-b-2 border-custom-yellow pb-2 inline-block">
-                @(isPersian ? "لینک‌های سریع" : "Quick Links")
+            <h4 class="text-xl font-semibold mb-4 border-b-2 border-custom-yellow pb-2 inline-block @(isRtl ? "text-right" : "")">
+                @GetLocalizedText("QuickLinks")
             </h4>
-            <ul class="space-y-3 text-sm">
-                <li><a href="#home" class="hover:text-custom-yellow transition duration-300">@(isPersian ? "خانه" : "Home")</a></li>
-                <li><a href="#products" class="hover:text-custom-yellow transition duration-300">@(isPersian ? "محصولات" : "Products")</a></li>
-                <li><a href="#news" class="hover:text-custom-yellow transition duration-300">@(isPersian ? "اخبار" : "News")</a></li>
-                <li><a href="#about" class="hover:text-custom-yellow transition duration-300">@(isPersian ? "درباره ما" : "About Us")</a></li>
-                <li><a href="#contact" class="hover:text-custom-yellow transition duration-300">@(isPersian ? "تماس با ما" : "Contact Us")</a></li>
+            <ul class="space-y-3 text-sm @(isRtl ? "text-right" : "")">
+                <li><a href="#home" class="hover:text-custom-yellow transition duration-300 block">@GetLocalizedText("Home")</a></li>
+                <li><a href="#products" class="hover:text-custom-yellow transition duration-300 block">@GetLocalizedText("Products")</a></li>
+                <li><a href="#news" class="hover:text-custom-yellow transition duration-300 block">@GetLocalizedText("News")</a></li>
+                <li><a href="#about" class="hover:text-custom-yellow transition duration-300 block">@GetLocalizedText("AboutUs")</a></li>
+                <li><a href="#contact" class="hover:text-custom-yellow transition duration-300 block">@GetLocalizedText("ContactUs")</a></li>
+                @if(culture == "fa"){
+
+                <li><a href="/fa/publicInvoice" class="hover:text-custom-yellow transition duration-300 block">پیگیری فاکتور</a></li>
+                }
+
             </ul>
         </div>
 
         <!-- Social Media -->
         <div class="col-span-1 sm:col-span-2 lg:col-span-1">
-            <h4 class="text-xl font-semibold mb-4 border-b-2 border-custom-yellow pb-2 inline-block">
-                @(isPersian ? "ما را دنبال کنید" : "Follow Us")
+            <h4 class="text-xl font-semibold mb-4 border-b-2 border-custom-yellow pb-2 inline-block @(isRtl ? "text-right" : "")">
+                @GetLocalizedText("FollowUs")
             </h4>
-            <div class="flex space-x-6 text-3xl ltr">
+            <div class="flex @(isRtl ? "space-x-reverse" : "") space-x-6 text-3xl">
                 @if (!string.IsNullOrEmpty(Model.Item.Facebook))
                 {
-                    <a href="@Model.Item.Facebook" class="text-custom-yellow hover:text-custom-white transform hover:scale-110 transition duration-300"><i class="fab fa-facebook-f"></i></a>
+                    <a href="@Model.Item.Facebook" class="text-custom-yellow hover:text-custom-white transform hover:scale-110 transition duration-300">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
                 }
                 @if (!string.IsNullOrEmpty(Model.Item.LinkedIn))
                 {
-                    <a href="@Model.Item.LinkedIn" class="text-custom-yellow hover:text-custom-white transform hover:scale-110 transition duration-300"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="@Model.Item.LinkedIn" class="text-custom-yellow hover:text-custom-white transform hover:scale-110 transition duration-300">
+                        <i class="fab fa-linkedin-in"></i>
+                    </a>
                 }
                 @if (!string.IsNullOrEmpty(Model.Item.Instagram))
                 {
-                    <a href="@Model.Item.Instagram" class="text-custom-yellow hover:text-custom-white transform hover:scale-110 transition duration-300"><i class="fab fa-instagram"></i></a>
+                    <a href="@Model.Item.Instagram" class="text-custom-yellow hover:text-custom-white transform hover:scale-110 transition duration-300">
+                        <i class="fab fa-instagram"></i>
+                    </a>
                 }
                 @if (!string.IsNullOrEmpty(Model.Item.WhatsApp))
                 {
-                    <a href="@Model.Item.WhatsApp" class="text-custom-yellow hover:text-custom-white transform hover:scale-110 transition duration-300"><i class="fab fa-whatsapp"></i></a>
+                    <a href="@Model.Item.WhatsApp" class="text-custom-yellow hover:text-custom-white transform hover:scale-110 transition duration-300">
+                        <i class="fab fa-whatsapp"></i>
+                    </a>
                 }
                 @if (!string.IsNullOrEmpty(Model.Item.YouTube))
                 {
-                    <a href="@Model.Item.YouTube" class="text-custom-yellow hover:text-custom-white transform hover:scale-110 transition duration-300"><i class="fab fa-youtube"></i></a>
+                    <a href="@Model.Item.YouTube" class="text-custom-yellow hover:text-custom-white transform hover:scale-110 transition duration-300">
+                        <i class="fab fa-youtube"></i>
+                    </a>
                 }
             </div>
         </div>
     </div>
 
-    <div class="mt-12 pt-8 border-t border-gray-700 text-center text-sm">
-        &copy; <span>@DateTime.Now.Year</span> @Model.Translation.CompanyName. @(isPersian ? "تمامی حقوق محفوظ است." : "All rights reserved.")
+    <div class="mt-12 pt-8 border-t border-gray-700 text-center text-sm ">
+        &copy; <span>@DateTime.Now.Year</span> @Model.Translation.CompanyName. @GetLocalizedText("AllRightsReserved")
     </div>
 </footer>
+

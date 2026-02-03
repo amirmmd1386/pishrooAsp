@@ -1,0 +1,181 @@
+﻿@model pishrooAsp.Models.MessageTemplate.SendMessageViewModel
+
+@{
+    ViewData["Title"] = "ارسال پیام";
+}
+
+<div class="card">
+    <div class="card-header">
+        <h5 class="mb-0">ارسال پیام</h5>
+    </div>
+
+    <div class="card-body">
+        <form asp-action="SendMessage" method="post" id="sendForm">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="form-label">شرکت</label>
+                        <input type="text" class="form-control" value="@Model.CompanyName" readonly>
+                        <input type="hidden" asp-for="CompanyId" />
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="form-label">قالب</label>
+                        <input type="text" class="form-control" value="@Model.TemplateName" readonly>
+                        <input type="hidden" asp-for="TemplateId" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label asp-for="Recipient" class="form-label"></label>
+                        <input asp-for="Recipient" class="form-control" />
+                        <span asp-validation-for="Recipient" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label asp-for="Subject" class="form-label"></label>
+                        <input asp-for="Subject" class="form-control" />
+                        <span asp-validation-for="Subject" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label asp-for="MessageType" class="form-label"></label>
+                        <select asp-for="MessageType" class="form-select">
+                            <option value="Email">ایمیل</option>
+                            <option value="SMS">پیامک</option>
+                            <option value="Notification">اعلان</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h6 class="mb-0">مقادیر توکن‌ها</h6>
+                </div>
+                <div class="card-body">
+                    <div id="tokensContainer">
+                        @for (int i = 0; i < Model.Tokens.Count; i++)
+                        {
+                            <div class="row mb-3 token-row" data-token-name="@Model.Tokens[i].TokenName">
+                                <div class="col-md-4">
+                                    <label class="form-label">
+                                        @Model.Tokens[i].DisplayName
+                                        @if (Model.Tokens[i].IsRequired)
+                                        {
+                                            <span class="text-danger">*</span>
+                                        }
+                                        <small class="text-muted d-block">
+                                                Model.Tokens[i].TokenName
+                                            
+</small>
+                                </label>
+                            </div>
+                            <div class="col-md-8">
+                                <input type="hidden" asp-for="Tokens[i].TokenName" />
+                                <input type="hidden" asp-for="Tokens[i].DisplayName" />
+                                <input type="hidden" asp-for="Tokens[i].IsRequired" />
+                                <input asp-for="Tokens[i].Value" class="form-control token-input"
+                                       data-token="@Model.Tokens[i].TokenName" />
+                                <span asp-validation-for="Tokens[i].Value" class="text-danger"></span>
+                            </div>
+                        </div>
+                                                }
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h6 class="mb-0">پیش‌نمایش پیام</h6>
+                    <button type="button" id="previewBtn" class="btn btn-outline-primary btn-sm">
+                        <i class="fas fa-sync"></i> بروزرسانی پیش‌نمایش
+                    </button>
+                </div>
+                <div class="card-body">
+                    <div id="previewContainer" class="border rounded p-3 bg-light">
+                        @if (!string.IsNullOrEmpty(Model.Preview))
+                        {
+                            @Html.Raw(Model.Preview.Replace("\n", "<br>"))
+                        }
+                        else
+                        {
+                            <div class="text-muted">پیش‌نمایش اینجا نمایش داده می‌شود...</div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-end">
+                <a asp-controller="Templates" asp-action="ByCompany"
+                   asp-route-companyId="@Model.CompanyId" class="btn btn-secondary me-2">
+                    بازگشت
+                </a>
+                <button type="submit" class="btn btn-success">
+                    <i class="fas fa-paper-plane"></i> ارسال پیام
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // بروزرسانی خودکار پیش‌نمایش هنگام تغییر توکن‌ها
+            $('.token-input').on('input', debounce(updatePreview, 500));
+
+            $('#previewBtn').click(updatePreview);
+
+            function updatePreview() {
+                var tokens = {};
+                $('.token-input').each(function() {
+                    var tokenName = $(this).data('token');
+                    tokens[tokenName] = $(this).val();
+                });
+
+                $.ajax({
+                    url: '@Url.Action("GeneratePreview", "Messages")',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        templateId: @Model.TemplateId,
+                        tokens: tokens
+                    }),
+                    success: function(response) {
+                        if (response.success) {
+                            $('#previewContainer').html(response.message.replace(/\n/g, '<br>'));
+                        } else {
+                            $('#previewContainer').html(
+                                '<div class="alert alert-danger">' + response.error + '</div>'
+                            );
+                        }
+                    }
+                });
+            }
+
+            function debounce(func, wait) {
+                let timeout;
+                return function executedFunction(...args) {
+                    const later = () => {
+                        clearTimeout(timeout);
+                        func(...args);
+                    };
+                    clearTimeout(timeout);
+                    timeout = setTimeout(later, wait);
+                };
+            }
+        });
+    </script>
+}

@@ -1,0 +1,96 @@
+﻿@model IEnumerable<pishrooAsp.Models.Company.Company>
+
+@{
+    ViewData["Title"] = "مدیریت شرکت‌ها";
+}
+
+<div class="p-6 space-y-6">
+
+    <div class="flex items-center justify-between">
+        <h1 class="text-2xl font-bold">مدیریت شرکت‌ها</h1>
+        <a asp-action="Create"
+           class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
+            + ثبت شرکت جدید
+        </a>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="bg-green-100 text-green-700 p-3 rounded-lg">
+            @TempData["Success"]
+        </div>
+    }
+
+    <!-- Search & Filter -->
+    <form method="get" class="grid md:grid-cols-3 gap-4 bg-white p-4 rounded-xl shadow">
+        <input type="text"
+               name="search"
+               value="@ViewBag.SearchTerm"
+               placeholder="جستجو نام، ایمیل، شخص تماس..."
+               class="border rounded-lg px-3 py-2 w-full" />
+
+        <select name="active" class="border rounded-lg px-3 py-2 w-full">
+            <option value="">همه</option>
+            <option value="true" selected="@(ViewBag.ActiveFilter == true)">فعال</option>
+            <option value="false" selected="@(ViewBag.ActiveFilter == false)">غیرفعال</option>
+        </select>
+
+        <button class="bg-gray-800 text-white rounded-lg px-4 py-2">
+            فیلتر
+        </button>
+    </form>
+
+    <!-- Table -->
+    <div class="overflow-x-auto bg-white rounded-xl shadow">
+        <table class="w-full text-sm text-right">
+            <thead class="bg-gray-100">
+                <tr>
+                    <th class="p-3">نام شرکت</th>
+                    <th class="p-3">ایمیل</th>
+                    <th class="p-3">تلفن</th>
+                    <th class="p-3">شخص تماس</th>
+                    <th class="p-3">وضعیت</th>
+                    <th class="p-3 text-center">عملیات</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr class="border-t">
+                        <td class="p-3 font-medium">@item.Name</td>
+                        <td class="p-3">@item.Email</td>
+                        <td class="p-3">@item.Phone</td>
+                        <td class="p-3">@item.ContactPerson</td>
+                        <td class="p-3">
+                            @if (item.IsActive)
+                            {
+                                <span class="text-green-600 font-semibold">فعال</span>
+                            }
+                            else
+                            {
+                                <span class="text-red-600 font-semibold">غیرفعال</span>
+                            }
+                        </td>
+                        <td class="p-3 flex gap-2 justify-center">
+                            <a asp-action="Edit" asp-route-id="@item.Id"
+                               class="px-3 py-1 rounded bg-yellow-500 text-white text-xs">
+                                ویرایش
+                            </a>
+
+                            @if (item.IsActive)
+                            {
+                                <form asp-action="Delete" method="post">
+                                    <input type="hidden" name="id" value="@item.Id" />
+                                    <button class="px-3 py-1 rounded bg-red-600 text-white text-xs"
+                                            onclick="return confirm('شرکت غیرفعال شود؟')">
+                                        غیرفعال
+                                    </button>
+                                </form>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

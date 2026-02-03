@@ -15,36 +15,62 @@
     var culture = ViewContext.HttpContext.GetRouteValue("culture")?.ToString() ?? "fa";
     var isPersian = culture == "fa";
     var url = " /" + culture + "/ProductRequests/create";
-
-    // داده‌های ساختاریافته
-    var productSchema = new
+    
+  // داده‌های ساختاریافته
+var productSchema = new
+{
+    context = "https://schema.org",
+    type = "Product",
+    name = translation?.Title,
+    description = Model.SeoDiscription?.Split(',')?[0]?.Trim(),
+    image = Model.ImageUrl,
+    brand = new
     {
-        context = "https://schema.org",
-        type = "Product",
-        name = translation?.Title,
-        description = translation?.Description?.Length > 160 ?
-                     translation.Description.Substring(0, 160) + "..." :
-                     translation?.Description,
-        image = Model.ImageUrl,
-        brand = new
+        type = "Brand",
+        name = "اروین پلیمر"
+    },
+    offers = new
+    {
+        type = "Offer",
+        priceCurrency = "IRR",
+        price = "تماس بگیرید",
+        availability = "https://schema.org/InStock",
+        seller = new
         {
-            type = "Brand",
-            name = "اروین پلیمر"
-        },
-        offers = new
-        {
-            type = "Offer",
-            priceCurrency = "IRR",
-            availability = "https://schema.org/InStock"
+            type = "Organization",
+            name = "پیشرو آروین پلیمر"
         }
-    };
-}
+    }
+};
 
+// اگر سوال FAQ وجود دارد
+var FAQschema = new 
+{
+    context = "https://schema.org",
+    type = "FAQPage",
+    mainEntity = new[] 
+    {
+        new
+        {
+            type = "Question",
+            name = translation?.Title + " چیست و چه کاربردهایی دارد؟",
+            acceptedAnswer = new
+            {
+                type = "Answer",
+                text = Model.SeoDiscription?.Split(',')?.ElementAtOrDefault(1) ?? 
+                      "این محصول از خانواده کامپاندهای پلیمری بوده و در صنایع مختلف کاربرد دارد."
+            }
+        }
+    }
+};
+}
 <!-- افزودن Schema Markup -->
 <script type="application/ld+json">
     @Html.Raw(Json.Serialize(productSchema))
 </script>
-
+<script type="application/ld+json">
+    @Html.Raw(Json.Serialize(FAQschema))
+</script>
 <div class="container mx-auto px-4 py-8">
     <!-- Breadcrumb navigation با Schema -->
     <nav class="flex mb-6 text-sm text-gray-600" itemscope itemtype="https://schema.org/BreadcrumbList">

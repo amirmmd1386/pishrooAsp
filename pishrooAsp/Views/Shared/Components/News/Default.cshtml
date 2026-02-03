@@ -1,40 +1,109 @@
-﻿@model IEnumerable<dynamic>  
+﻿@model IEnumerable<dynamic>
 @using pishrooAsp.Utilities
-
 @{
     var news = Model?.FirstOrDefault();
+    string culture = ViewBag.lang ?? "fa";
+    bool isPersian = culture == "fa";
+    bool isArabic = culture == "ar";
+    bool isRtl = isPersian || isArabic;
+
+    // تابع کمکی برای ترجمه
+    string GetLocalizedText(string key)
+    {
+        return key switch
+        {
+            "NoNewsFound" => culture switch
+            {
+                "fa" => "هیچ خبری یافت نشد.",
+                "en" => "No news found.",
+                "ru" => "Новости не найдены.",
+                "tr" => "Haber bulunamadı.",
+                "ar" => "لم يتم العثور على أخبار.",
+                _ => "No news found."
+            },
+            "Special" => culture switch
+            {
+                "fa" => "ویژه",
+                "en" => "Special",
+                "ru" => "Специальный",
+                "tr" => "Özel",
+                "ar" => "مميز",
+                _ => "Special"
+            },
+            "ContinueReading" => culture switch
+            {
+                "fa" => "ادامه مطلب",
+                "en" => "Read More",
+                "ru" => "Читать далее",
+                "tr" => "Devamını Oku",
+                "ar" => "اقرأ المزيد",
+                _ => "Read More"
+            },
+            "FollowSummary" => culture switch
+            {
+                "fa" => "ادامه مطلب",
+                "en" => "Follow Summary",
+                "ru" => "Подробнее",
+                "tr" => "Özeti Takip Et",
+                "ar" => "تابع الملخص",
+                _ => "Follow Summary"
+            },
+            _ => key
+        };
+    }
+
+    // فرمت تاریخ بر اساس فرهنگ
+    string FormatDate(DateTime date)
+    {
+        return culture switch
+        {
+            "fa" => date.ToString("dd MMM yyyy", new System.Globalization.CultureInfo("fa-IR")),
+            "ar" => date.ToString("dd MMM yyyy", new System.Globalization.CultureInfo("ar-SA")),
+            "ru" => date.ToString("dd MMM yyyy", new System.Globalization.CultureInfo("ru-RU")),
+            "tr" => date.ToString("dd MMM yyyy", new System.Globalization.CultureInfo("tr-TR")),
+            _ => date.ToString("dd MMM yyyy", new System.Globalization.CultureInfo("en-US"))
+        };
+    }
+
+    // جهت متن بر اساس زبان
+    string textDirection = isRtl ? "rtl" : "ltr";
+    string textAlignment = isRtl ? "text-right" : "text-left";
+    string flexDirection = isRtl ? "flex-row-reverse" : "";
     if (news == null)
     {
-        <p>هیچ خبری یافت نشد.</p>
+        <p>@GetLocalizedText("NoNewsFound")</p>
         return;
     }
-}
-@{
-    string TitleChanger = ViewBag.lang;
-    bool isPersian = TitleChanger == "fa";
+
+
 }
 
-<div class="lg:col-span-2 bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition duration-300">
+<div class="lg:col-span-2 bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition duration-300" dir="@textDirection">
     <div class="h-full flex flex-col">
         <div class="h-64 overflow-hidden">
             <img src="@news.ImageUrl" alt="@news.Title" class="w-full h-full object-cover" />
         </div>
-        <div class="p-6 flex-grow">
-            <div class="flex justify-between items-center mb-3">
-                <span class="text-sm text-blue-600 font-medium">@news.PublishDate.ToString("dd MMM yyyy", new System.Globalization.CultureInfo("fa-IR"))</span>
-                <span class="bg-red-100 text-red-800 text-xs px-2 py-1 rounded-full">@(isPersian ? "ویژه":"Best")</span>
+        <div class="p-6 flex-grow @textAlignment">
+            <div class="flex justify-between items-center mb-3 @flexDirection">
+                <span class="text-sm text-blue-600 font-medium">@FormatDate(news.PublishDate)</span>
+                <span class="bg-red-100 text-red-800 text-xs px-2 py-1 rounded-full">
+                    @GetLocalizedText("Special")
+                </span>
             </div>
             <h3 class="text-2xl font-bold text-gray-800 mb-3">@news.Title</h3>
             <p class="text-gray-600 mb-4 leading-relaxed">@news.Summary</p>
-            <!-- لینک اول -->
-            <a href="/@ViewBag.lang/news/@news.Id/@SeoHelper.GenerateSeoTitle(news.Title)"
-               class="inline-flex items-center text-blue-600 font-medium hover:text-blue-800">
-                @(isPersian ? "ادامه مطلب" : "Follow Summary")
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+
+            <!-- لینک ادامه مطلب -->
+            <a href="/@culture/news/@news.Id/@SeoHelper.GenerateSeoTitle(news.Title)"
+               class="inline-flex items-center text-blue-600 font-medium hover:text-blue-800 @flexDirection">
+                @GetLocalizedText("ContinueReading")
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 @(isRtl ? "mr-1 rotate-180" : "ml-1")"
+                     fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="@(isRtl ? "M15 19l-7-7 7-7" : "M9 5l7 7-7 7")" />
                 </svg>
-            </a></svg>
-</a>
+            </a>
         </div>
     </div>
 </div>
+

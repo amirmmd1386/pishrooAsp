@@ -40,6 +40,7 @@ namespace pishrooAsp.Controllers
 					.Take(pageSize)
 					
 					.ToListAsync();
+				ViewBag.dir = true;
 
 				return View(images);
 			}

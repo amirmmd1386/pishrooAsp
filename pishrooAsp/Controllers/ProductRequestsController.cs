@@ -23,27 +23,7 @@ public class ProductRequestsController : Controller
 
 	}
 
-	// GET: ProductRequests/List
-	//
-	//public async Task<IActionResult> Index(int page = 1)
-	//{
-	//	int pageSize = 10;
-	//	var requests = await _context.ProductRequests
-	//		.OrderByDescending(r => r.CreatedAt)
-	//		.Skip((page - 1) * pageSize)
-	//		.Take(pageSize)
-	//		.ToListAsync();
-
-	//	int totalItems = await _context.ProductRequests.CountAsync();
-	//	ViewBag.TotalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
-	//	ViewBag.CurrentPage = page;
-
-	//	 var message = await _context.Message.ToListAsync();	
-	//	ViewBag.Message = message;
-	//	return View(requests);
-	//}
-
-	[AdminAuthFilter]
+	[SmartAuthFilter]
 	public async Task<IActionResult> Index(int page = 1)
 	{
 		int pageSize = 10;
@@ -159,87 +139,6 @@ public class ProductRequestsController : Controller
 	}
 
 
-	//[HttpPost]
-	//[ValidateAntiForgeryToken]
-	//public async Task<IActionResult> Create(ProductRequest model, List<IFormFile> UploadFiles)
-	//{
-	//	try
-	//	{
-	//		// ذخیره فایل
-	//		if (UploadFiles != null && UploadFiles.Count > 0)
-	//		{
-	//			var uploadsRoot = Path.Combine(_environment.WebRootPath, "uploads");
-	//			if (!Directory.Exists(uploadsRoot))
-	//				Directory.CreateDirectory(uploadsRoot);
-
-	//			foreach (var file in UploadFiles)
-	//			{
-	//				if (file.Length > 0)
-	//				{
-	//					var fileName = $"{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
-	//					var filePath = Path.Combine(uploadsRoot, fileName);
-
-	//					using (var stream = new FileStream(filePath, FileMode.Create))
-	//					{
-	//						await file.CopyToAsync(stream);
-	//					}
-
-	//					// اضافه کردن رکورد فایل به دیتابیس
-	//					var requestFile = new ProductRequestFile
-	//					{
-	//						ProductRequestId = model.Id,
-	//						FilePath = $"/uploads/{fileName}"
-	//					};
-	//					_context.ProductRequestFiles.Add(requestFile);
-	//				}
-	//			}
-
-	//			await _context.SaveChangesAsync();
-	//		}
-
-	//		model.CreatedAt = DateTime.Now;
-
-	//		_context.Add(model);
-	//		await _context.SaveChangesAsync();
-
-	//		TempData["Success"] = "اطلاعات با موفقیت ثبت شد.";
-
-	//		//try
-	//		//{
-	//		//	var apiKey = "4974704B3364526337516362353876693954525336744673466E73763969457A6E51472B5441666F4676343D";
-	//		//	var receptor = "989031015016";
-
-	//		//	var api = new Kavenegar.KavenegarApi(apiKey);
-
-	//		//	// استفاده از Template آماده در پنل
-	//		//	var templateName = "sanatsooleh"; // همون اسم تمپلیتی که در کاوه نگار ساختی
-	//		//	//var res = api.VerifyLookup(
-	//		//	//	receptor,
-	//		//	//	entity.Code, // این میشه {token} اول
-	//		//	//	null,        // token2
-	//		//	//	null,        // token3
-	//		//	//	null,        // token10
-	//		//	//	templateName,
-	//		//	//	Kavenegar.Models.Enums.VerifyLookupType.Sms
-	//		//	//);
-	//		//}
-	//		//catch (Kavenegar.Exceptions.ApiException ex)
-	//		//{
-	//		//	Console.WriteLine("Message : " + ex.Message);
-	//		//}
-	//		//catch (Kavenegar.Exceptions.HttpException ex)
-	//		//{
-	//		//	Console.WriteLine("Message : " + ex.Message);
-	//		//}
-
-	//		return RedirectToAction(nameof(Index));
-	//	}
-	//	catch (Exception ex)
-	//	{
-	//		TempData["Error"] = "خطا در ثبت اطلاعات: " + ex.Message;
-	//		return RedirectToAction(nameof(Create));
-	//	}
-	//}
 
 
 
@@ -294,10 +193,10 @@ public class ProductRequestsController : Controller
 			try
 			{
 				// کلید API که از کاوه نگار گرفتی
-				var api = new Kavenegar.KavenegarApi("717043746A4B6E44666F66445639547A414334526674515A794A55583168383962773977554F56774977733D");
+				var api = new Kavenegar.KavenegarApi("5269784E645955614833434A474C6667694B425832794D746A4235596969434B457353706B72722B79746F3D");
 
 				// شماره خط فرستنده (مثلاً خط اختصاصی یا خدماتی شما)
-				string sender = "10000099990090";
+				string sender = "90006210";
 				string phoneNumber = model.PhoneNumber;
 				phoneNumber = phoneNumber.Trim().Replace(" ", "").Replace("-", "");
 
@@ -331,7 +230,7 @@ public class ProductRequestsController : Controller
 			}
 			try
 			{
-				var apiKey = "717043746A4B6E44666F66445639547A414334526674515A794A55583168383962773977554F56774977733D";
+				var apiKey = "5269784E645955614833434A474C6667694B425832794D746A4235596969434B457353706B72722B79746F3D";
 				var receptor = "989123633723";
 
 				var api = new Kavenegar.KavenegarApi(apiKey);
@@ -366,7 +265,7 @@ public class ProductRequestsController : Controller
 	}
 
 
-	[AdminAuthFilter]
+	[SmartAuthFilter]
 
 	// نمایش جزئیات
 	public async Task<IActionResult> Details(Guid id)
@@ -503,7 +402,7 @@ public class ProductRequestsController : Controller
 			}
 
 			// ارسال پیامک
-			var api = new Kavenegar.KavenegarApi("717043746A4B6E44666F66445639547A414334526674515A794A55583168383962773977554F56774977733D");
+			var api = new Kavenegar.KavenegarApi("5269784E645955614833434A474C6667694B425832794D746A4235596969434B457353706B72722B79746F3D");
 
 			string sender = "10000099990090";
 			string receptor = phoneNumber;
@@ -602,7 +501,7 @@ public class ProductRequestsController : Controller
 			}
 
 			// ارسال پیامک
-			var api = new Kavenegar.KavenegarApi("717043746A4B6E44666F66445639547A414334526674515A794A55583168383962773977554F56774977733D");
+			var api = new Kavenegar.KavenegarApi("5269784E645955614833434A474C6667694B425832794D746A4235596969434B457353706B72722B79746F3D");
 
 			string sender = "10000099990090";
 			string receptor = phoneNumber;

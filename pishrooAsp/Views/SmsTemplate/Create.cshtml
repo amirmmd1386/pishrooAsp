@@ -1,0 +1,72 @@
+﻿@model pishrooAsp.Models.Sms.SmsTemplate
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    }
+<div class="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 py-8 px-4">
+    <div class="max-w-lg mx-auto">
+        <!-- هدر -->
+        <div class="text-center mb-8">
+            <div class="inline-flex items-center justify-center w-16 h-16 bg-blue-600 rounded-full mb-4">
+                <i class="fas fa-file-alt text-2xl text-white"></i>
+            </div>
+            <h1 class="text-2xl font-bold text-gray-800 mb-2">ایجاد قالب جدید</h1>
+            <p class="text-gray-600">قالب پیامک خود را ایجاد کنید</p>
+        </div>
+
+        <!-- فرم -->
+        <div class="bg-white rounded-xl shadow-lg p-6">
+            <form method="post" class="space-y-4">
+                <!-- فیلد عنوان -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                        عنوان قالب
+                    </label>
+                    <input asp-for="Title"
+                           placeholder="مثال: پیام خوشامدگویی"
+                           class="w-full border border-gray-300 rounded-lg p-3 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 focus:outline-none transition duration-200" />
+                    <span asp-validation-for="Title" class="text-red-500 text-xs"></span>
+                </div>
+
+                <!-- فیلد متن -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                        متن قالب
+                    </label>
+                    <textarea asp-for="Body" rows="4"
+                              placeholder="مثال: سلام {نام} عزیز، به سیستم خوش آمدید"
+                              class="w-full border border-gray-300 rounded-lg p-3 focus:border-green-500 focus:ring-2 focus:ring-green-200 focus:outline-none transition duration-200"></textarea>
+                    <span asp-validation-for="Body" class="text-red-500 text-xs"></span>
+                </div>
+
+                <!-- دکمه‌ها -->
+                <div class="flex gap-3 pt-4">
+                    <!-- دکمه ذخیره -->
+                    <button type="submit"
+                            class="flex-1 bg-blue-600 text-white py-3 rounded-lg font-medium hover:bg-blue-700 transition duration-300">
+                        ایجاد قالب
+                    </button>
+
+                    <!-- دکمه بازگشت -->
+                    <a href="@Url.Action("Index", "SmsTemplate")"
+                       class="flex-1 bg-gray-200 text-gray-700 py-3 rounded-lg font-medium hover:bg-gray-300 transition duration-300 text-center">
+                        بازگشت
+                    </a>
+                </div>
+            </form>
+        </div>
+
+        <!-- راهنما -->
+        <div class="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-100">
+            <h4 class="font-medium text-blue-800 mb-2">
+                <i class="fas fa-info-circle ml-1"></i>
+                راهنمای توکن‌ها
+            </h4>
+            <p class="text-sm text-gray-600 mb-2">
+                از <code>{نام}</code> یا <code>{تاریخ}</code> برای ساخت قالب پویا استفاده کنید.
+            </p>
+            <p class="text-xs text-gray-500">
+                مثال: "سلام {نام}، سفارش {کدسفارش} ثبت شد."
+            </p>
+        </div>
+    </div>
+</div>

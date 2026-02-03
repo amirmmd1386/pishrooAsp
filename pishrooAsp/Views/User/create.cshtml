@@ -1,0 +1,116 @@
+﻿@model User
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+<div class="min-h-screen bg-gray-50 p-4 md:p-6">
+    <div class="max-w-md mx-auto">
+        <!-- هدر -->
+        <div class="mb-8">
+            <div class="flex items-center mb-4">
+                <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center ml-3">
+                    <i class="fas fa-user-plus text-green-600"></i>
+                </div>
+                <div>
+                    <h1 class="text-2xl font-bold text-gray-800">افزودن کاربر جدید</h1>
+                    <p class="text-gray-600 text-sm">ایجاد حساب کاربری جدید</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- پیام خطا -->
+        @if (ViewBag.Error != null)
+        {
+            <div class="mb-6 bg-red-50 border-r-4 border-red-500 p-4 rounded-lg">
+                <div class="flex items-center">
+                    <i class="fas fa-exclamation-triangle text-red-500 ml-2"></i>
+                    <span class="text-red-700">@ViewBag.Error</span>
+                </div>
+            </div>
+        }
+
+        <!-- فرم ایجاد -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <form method="post" class="space-y-6">
+                <!-- نام کاربری -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        <i class="fas fa-user ml-2 text-blue-500"></i>
+                        نام کاربری
+                    </label>
+                    <input name="username"
+                           class="w-full border border-gray-300 rounded-lg p-3 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 focus:outline-none transition duration-200"
+                           placeholder="مثال: admin"
+                           required>
+                </div>
+
+                <!-- رمز عبور -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        <i class="fas fa-lock ml-2 text-green-500"></i>
+                        رمز عبور
+                    </label>
+                    <input name="password"
+                           type="password"
+                           
+                           class="w-full border border-gray-300 rounded-lg p-3 focus:border-green-500 focus:ring-2 focus:ring-green-200 focus:outline-none transition duration-200"
+                           placeholder="حداقل 6 کاراکتر"
+                           required>
+                </div>
+
+                <!-- نقش کاربر -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        <i class="fas fa-user-tag ml-2 text-purple-500"></i>
+                        نقش کاربر
+                    </label>
+                    <select name="role"
+                            class="w-full border border-gray-300 rounded-lg p-3 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 focus:outline-none transition duration-200">
+                        <option value="Admin">ادمین (دسترسی کامل)</option>
+                        <option value="Limited">کاربر محدود</option>
+                    </select>
+                </div>
+
+                <!-- دکمه‌ها -->
+                <div class="flex gap-3 pt-4">
+                    <button type="submit"
+                            class="flex-1 bg-green-600 hover:bg-green-700 text-white py-3 rounded-lg font-medium transition duration-200 flex items-center justify-center">
+                        <i class="fas fa-check ml-2"></i>
+                        ایجاد کاربر
+                    </button>
+                    <a href="/fa/User"
+                       class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 py-3 rounded-lg font-medium transition duration-200 flex items-center justify-center">
+                        <i class="fas fa-times ml-2"></i>
+                        انصراف
+                    </a>
+                </div>
+            </form>
+        </div>
+
+        <!-- نکات مهم -->
+        <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                <h4 class="font-medium text-blue-800 mb-2">
+                    <i class="fas fa-shield-alt ml-2"></i>
+                    نکات امنیتی
+                </h4>
+                <ul class="text-xs text-gray-600 space-y-1">
+                    <li>• رمز عبور قوی انتخاب کنید</li>
+                    <li>• از نام کاربری تکراری استفاده نکنید</li>
+                    <li>• دسترسی‌ها را با دقت تعیین کنید</li>
+                </ul>
+            </div>
+
+            <div class="bg-green-50 border border-green-200 rounded-lg p-4">
+                <h4 class="font-medium text-green-800 mb-2">
+                    <i class="fas fa-lightbulb ml-2"></i>
+                    پیشنهادها
+                </h4>
+                <ul class="text-xs text-gray-600 space-y-1">
+                    <li>• ابتدا کاربر را محدود ایجاد کنید</li>
+                    <li>• در صورت نیاز نقش را ارتقا دهید</li>
+                    <li>• رمز عبور را ایمن نگه دارید</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>

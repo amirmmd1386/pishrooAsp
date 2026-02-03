@@ -1,0 +1,281 @@
+﻿@model List<pishrooAsp.Models.CompanySmsHistoryViewModel>
+@{
+    ViewData["Title"] = "تاریخچه پیامک‌ها";
+}
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+<div class="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 py-8 px-4">
+    <div class="max-w-6xl mx-auto">
+        <!-- هدر صفحه -->
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-10">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-800 mb-2">
+                    <i class="fas fa-history ml-2 text-purple-600"></i>
+                    تاریخچه پیامک‌ها
+                </h1>
+                <p class="text-gray-600">
+                    پیامک‌های ارسال شده به
+                    <span class="font-bold text-blue-600">@ViewBag.CompanyName</span>
+                </p>
+            </div>
+
+            <!-- دکمه بازگشت -->
+            <a href="@Url.Action("Index", "Company")"
+               class="mt-4 md:mt-0 bg-gradient-to-r from-gray-200 to-gray-300 text-gray-700 px-6 py-3 rounded-xl font-medium hover:from-gray-300 hover:to-gray-400 transition-all duration-300 shadow hover:shadow-md flex items-center">
+                <i class="fas fa-arrow-right ml-2"></i>
+                بازگشت
+            </a>
+        </div>
+
+        <!-- کارت آمار -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-6 shadow-lg">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-blue-700 font-medium">تعداد کل پیامک‌ها</p>
+                        <p class="text-3xl font-bold text-gray-800 mt-2">@Model.Count</p>
+                    </div>
+                    <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                        <i class="fas fa-sms text-blue-600 text-xl"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl p-6 shadow-lg">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-green-700 font-medium">پیامک‌های موفق</p>
+                        <p class="text-3xl font-bold text-gray-800 mt-2">
+                            @Model.Count(x => x.Status)
+                        </p>
+                    </div>
+                    <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                        <i class="fas fa-check-circle text-green-600 text-xl"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-gradient-to-br from-purple-50 to-pink-50 rounded-2xl p-6 shadow-lg">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-purple-700 font-medium">آخرین ارسال</p>
+                        <p class="text-lg font-bold text-gray-800 mt-2">
+                            @(Model.Any() ? Model.Max(x => x.SentAt).ToString("yyyy/MM/dd") : "-")
+                        </p>
+                    </div>
+                    <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center">
+                        <i class="fas fa-clock text-purple-600 text-xl"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- جدول تاریخچه -->
+        <div class="bg-white rounded-2xl shadow-xl overflow-hidden">
+            <div class="px-6 py-4 bg-gradient-to-r from-blue-50 to-indigo-50 border-b">
+                <div class="flex flex-col sm:flex-row justify-between items-center">
+                    <div class="flex items-center mb-3 sm:mb-0">
+                        <i class="fas fa-filter text-blue-600 ml-2"></i>
+                        <h3 class="text-lg font-bold text-gray-800">لیست پیامک‌ها</h3>
+                    </div>
+                    <div class="flex space-x-3 space-x-reverse">
+                        <button class="bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-lg font-medium hover:bg-gray-50 transition duration-300 flex items-center">
+                            <i class="fas fa-download ml-2"></i>
+                            خروجی
+                        </button>
+                        <button class="bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-lg font-medium hover:bg-gray-50 transition duration-300 flex items-center">
+                            <i class="fas fa-print ml-2"></i>
+                            چاپ
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            @if (!Model.Any())
+            {
+                <!-- حالت خالی -->
+                <div class="text-center py-16">
+                    <div class="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <i class="fas fa-inbox text-3xl text-gray-400"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-600 mb-4">هیچ پیامی ارسال نشده است</h3>
+                    <p class="text-gray-500 mb-6 max-w-md mx-auto">
+                        تاکنون هیچ پیامکی برای این شرکت ارسال نشده است.
+                    </p>
+                    <a href="@Url.Action("Index", "Company")"
+                       class="bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-8 py-3 rounded-xl font-bold hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 inline-flex items-center shadow-lg hover:shadow-xl">
+                        <i class="fas fa-paper-plane ml-2"></i>
+                        ارسال اولین پیامک
+                    </a>
+                </div>
+            }
+            else
+            {
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-right text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                                    <i class="fas fa-calendar ml-2"></i>
+                                    تاریخ ارسال
+                                </th>
+                                <th class="px-6 py-3 text-right text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                                    <i class="fas fa-message ml-2"></i>
+                                    متن پیام
+                                </th>
+                                <th class="px-6 py-3 text-right text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                                    <i class="fas fa-info-circle ml-2"></i>
+                                    وضعیت
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-100">
+                            @foreach (var item in Model)
+                            {
+                                <tr class="hover:bg-blue-50 transition-colors duration-200">
+                                    <!-- تاریخ ارسال -->
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="flex items-center">
+                                            <div class="flex-shrink-0 w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center ml-3">
+                                                <i class="fas fa-clock text-blue-600"></i>
+                                            </div>
+                                            <div>
+                                                <div class="text-sm font-medium text-gray-900">
+                                                    @item.SentAt.ToString("yyyy/MM/dd")
+                                                </div>
+                                                <div class="text-xs text-gray-500">
+                                                    @item.SentAt.ToString("HH:mm")
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+
+                                    <!-- متن پیام -->
+                                    <td class="px-6 py-4">
+                                        <div class="max-w-xs">
+                                            <div class="text-sm text-gray-800 leading-relaxed line-clamp-2">
+                                                @item.Message
+                                            </div>
+                                            <div class="text-xs text-gray-500 mt-1">
+                                                <i class="fas fa-hashtag ml-1"></i>
+                                                @item.Message.Length کاراکتر
+                                            </div>
+                                        </div>
+                                    </td>
+
+                                    <!-- وضعیت -->
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        @{
+                                            var statusClass = item.Status switch
+                                            {
+                                                true => "bg-green-100 text-green-800",
+                                                false => "bg-red-100 text-red-800",
+                                             
+                                            };
+
+                                            var statusIcon = item.Status switch
+                                            {
+                                                true  => "fas fa-check-circle",
+                                                false  => "fas fa-times-circle"
+                                               
+                                            };
+                                        }
+                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium @statusClass">
+                                            <i class="@statusIcon ml-2"></i>
+                                            @item.Status
+                                        </span>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- فوتر جدول -->
+                <div class="px-6 py-4 bg-gray-50 border-t border-gray-200">
+                    <div class="flex justify-between items-center">
+                        <div class="text-sm text-gray-600">
+                            <i class="fas fa-info-circle ml-2"></i>
+                            نمایش @Model.Count مورد
+                        </div>
+                        <div class="flex space-x-3 space-x-reverse">
+                            <button class="text-gray-600 hover:text-gray-800 font-medium flex items-center">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                            <span class="text-gray-700 font-medium">1</span>
+                            <button class="text-gray-600 hover:text-gray-800 font-medium flex items-center">
+                                <i class="fas fa-chevron-left ml-2"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <!-- کارت اطلاعات اضافی -->
+        <div class="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div class="bg-gradient-to-br from-orange-50 to-amber-50 rounded-2xl p-6 shadow-lg">
+                <div class="flex items-center mb-4">
+                    <div class="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center ml-3">
+                        <i class="fas fa-chart-line text-orange-600 text-xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-bold text-gray-800">آمار ارسال</h3>
+                        <p class="text-sm text-gray-600">تحلیل پیامک‌های ارسالی</p>
+                    </div>
+                </div>
+                <div class="space-y-3">
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-600">میانگین کاراکتر</span>
+                        <span class="font-bold text-gray-800">
+                            @(Model.Any() ? ((int)Model.Average(x => x.Message.Length)).ToString() : "0")
+                        </span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-600">تعداد پیامک‌های امروز</span>
+                        <span class="font-bold text-gray-800">
+                            @Model.Count(x => x.SentAt.Date == DateTime.Today)
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-gradient-to-br from-teal-50 to-cyan-50 rounded-2xl p-6 shadow-lg">
+                <div class="flex items-center mb-4">
+                    <div class="w-12 h-12 bg-teal-100 rounded-xl flex items-center justify-center ml-3">
+                        <i class="fas fa-lightbulb text-teal-600 text-xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-bold text-gray-800">نکات</h3>
+                        <p class="text-sm text-gray-600">راهنمای استفاده</p>
+                    </div>
+                </div>
+                <ul class="space-y-2 text-sm text-gray-600">
+                    <li class="flex items-start">
+                        <i class="fas fa-check text-teal-500 ml-2 mt-1"></i>
+                        <span>برای مشاهده جزئیات بیشتر روی پیامک‌ها کلیک کنید</span>
+                    </li>
+                    <li class="flex items-start">
+                        <i class="fas fa-check text-teal-500 ml-2 mt-1"></i>
+                        <span>می‌توانید تاریخچه را به صورت فایل Excel دانلود کنید</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .line-clamp-2 {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    /* استایل برای آیتم‌های جدول */
+    tr {
+        transition: background-color 0.2s ease;
+    }
+</style>

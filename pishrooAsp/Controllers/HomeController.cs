@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Azure.Core;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using pishrooAsp.Data;
 using pishrooAsp.Models;
 using pishrooAsp.Models.AboutUs;
+using pishrooAsp.Models.Products;
 using pishrooAsp.ModelViewer;
 using System.Diagnostics;
 using System.Globalization;
@@ -38,13 +40,13 @@ namespace pishrooAsp.Controllers
 			var translation = _context.AboutUsTranslations
 				.Include(p => p.Lang)
 				.FirstOrDefault(p => p.Lang.Code.ToLower() == culture.ToLower());
-
+			
 			// بقیه کدهای شما...
 			var bg = _context.Backgrounds.FirstOrDefault(x => x.IsActive);
 			ViewBag.Background = bg?.FilePath;
 
 			ViewBag.dir = translation?.Lang.dir;
-			ViewBag.about = translation?.Description;
+			ViewBag.about = "شرکت پیشرو آروین پلیمر از اولین شرکتهای دانش بنیان در زمینه تولید کامپاندهای الاستوری TPE,SEBS,SBS,SIS&TPV در ایران بوده که موفق به کسب عنوان دانش بنیان از معاونت علمی و فناوری ریاست جمهوری شده است. و با داشتن بروزترین ماشین آلات تولید و مدرن ترین تجهیزات آزمایشگاهی توانایی تولید طیف گسترده ای از کامپاندهای الاستومتری با حجم تولید بالا بر اساس نیاز مشتری را دارا می باشد. این شرکت توانایی تولید انواع کامپاندهی ترموپلاستیک با بهترین خواص در محدوده سختی SHOR 0 A الی SHOR 50 D را دارا می باشد. تولید و ارائه محصولات سفارشی ترموپلاستیک الاستومر به منظور سهولت در امر تولید از ویژگی های بارز این مجموعه می باشد.";
 			ViewBag.slogan = translation?.Slogan;
 			ViewBag.Name = translation?.CompanyName;
 			ViewBag.lang = culture.ToLower();
@@ -61,16 +63,26 @@ namespace pishrooAsp.Controllers
 			{
 				@context = "https://schema.org",
 				@type = "Organization",
-				name = "آروین پلیمر",
+				name = "پیشرو آروین پلیمر",
+				alternateName = new[] { "آروین پلیمر", "Arvin Polymer" },
+				description = "تولید کننده تخصصی کامپاندهای پلیمری، TPE، TPV، SEBS، SBS و نانوکامپاندهای دانش بنیان در ایران. اولین شرکت دانش بنیان در زمینه تولید کامپاندهای الاستومر TPE, SEBS, SBS, SIS و TPV.",
 				url = baseUrl,
-				logo = $"{baseUrl}/images/company-logo.png",
-				description = "تولید کننده محصولات پلیمری",
-				telephone = "+98-21-12345678",
+				logo = $"{baseUrl}/image/companyLogo.png", // اصلاح مسیر
+				telephone = "+98-26-34036063", // شماره واقعی
+				email = "info@arvinpolymer.com",
 				address = new
 				{
 					@type = "PostalAddress",
+					streetAddress = "البرز کیلومتر 18 جاده ماهدشت به اشتهارد شهرک صنعتی کوثر خیابان کوشش خیابان تلاشگران دو قطعه SH 228,229",
+					addressLocality = "اشتهارد",
+					addressRegion = "البرز",
+					postalCode = "xxxxx",
 					addressCountry = "IR"
-				}
+				},
+				foundingDate = "2018", // تاریخ تأسیس
+				founder = "شرکت پیشرو آروین پلیمر",
+				award = "شرکت دانش بنیان از معاونت علمی و فناوری ریاست جمهوری",
+				knowsAbout = new[] { "پلیمر", "کامپاند", "الاستومر", "نانوکامپاند", "TPE", "TPV", "SEBS", "SBS" }
 			};
 
 			// 2. اسکیما وبسایت
@@ -87,8 +99,27 @@ namespace pishrooAsp.Controllers
 					queryInput = "required name=search_term_string"
 				}
 			};
+			// 3. اسکیما LocalBusiness (برای نقشه گوگل)
+			var localBusinessSchema = new
+			{
+				@context = "https://schema.org",
+				@type = "LocalBusiness",
+				name = "پیشرو آروین پلیمر",
+				image = $"{baseUrl}/image/companyLogo.png",
+				telephone = "+98-26-34036063",
+				email = "info@arvinpolymer.com",
+				address = new
+				{
+					@type = "PostalAddress",
+					streetAddress = "البرز کیلومتر 18 جاده ماهدشت به اشتهارد شهرک صنعتی کوثر خیابان کوشش خیابان تلاشگران دو قطعه SH 228,229",
+					addressLocality = "اشتهارد",
+					addressRegion = "البرز",
+					addressCountry = "IR"
+				}
+			};
 
 			ViewBag.OrganizationSchema = JsonSerializer.Serialize(organizationSchema);
+			ViewBag.localBusinessSchema = JsonSerializer.Serialize(localBusinessSchema);
 			ViewBag.WebsiteSchema = JsonSerializer.Serialize(websiteSchema);
 
 			return View();
@@ -113,6 +144,7 @@ namespace pishrooAsp.Controllers
 			// سپس دقیق فیلتر کن
 			var product = potentialProducts
 				.FirstOrDefault(p => p.seoWord.Split(',')[0].Trim() == slug);
+			
 			if (product == null)
 			{
 				return NotFound();
@@ -130,7 +162,6 @@ namespace pishrooAsp.Controllers
 			ViewBag.MetaDescription =  product.SeoDiscription;
 			ViewBag.MetaKeywords = $"{translation.Title}, محصولات پلیمری,{product.seoWord.Split('|')?[0]}";
 			ViewBag.OgImage = product.ImageUrl;
-			ViewBag.CanonicalUrl = $"/products/{product.Id}";
 			return View(product);
 
 
@@ -169,7 +200,7 @@ namespace pishrooAsp.Controllers
 				Item = aboutUsItem,
 				Translation = aboutUsTranslation
 			};
-
+			ViewBag.dir = aboutUsTranslation.Lang.dir;
 			// ارسال ViewModel به View مربوطه
 			return View(viewModel);
 		}
@@ -231,6 +262,10 @@ namespace pishrooAsp.Controllers
 			ViewBag.CanonicalUrl = $"/{culture}/products";
 			ViewBag.OgUrl = $"https://arvinpolymer.com/{culture}/products";
 			ViewBag.OgType = "website";
+
+			ViewBag.Language = culture.ToLower();
+			ViewBag.dir = products.FirstOrDefault().Translations.FirstOrDefault().Lang.dir;
+
 			return View(model);
 		}
 		public async Task<IActionResult> NewsList()
@@ -270,6 +305,8 @@ namespace pishrooAsp.Controllers
 			}).ToList();
 
 			ViewBag.Language = culture.ToLower();
+			ViewBag.dir = lastNews.FirstOrDefault().Translations.FirstOrDefault().Lang.dir;
+
 			return View(model);
 		}
 	}

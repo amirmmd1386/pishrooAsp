@@ -1,9 +1,10 @@
-﻿@model pishrooAsp.Models.Newses.News
+﻿@model pishrooAsp.Models.Newses.News;
 @using pishrooAsp.Models.Newes;
-@using pishrooAsp.Utilities
+@using pishrooAsp.Utilities;
 
 
 @{
+    
     var culture = ViewContext.HttpContext.GetRouteValue("culture")?.ToString() ?? "fa";
     var translation = Model.Translations.FirstOrDefault();
     var isPersian = culture == "fa";
@@ -24,7 +25,7 @@
         "@@context": "https://schema.org",
         "@@type": "NewsArticle",
         "headline": "@translation?.Title",
-        "description": "@translation?.Summary",
+        "description": "@ViewBag.MetaDescription",
         "image": "@Model.DefaultImageUrl",
         "datePublished": "@Model.PublishDate.ToString("yyyy-MM-ddTHH:mm:ssZ")",
         "dateModified": "@Model.PublishDate.ToString("yyyy-MM-ddTHH:mm:ssZ")",
@@ -54,7 +55,7 @@
         <nav class="flex items-center text-sm text-gray-600 mb-8" aria-label="breadcrumb">
             <a href="/@culture" class="hover:text-blue-600 transition-colors">خانه</a>
             <span class="mx-3">/</span>
-            <a href="/@culture/news" class="hover:text-blue-600 transition-colors">اخبار و مقالات</a>
+            <a href="/@culture/newses" class="hover:text-blue-600 transition-colors">اخبار و مقالات</a>
             <span class="mx-3">/</span>
             <span class="text-gray-400 truncate">@translation?.Title</span>
         </nav>

@@ -156,7 +156,7 @@
                         <p class="text-sm text-blue-100">میانگین روزانه</p>
                     </div>
                     <div class="text-center">
-                        <p class="text-2xl font-bold">+18%</p>
+                        <p class="text-2xl font-bold">نامعلوم</p>
                         <p class="text-sm text-blue-100">رشد نسبت به ماه قبل</p>
                     </div>
                 </div>
@@ -282,7 +282,7 @@
         const pagesLabels = [
         @foreach (var pages in Model.PopularPages)
             {
-                @:'@pages.Path',
+                @:'@Html.Raw(@pages.Path)',
             }
         ];
 

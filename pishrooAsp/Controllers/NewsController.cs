@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using pishrooAsp.Data;
-using pishrooAsp.Models.Newses;
 using pishrooAsp.Models.Newes; // استفاده از namespace فایل شما
-
+using pishrooAsp.Models.Newses;
+using pishrooAsp.Models.Products;
 using pishrooAsp.ModelViewer;
 
 namespace pishrooAsp.Controllers
@@ -120,16 +120,17 @@ namespace pishrooAsp.Controllers
 			try
 			{
 				var dto = await _context.News
-				.Include(n => n.Translations)
-				.Include(n => n.Images)
-				.Include(n => n.Attachments)
-				.FirstOrDefaultAsync(n => n.Id == id);
+	.Include(n => n.Translations)
+	.Include(n => n.Images)
+	.Include(n => n.Attachments)
+	.FirstOrDefaultAsync(n => n.Id == id);
 
 				if (dto == null)
 					return NotFound();
 
 				var vm = new NewsViewModel
 				{
+					Id = dto.Id, // 🔥 اینو اضافه کن!
 					PublishDate = dto.PublishDate,
 					IsPublished = dto.IsPublished,
 					AuthorId = dto.AuthorId ?? 0,
@@ -166,9 +167,10 @@ namespace pishrooAsp.Controllers
 		}
 
 
-		[AdminAuthFilter]
+		//[AdminAuthFilter]
 
 		[HttpPost]
+		[AdminAuthFilter]
 		public async Task<IActionResult> Edit(int id, NewsDto model)
 		{
 			try
@@ -183,48 +185,122 @@ namespace pishrooAsp.Controllers
 
 				if (news == null) return NotFound();
 
+				// آپدیت فیلدها
 				news.IsPublished = model.IsPublished;
 				news.AuthorId = model.AuthorId;
+				news.PublishDate = DateTime.Now;
 
-				if (model.DefaultImage != null)
-					news.DefaultImageUrl = await SaveFile(model.DefaultImage);
-
-				_context.NewsTranslations.RemoveRange(news.Translations);
-				news.Translations = model.Translations;
-
-				if (model.Images != null)
+				if (model.DefaultImage != null && model.DefaultImage.Length > 0)
 				{
-					foreach (var file in model.Images)
-					{
-						var url = await SaveFile(file);
-						news.Images.Add(new NewsImage { ImageUrl = url, AltText = file.FileName, DisplayOrder = 0 });
-					}
+					news.DefaultImageUrl = await SaveFile(model.DefaultImage);
 				}
 
-				if (model.Attachments != null)
+				// ترجمه‌ها
+				//_context.NewsTranslations.RemoveRange(news.Translations);
+				// 🔥 **ویرایش فقط ترجمه‌ای که کاربر فرستاده**
+				if (model.Translations != null && model.Translations.Any())
 				{
-					foreach (var file in model.Attachments)
+					// اولین (و احتمالاً تنها) ترجمه‌ای که از فرم اومده
+					var incomingTranslation = model.Translations.First();
+
+					// پیدا کن ببین این ترجمه (برای این زبان) از قبل وجود داره یا نه
+					var existingTranslation = news.Translations
+						.FirstOrDefault(t => t.LangId == incomingTranslation.LangId);
+
+					if (existingTranslation != null)
 					{
-						var url = await SaveFile(file);
-						news.Attachments.Add(new NewsAttachment
+						// 🔴 **ویرایش ترجمه موجود**
+						existingTranslation.Title = incomingTranslation.Title;
+						existingTranslation.Summary = incomingTranslation.Summary;
+						existingTranslation.Content = incomingTranslation.Content;
+						existingTranslation.MetaDescription = incomingTranslation.MetaDescription;
+						existingTranslation.MetaKeywords = incomingTranslation.MetaKeywords;
+					}
+					else
+					{
+						// 🔵 **اضافه کردن ترجمه جدید** (اگر برای این زبان وجود نداشت)
+						news.Translations.Add(new NewsTranslation
 						{
-							FileUrl = url,
-							FileName = file.FileName,
-							FileType = Path.GetExtension(file.FileName),
-							FileSize = file.Length
+							NewsId = news.Id,
+							LangId = incomingTranslation.LangId, // همون زبانی که کاربر فرستاده
+							Title = incomingTranslation.Title,
+							Summary = incomingTranslation.Summary,
+							Content = incomingTranslation.Content,
+							MetaDescription = incomingTranslation.MetaDescription,
+							MetaKeywords = incomingTranslation.MetaKeywords
 						});
 					}
 				}
 
+
 				await _context.SaveChangesAsync();
+				TempData["SuccessMessage"] = "خبر با موفقیت ویرایش شد.";
 				return RedirectToAction(nameof(Index));
 			}
-			catch {
-				return View(model);
+			catch (Exception ex)
+			{
+				TempData["ErrorMessage"] = $"خطا در ذخیره اطلاعات: {ex.Message}";
+				return RedirectToAction(nameof(Edit), new { id });
 			}
-			
-			return RedirectToAction(nameof(Index));
 		}
+
+		//[HttpPost]
+		//public async Task<IActionResult> Edit(int id, NewsDto model)
+		//{
+		//	try
+		//	{
+		//		if (id != model.Id) return NotFound();
+
+		//		var news = await _context.News
+		//			.Include(n => n.Translations)
+		//			.Include(n => n.Images)
+		//			.Include(n => n.Attachments)
+		//			.FirstOrDefaultAsync(n => n.Id == id);
+
+		//		if (news == null) return NotFound();
+
+		//		news.IsPublished = model.IsPublished;
+		//		news.AuthorId = model.AuthorId;
+
+		//		if (model.DefaultImage != null)
+		//			news.DefaultImageUrl = await SaveFile(model.DefaultImage);
+
+		//		_context.NewsTranslations.RemoveRange(news.Translations);
+		//		news.Translations = model.Translations;
+
+		//		if (model.Images != null)
+		//		{
+		//			foreach (var file in model.Images)
+		//			{
+		//				var url = await SaveFile(file);
+		//				news.Images.Add(new NewsImage { ImageUrl = url, AltText = file.FileName, DisplayOrder = 0 });
+		//			}
+		//		}
+
+		//		if (model.Attachments != null)
+		//		{
+		//			foreach (var file in model.Attachments)
+		//			{
+		//				var url = await SaveFile(file);
+		//				news.Attachments.Add(new NewsAttachment
+		//				{
+		//					FileUrl = url,
+		//					FileName = file.FileName,
+		//					FileType = Path.GetExtension(file.FileName),
+		//					FileSize = file.Length
+		//				});
+		//			}
+		//		}
+
+		//		await _context.SaveChangesAsync();
+		//		return RedirectToAction(nameof(Index));
+		//	}
+		//	catch {
+		//		return View(model);
+		//	}
+
+		//	return RedirectToAction(nameof(Index));
+		//}
 
 		// حذف خبر	[AdminAuthFilter]
 		[AdminAuthFilter]
@@ -334,7 +410,26 @@ namespace pishrooAsp.Controllers
 			ViewBag.latestArticle = latestArticle;
 			ViewBag.Categories = ProcessCategories(categories);
 			ViewBag.Tags = GetPopularTags(categories);
+			ViewBag.MetaDescriptionSeo = translation?.MetaDescription;
+			var dir = true; // مقدار پیش‌فرض
 
+			var newsWithTranslations = await _context.News
+				.Include(n => n.Translations)
+					.ThenInclude(t => t.Lang)
+				.FirstOrDefaultAsync();
+
+			if (newsWithTranslations?.Translations != null)
+			{
+				var translationss = newsWithTranslations.Translations
+					.FirstOrDefault(t => t.Lang?.Code == culture);
+
+				if (translationss?.Lang != null)
+				{
+					dir = translationss.Lang.dir;
+				}
+			}
+
+			ViewBag.dir = dir;
 			return View(news);
 		}
 		// متد کمکی برای پردازش دسته‌بندی‌ها

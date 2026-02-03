@@ -1,32 +1,35 @@
 ﻿@model List<ProductViewModel>
 @{
-    string TitleChanger ="fa";
-    if (Model.Count > 0)
-    {
-     TitleChanger = Model[0].Language;
-        
-    }
-    bool isPersian = TitleChanger == "fa";
+    string lang = Model.Count > 0 ? Model[0].Language : "fa";
 }
+
 <section id="products" class="py-16 custom-light-gray">
     <div class="container mx-auto px-4">
-        <h2 class="text-4xl font-bold text-center text-custom-blue mb-12">@(isPersian?"محصولات ما":"Our Product")</h2>
+        <h2 class="text-4xl font-bold text-center text-custom-blue mb-12">
+            @(lang == "fa" ? "محصولات ما" :
+                        lang == "en" ? "Our Products" :
+                        lang == "ru" ? "Наши продукты" :
+                        lang == "tr" ? "Ürünlerimiz" :
+                        lang == "ar" ? "منتجاتنا" : "Our Products")
+        </h2>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             @foreach (var product in Model)
             {
-                
                 <div class="custom-white rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-2 transition duration-300 p-6 flex flex-col items-center text-center">
                     <img src="@product.ImageUrl" alt="@product.Title" class="w-full h-63 object-cover rounded-lg mb-4" />
                     <h3 class="text-2xl font-semibold text-custom-blue mb-2">@product.Title</h3>
                     <a asp-controller="Products"
-                       
                        asp-action="@product.seoWord.Split(',')[0].Trim()"
                        class="mt-auto px-6 py-3 custom-yellow text-custom-blue font-semibold rounded-full hover:opacity-90 transition duration-300">
-                        @(isPersian ? "جزئیات محصول" : "product detail")
-                    </a>
-                </div>
-            }
+                        @(lang == "fa" ? "جزئیات محصول" :
+                                            lang == "en" ? "Product Details" :
+                                            lang == "ru" ? "Детали продукта" :
+                                            lang == "tr" ? "Ürün Detayları" :
+                                            lang == "ar" ? "تفاصيل المنتج" : "Product Details")
+                </a>
+            </div>
+                        }
         </div>
     </div>
 </section>

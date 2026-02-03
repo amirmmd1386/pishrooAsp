@@ -64,7 +64,7 @@
                             </div>
 
                             <!-- لینک دوم -->
-                            <a href="/@ViewBag.Language/news/@article.Id/@SeoHelper.GenerateSeoTitle(article.Title)"
+                            <a href="/@ViewBag.Language/newses/@article.Id/@SeoHelper.GenerateSeoTitle(article.Title)"
                                class="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition font-medium text-sm group-hover:shadow-md">
                                 <i class="fas fa-book-open @(isPersian ? "ml-2" : "mr-2") text-xs"></i>
                                 @(isPersian ? "مطالعه مقاله" : "Read Article")
@@ -97,7 +97,7 @@ else
         <p class="text-gray-500 text-sm mb-4">
             @(isPersian ? "در حال حاضر مقاله‌ای مرتبط با این محصول وجود ندارد." : "Currently there are no articles related to this product.")
         </p>
-        <a href="/@ViewBag.Language/home/Newslist"
+        <a href="/@ViewBag.Language/home/news"
            class="inline-flex items-center px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition text-sm">
             <i class="fas fa-newspaper @(isPersian ? "ml-2" : "mr-2")"></i>
             @(isPersian ? "مشاهده همه مقالات" : "View All Articles")

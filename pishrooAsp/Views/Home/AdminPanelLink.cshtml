@@ -1,71 +1,278 @@
 ﻿
 @{
     Layout = "_InnerPage";
-
     ViewData["Title"] = "صفحه لینک‌ها";
+
+    bool isAdmin = Context.Request.Cookies.ContainsKey("AdminAuth");
+    bool isLimited = Context.Request.Cookies.ContainsKey("LimitedAuth");
 }
 
-<div class="min-h-screen bg-gray-50 flex items-center justify-center p-6">
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 w-full max-w-6xl">
-        <!-- Link 1 -->
-        <a href="/fa/product/" class="block bg-white rounded-lg shadow-md hover:shadow-xl transform hover:-translate-y-1 transition p-6 text-center">
-            <h2 class="text-xl font-semibold mb-2">ثبت آگهی</h2>
-            <p class="text-gray-500">برای ثبت آگهی صفحه نخست</p>
+<div class="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 p-6">
+    <!-- هدر -->
+    <div class="mb-8 text-center">
+        <h1 class="text-3xl font-bold text-gray-800 mb-2">پنل مدیریت</h1>
+        <div class="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium
+                    @(isAdmin ? "bg-blue-100 text-blue-800" : "bg-green-100 text-green-800")">
+            <i class="fas @(isAdmin ? "fa-user-shield" : "fa-user-check") ml-1"></i>
+            @(isAdmin ? "ادمین (دسترسی کامل)" : "کاربر محدود")
+        </div>
+        <!-- ساده‌ترین نسخه -->
+        <a href="/fa/Auth/Logout" class="text-red-600 hover:text-red-800 px-3 py-1 rounded">
+            <i class="fas fa-power-off ml-1"></i>
+            خروج
         </a>
+    </div>
 
-        <!-- Link 2 -->
-        <a href="/fa/news/" class="block bg-white rounded-lg shadow-md hover:shadow-xl transform hover:-translate-y-1 transition p-6 text-center">
-            <h2 class="text-xl font-semibold mb-2">ثبت اخبار و مقالات</h2>
-            <p class="text-gray-500">برای ثبت اخبار و مقالات صفحه نخست</p>
-        </a>
+    <div class="max-w-6xl mx-auto">
+        @if (isAdmin || isLimited)
+        {
 
-        <!-- Link 3 -->
-        <a href="/fa/whyus/" class="block bg-white rounded-lg shadow-md hover:shadow-xl transform hover:-translate-y-1 transition p-6 text-center">
-            <h2 class="text-xl font-semibold mb-2">چرا ما</h2>
-            <p class="text-gray-500">برای ثبت چرا ما صفحه نخست</p>
-        </a>
 
-        <!-- Link 4 -->
-        <a href="/fa/aboutus" class="block bg-white rounded-lg shadow-md hover:shadow-xl transform hover:-translate-y-1 transition p-6 text-center">
-            <h2 class="text-xl font-semibold mb-2">درباره ما</h2>
-            <p class="text-gray-500">برای ثبت برای صفحه درباره ما و فوتر</p>
-        </a>
+            <!-- بخش دسترسی محدود -->
+            <div class="mb-8">
+                <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+                    <i class="fas fa-users text-green-600 ml-2"></i>
+                    دسترسی‌های مشترک
+                </h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <!-- مشاهده درخواست خرید -->
+                    <a href="/fa/productrequests"
+                    class="block bg-white rounded-lg shadow-md hover:shadow-lg transform hover:-translate-y-1 transition p-5 text-center border-r-4 border-green-500">
+                        <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <i class="fas fa-shopping-cart text-green-600"></i>
+                        </div>
+                        <h3 class="font-semibold text-gray-800 mb-1">مشاهده درخواست خرید</h3>
+                        <p class="text-sm text-gray-500">لیست درخواست خرید محصولات</p>
+                    </a>
 
-        <!-- Link 5 -->
-        <a href="/fa/slider" class="block bg-white rounded-lg shadow-md hover:shadow-xl transform hover:-translate-y-1 transition p-6 text-center">
-            <h2 class="text-xl font-semibold mb-2">اسلایدر</h2>
-            <p class="text-gray-500">برای ثبت اسلایدر صفحه نخست</p>
-        </a>
+                    <!-- قالب پیامک -->
+                    <a href="/fa/smsTemplate"
+                    class="block bg-white rounded-lg shadow-md hover:shadow-lg transform hover:-translate-y-1 transition p-5 text-center border-r-4 border-green-500">
+                        <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <i class="fas fa-sms text-blue-600"></i>
+                        </div>
+                        <h3 class="font-semibold text-gray-800 mb-1">قالب پیامک</h3>
+                        <p class="text-sm text-gray-500">پیامک های توکن دار</p>
+                    </a>
 
-        <!-- Link 6 -->
-        <a href="/fa/productrequests" class="block bg-white rounded-lg shadow-md hover:shadow-xl transform hover:-translate-y-1 transition p-6 text-center">
-            <h2 class="text-xl font-semibold mb-2">مشاهده درخواست خرید</h2>
-            <p class="text-gray-500">لیست درخواست خرید محصولات</p>
-        </a>
-        <!-- Link 6 -->
-        <a href="/fa/catalog" class="block bg-white rounded-lg shadow-md hover:shadow-xl transform hover:-translate-y-1 transition p-6 text-center">
-            <h2 class="text-xl font-semibold mb-2">کاتالوگ</h2>
-            <p class="text-gray-500">ثبت کاتالوگ جدید</p>
-        </a>
-        <!-- Link 6 -->
-        <a href="/fa/gallery" class="block bg-white rounded-lg shadow-md hover:shadow-xl transform hover:-translate-y-1 transition p-6 text-center">
-            <h2 class="text-xl font-semibold mb-2">گالری</h2>
-            <p class="text-gray-500">ثبت تصاویر جدید</p>
-        </a>
-        <!-- Link 6 -->
-        <a href="/fa/Backgrounds" class="block bg-white rounded-lg shadow-md hover:shadow-xl transform hover:-translate-y-1 transition p-6 text-center">
-            <h2 class="text-xl font-semibold mb-2">پشت زمینه</h2>
-            <p class="text-gray-500">ثبت بک گراند جدید</p>
-        </a>
-        <!-- Link 6 -->
-        <a href="/fa/Analyze" class="block bg-white rounded-lg shadow-md hover:shadow-xl transform hover:-translate-y-1 transition p-6 text-center">
-            <h2 class="text-xl font-semibold mb-2">بازدید</h2>
-            <p class="text-gray-500">آمار و ارقام بازدید از سایت</p>
-        </a>
-        <!-- Link 6 -->
-        <a href="/fa/Message" class="block bg-white rounded-lg shadow-md hover:shadow-xl transform hover:-translate-y-1 transition p-6 text-center">
-            <h2 class="text-xl font-semibold mb-2">قالب پیامک</h2>
-            <p class="text-gray-500">ثبت قالب جدید پیامک</p>
-        </a>
+                    <!-- پیام‌ها -->
+                    <a href="/fa/Message"
+                    class="block bg-white rounded-lg shadow-md hover:shadow-lg transform hover:-translate-y-1 transition p-5 text-center border-r-4 border-green-500">
+                        <div class="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <i class="fas fa-envelope text-purple-600"></i>
+                        </div>
+                        <h3 class="font-semibold text-gray-800 mb-1">پیام‌ها</h3>
+                        <p class="text-sm text-gray-500">مدیریت پیام‌ها</p>
+                    </a>
+
+                    <!-- شرکت ها -->
+                    <a href="/fa/Company"
+                    class="block bg-white rounded-lg shadow-md hover:shadow-lg transform hover:-translate-y-1 transition p-5 text-center border-r-4 border-green-500">
+                        <div class="w-10 h-10 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <i class="fas fa-building text-indigo-600"></i>
+                        </div>
+                        <h3 class="font-semibold text-gray-800 mb-1">شرکت ها</h3>
+                        <p class="text-sm text-gray-500">ثبت شرکت و ارسال پیام توکن دار</p>
+                    </a>
+
+                    <!-- پیامک گروهی -->
+                    <a href="/fa/GroupSms"
+                    class="block bg-white rounded-lg shadow-md hover:shadow-lg transform hover:-translate-y-1 transition p-5 text-center border-r-4 border-green-500">
+                        <div class="w-10 h-10 bg-pink-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <i class="fas fa-comments text-pink-600"></i>
+                        </div>
+                        <h3 class="font-semibold text-gray-800 mb-1">پیامک گروهی</h3>
+                        <p class="text-sm text-gray-500">ارسال پیامک به چند نفر</p>
+                    </a>
+
+                     <!-- چاپ فاکتور -->
+                    <a href="/fa/AdminInvoice"
+                    class="block bg-white rounded-lg shadow-md hover:shadow-lg transform hover:-translate-y-1 transition p-5 text-center border-r-4 border-green-500">
+                        <div class="w-10 h-10 bg-pink-100 rounded-full flex items-center justify-center mx-auto mb-3">
+            <i class="fas fa-file-invoice text-white text-2xl"></i>
+                        </div>
+                        <h3 class="font-semibold text-gray-800 mb-1">فاکتور</h3>
+                        <p class="text-sm text-gray-500">ثبت و ارسال فاکتور</p>
+                    </a>
+                </div>
+            </div>
+
+
+        }
+
+        <!-- فقط برای ادمین -->
+        @if (isAdmin)
+        {
+            <div>
+                <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+                    <i class="fas fa-user-shield text-blue-600 ml-2"></i>
+                    دسترسی‌های ادمین
+                </h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <!-- ثبت آگهی -->
+                    <a href="/fa/product/"
+                       class="block bg-white rounded-lg shadow-md hover:shadow-lg transform hover:-translate-y-1 transition p-5 text-center border border-blue-200">
+                        <div class="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <i class="fas fa-cube text-red-600"></i>
+                        </div>
+                        <h3 class="font-semibold text-gray-800 mb-1">ثبت آگهی</h3>
+                        <p class="text-sm text-gray-500">برای ثبت آگهی صفحه نخست</p>
+                    </a>
+
+                    <!-- ثبت اخبار و مقالات -->
+                    <a href="/fa/newsList/"
+                       class="block bg-white rounded-lg shadow-md hover:shadow-lg transform hover:-translate-y-1 transition p-5 text-center border border-blue-200">
+                        <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <i class="fas fa-newspaper text-blue-600"></i>
+                        </div>
+                        <h3 class="font-semibold text-gray-800 mb-1">ثبت اخبار و مقالات</h3>
+                        <p class="text-sm text-gray-500">برای ثبت اخبار و مقالات صفحه نخست</p>
+                    </a>
+
+                    <!-- چرا ما -->
+                    <a href="/fa/whyus/"
+                       class="block bg-white rounded-lg shadow-md hover:shadow-lg transform hover:-translate-y-1 transition p-5 text-center border border-blue-200">
+                        <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <i class="fas fa-question-circle text-green-600"></i>
+                        </div>
+                        <h3 class="font-semibold text-gray-800 mb-1">چرا ما</h3>
+                        <p class="text-sm text-gray-500">برای ثبت چرا ما صفحه نخست</p>
+                    </a>
+
+                    <!-- درباره ما -->
+                    <a href="/fa/aboutus"
+                       class="block bg-white rounded-lg shadow-md hover:shadow-lg transform hover:-translate-y-1 transition p-5 text-center border border-blue-200">
+                        <div class="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <i class="fas fa-info-circle text-purple-600"></i>
+                        </div>
+                        <h3 class="font-semibold text-gray-800 mb-1">درباره ما</h3>
+                        <p class="text-sm text-gray-500">برای ثبت برای صفحه درباره ما و فوتر</p>
+                    </a>
+
+                    <!-- اسلایدر -->
+                    <a href="/fa/slider"
+                       class="block bg-white rounded-lg shadow-md hover:shadow-lg transform hover:-translate-y-1 transition p-5 text-center border border-blue-200">
+                        <div class="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <i class="fas fa-sliders-h text-orange-600"></i>
+                        </div>
+                        <h3 class="font-semibold text-gray-800 mb-1">اسلایدر</h3>
+                        <p class="text-sm text-gray-500">برای ثبت اسلایدر صفحه نخست</p>
+                    </a>
+
+                    <!-- کاتالوگ -->
+                    <a href="/fa/catalog"
+                       class="block bg-white rounded-lg shadow-md hover:shadow-lg transform hover:-translate-y-1 transition p-5 text-center border border-blue-200">
+                        <div class="w-10 h-10 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <i class="fas fa-book text-yellow-600"></i>
+                        </div>
+                        <h3 class="font-semibold text-gray-800 mb-1">کاتالوگ</h3>
+                        <p class="text-sm text-gray-500">ثبت کاتالوگ جدید</p>
+                    </a>
+
+                    <!-- گالری -->
+                    <a href="/fa/gallery"
+                       class="block bg-white rounded-lg shadow-md hover:shadow-lg transform hover:-translate-y-1 transition p-5 text-center border border-blue-200">
+                        <div class="w-10 h-10 bg-pink-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <i class="fas fa-images text-pink-600"></i>
+                        </div>
+                        <h3 class="font-semibold text-gray-800 mb-1">گالری</h3>
+                        <p class="text-sm text-gray-500">ثبت تصاویر جدید</p>
+                    </a>
+
+                    <!-- پشت زمینه -->
+                    <a href="/fa/Backgrounds"
+                       class="block bg-white rounded-lg shadow-md hover:shadow-lg transform hover:-translate-y-1 transition p-5 text-center border border-blue-200">
+                        <div class="w-10 h-10 bg-teal-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <i class="fas fa-paint-brush text-teal-600"></i>
+                        </div>
+                        <h3 class="font-semibold text-gray-800 mb-1">پشت زمینه</h3>
+                        <p class="text-sm text-gray-500">ثبت بک گراند جدید</p>
+                    </a>
+
+                    <!-- بازدید -->
+                    <a href="/fa/Analyze"
+                       class="block bg-white rounded-lg shadow-md hover:shadow-lg transform hover:-translate-y-1 transition p-5 text-center border border-blue-200">
+                        <div class="w-10 h-10 bg-cyan-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <i class="fas fa-chart-line text-cyan-600"></i>
+                        </div>
+                        <h3 class="font-semibold text-gray-800 mb-1">بازدید</h3>
+                        <p class="text-sm text-gray-500">آمار و ارقام بازدید از سایت</p>
+                    </a>
+
+                    <!-- بازدید -->
+                    <a href="/fa/user"
+                       class="block bg-white rounded-lg shadow-md hover:shadow-lg transform hover:-translate-y-1 transition p-5 text-center border border-Red-200">
+                        <div class="w-10 h-10 bg-cyan-100 rounded-full flex items-center justify-center mx-auto mb-3">
+            <i class="fas fa-user-friends text-white text-2xl"></i>
+                        </div>
+                        <h3 class="font-semibold text-gray-800 mb-1">کاربران</h3>
+                        <p class="text-sm text-gray-500">ادمین و کاربران عادی</p>
+                    </a>
+                </div>
+            </div>
+        }
+    </div>
+
+    <!-- اطلاعات کاربر -->
+    <div class="mt-8 max-w-4xl mx-auto">
+        <div class="bg-white rounded-lg shadow p-6">
+            <h3 class="text-lg font-semibold text-gray-800 mb-4">
+                <i class="fas fa-info-circle ml-2"></i>
+                اطلاعات دسترسی شما
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="bg-blue-50 p-4 rounded-lg">
+                    <p class="text-sm text-gray-600">نوع دسترسی:</p>
+                    <p class="font-bold text-blue-700">
+                        @(isAdmin ? "ادمین" : "کاربر محدود")
+                    </p>
+                </div>
+                <div class="bg-green-50 p-4 rounded-lg">
+                    <p class="text-sm text-gray-600">تعداد دسترسی‌ها:</p>
+                    <p class="font-bold text-green-700">
+                        @(isAdmin ? "11 دسترسی" : "5 دسترسی")
+                    </p>
+                </div>
+                <div class="@(isAdmin ? "bg-red-50" : "bg-yellow-50") p-4 rounded-lg">
+                    <p class="text-sm text-gray-600">سطح دسترسی:</p>
+                    <p class="font-bold @(isAdmin ? "text-red-700" : "text-yellow-700")">
+                        @(isAdmin ? "کامل" : "محدود")
+                    </p>
+                </div>
+            </div>
+
+            <!-- لیست دسترسی‌های کاربر -->
+            <div class="mt-4">
+                <p class="text-sm text-gray-600 mb-2">دسترسی‌های شما:</p>
+                <div class="flex flex-wrap gap-2">
+                    @if (isLimited)
+                    {
+                        <span class="bg-green-100 text-green-800 text-xs px-3 py-1 rounded-full">مشاهده درخواست خرید</span>
+                        <span class="bg-green-100 text-green-800 text-xs px-3 py-1 rounded-full">قالب پیامک</span>
+                        <span class="bg-green-100 text-green-800 text-xs px-3 py-1 rounded-full">پیام‌ها</span>
+                        <span class="bg-green-100 text-green-800 text-xs px-3 py-1 rounded-full">شرکت‌ها</span>
+                        <span class="bg-green-100 text-green-800 text-xs px-3 py-1 rounded-full">پیامک گروهی</span>
+                    }
+                    @if (isAdmin)
+                    {
+                        <span class="bg-blue-100 text-blue-800 text-xs px-3 py-1 rounded-full">ثبت آگهی</span>
+                        <span class="bg-blue-100 text-blue-800 text-xs px-3 py-1 rounded-full">ثبت اخبار</span>
+                        <span class="bg-blue-100 text-blue-800 text-xs px-3 py-1 rounded-full">چرا ما</span>
+                        <span class="bg-blue-100 text-blue-800 text-xs px-3 py-1 rounded-full">درباره ما</span>
+                        <span class="bg-blue-100 text-blue-800 text-xs px-3 py-1 rounded-full">اسلایدر</span>
+                        <span class="bg-blue-100 text-blue-800 text-xs px-3 py-1 rounded-full">کاتالوگ</span>
+                        <span class="bg-blue-100 text-blue-800 text-xs px-3 py-1 rounded-full">گالری</span>
+                        <span class="bg-blue-100 text-blue-800 text-xs px-3 py-1 rounded-full">پشت زمینه</span>
+                        <span class="bg-blue-100 text-blue-800 text-xs px-3 py-1 rounded-full">آمار بازدید</span>
+                        <!-- + دسترسی‌های محدود هم برای ادمین -->
+                        <span class="bg-green-100 text-green-800 text-xs px-3 py-1 rounded-full">مشاهده درخواست خرید</span>
+                        <span class="bg-green-100 text-green-800 text-xs px-3 py-1 rounded-full">قالب پیامک</span>
+                        <span class="bg-green-100 text-green-800 text-xs px-3 py-1 rounded-full">پیام‌ها</span>
+                        <span class="bg-green-100 text-green-800 text-xs px-3 py-1 rounded-full">شرکت‌ها</span>
+                        <span class="bg-green-100 text-green-800 text-xs px-3 py-1 rounded-full">پیامک گروهی</span>
+                    }
+                </div>
+            </div>
+        </div>
     </div>
 </div>

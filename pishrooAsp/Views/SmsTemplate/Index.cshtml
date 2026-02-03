@@ -1,0 +1,287 @@
+﻿@model List<pishrooAsp.Models.Sms.SmsTemplate>
+
+@{
+    ViewData["Title"] = "مدیریت قالب‌های پیامک";
+}
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+<div class="min-h-screen bg-gradient-to-br from-gray-50 to-purple-50 py-8 px-4">
+    <div class="max-w-6xl mx-auto">
+        <!-- هدر صفحه -->
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-10">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-800 mb-2">
+                    <i class="fas fa-file-alt ml-2 text-purple-600"></i>
+                    مدیریت قالب‌های پیامک
+                </h1>
+                <p class="text-gray-600">
+                    ایجاد، ویرایش و مدیریت قالب‌های پیامک
+                </p>
+            </div>
+
+            <!-- دکمه ایجاد جدید -->
+            <a href="/fa/SmsTemplate/Create"
+               class="mt-4 md:mt-0 bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-6 py-3 rounded-xl font-bold hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 shadow-lg hover:shadow-xl flex items-center">
+                <i class="fas fa-plus-circle ml-2"></i>
+                قالب جدید
+            </a>
+        </div>
+
+        <!-- کارت آمار -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-6 shadow-lg">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-blue-700 font-medium">تعداد قالب‌ها</p>
+                        <p class="text-3xl font-bold text-gray-800 mt-2">@Model.Count</p>
+                    </div>
+                    <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                        <i class="fas fa-layer-group text-blue-600 text-xl"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl p-6 shadow-lg">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-green-700 font-medium">میانگین کاراکتر</p>
+                        <p class="text-3xl font-bold text-gray-800 mt-2">
+                            @(Model.Any() ? ((int)Model.Average(x => x.Body?.Length ?? 0)).ToString() : "0")
+                        </p>
+                    </div>
+                    <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                        <i class="fas fa-ruler-combined text-green-600 text-xl"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-gradient-to-br from-purple-50 to-pink-50 rounded-2xl p-6 shadow-lg">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-purple-700 font-medium">قالب جدید</p>
+                        <p class="text-lg font-bold text-gray-800 mt-2">
+                        </p>
+                    </div>
+                    <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center">
+                        <i class="fas fa-calendar-plus text-purple-600 text-xl"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-gradient-to-br from-orange-50 to-amber-50 rounded-2xl p-6 shadow-lg">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-orange-700 font-medium">توکن‌ها</p>
+                        <p class="text-3xl font-bold text-gray-800 mt-2">
+                            @(Model.Sum(x => (x.Body?.Split('{').Length ?? 1) - 1))
+                        </p>
+                    </div>
+                    <div class="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center">
+                        <i class="fas fa-code text-orange-600 text-xl"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- جدول قالب‌ها -->
+        <div class="bg-white rounded-2xl shadow-xl overflow-hidden">
+            <div class="px-6 py-4 bg-gradient-to-r from-purple-50 to-pink-50 border-b">
+                <div class="flex flex-col sm:flex-row justify-between items-center">
+                    <div class="flex items-center mb-3 sm:mb-0">
+                        <i class="fas fa-filter text-purple-600 ml-2"></i>
+                        <h3 class="text-lg font-bold text-gray-800">لیست قالب‌ها</h3>
+                    </div>
+                    <div class="flex space-x-3 space-x-reverse">
+                        <button class="bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-lg font-medium hover:bg-gray-50 transition duration-300 flex items-center">
+                            <i class="fas fa-search ml-2"></i>
+                            جستجو
+                        </button>
+                        <button class="bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-lg font-medium hover:bg-gray-50 transition duration-300 flex items-center">
+                            <i class="fas fa-sort ml-2"></i>
+                            مرتب‌سازی
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            @if (!Model.Any())
+            {
+                <!-- حالت خالی -->
+                <div class="text-center py-16">
+                    <div class="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <i class="fas fa-file-alt text-3xl text-gray-400"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-600 mb-4">قالبی یافت نشد</h3>
+                    <p class="text-gray-500 mb-6 max-w-md mx-auto">
+                        هنوز هیچ قالب پیامکی ایجاد نشده است.
+                    </p>
+                    <a href="/SmsTemplate/Create"
+                       class="bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-8 py-3 rounded-xl font-bold hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 inline-flex items-center shadow-lg hover:shadow-xl">
+                        <i class="fas fa-plus-circle ml-2"></i>
+                        ساخت اولین قالب
+                    </a>
+                </div>
+            }
+            else
+            {
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-right text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                                    <i class="fas fa-heading ml-2"></i>
+                                    عنوان
+                                </th>
+                                <th class="px-6 py-3 text-right text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                                    <i class="fas fa-align-left ml-2"></i>
+                                    متن قالب
+                                </th>
+                                <th class="px-6 py-3 text-right text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                                    <i class="fas fa-cogs ml-2"></i>
+                                    عملیات
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-100">
+                            @foreach (var template in Model)
+                            {
+                                <tr class="hover:bg-purple-50 transition-colors duration-200">
+                                    <!-- عنوان -->
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="flex items-center">
+                                            <div class="flex-shrink-0 w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center ml-3">
+                                                <i class="fas fa-file-alt text-blue-600"></i>
+                                            </div>
+                                            <div>
+                                                <div class="text-sm font-bold text-gray-900">@template.Title</div>
+                                                <div class="text-xs text-gray-500">
+                                                    ID: @template.Id
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+
+                                    <!-- متن -->
+                                    <td class="px-6 py-4">
+                                        <div class="max-w-md">
+                                            <div class="text-sm text-gray-700 leading-relaxed line-clamp-2 bg-gray-50 p-3 rounded-lg">
+                                                @template.Body
+                                            </div>
+                                            <div class="flex items-center text-xs text-gray-500 mt-2">
+                                                <div class="flex items-center ml-4">
+                                                    <i class="fas fa-hashtag ml-1"></i>
+                                                    <span>@template.Body.Length کاراکتر</span>
+                                                </div>
+                                                <div class="flex items-center">
+                                                    <i class="fas fa-code ml-2"></i>
+                                                    <span>@(template.Body.Split('{').Length - 1) توکن</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+
+                                    <!-- عملیات -->
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="flex space-x-2 space-x-reverse">
+
+                                            <!-- حذف -->
+                                            <a href="@Url.Action("Delete", "SmsTemplate", new { id = template.Id })"
+                                               class="bg-gradient-to-r from-red-500 to-pink-500 text-white px-4 py-2 rounded-lg font-medium hover:from-red-600 hover:to-pink-600 transition-all duration-300 shadow hover:shadow-md flex items-center">
+                                                <i class="fas fa-trash ml-2"></i>
+                                                حذف
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- فوتر جدول -->
+                <div class="px-6 py-4 bg-gray-50 border-t border-gray-200">
+                    <div class="flex justify-between items-center">
+                        <div class="text-sm text-gray-600">
+                            <i class="fas fa-info-circle ml-2"></i>
+                            نمایش @Model.Count قالب
+                        </div>
+                        <div class="flex items-center">
+                            <button class="text-gray-600 hover:text-gray-800 font-medium flex items-center">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                            <span class="mx-4 text-gray-700 font-medium">1</span>
+                            <button class="text-gray-600 hover:text-gray-800 font-medium flex items-center">
+                                <i class="fas fa-chevron-left ml-2"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <!-- کارت راهنما -->
+        <div class="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div class="bg-gradient-to-br from-teal-50 to-emerald-50 rounded-2xl p-6 shadow-lg">
+                <div class="flex items-center mb-4">
+                    <div class="w-12 h-12 bg-teal-100 rounded-xl flex items-center justify-center ml-3">
+                        <i class="fas fa-lightbulb text-teal-600 text-xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-bold text-gray-800">نکات استفاده</h3>
+                        <p class="text-sm text-gray-600">نحوه استفاده از توکن‌ها</p>
+                    </div>
+                </div>
+                <ul class="space-y-3 text-sm text-gray-600">
+                    <li class="flex items-start">
+                        <i class="fas fa-check text-teal-500 ml-2 mt-1"></i>
+                        <span>از {نام} برای قرار دادن نام شخص استفاده کنید</span>
+                    </li>
+                    <li class="flex items-start">
+                        <i class="fas fa-check text-teal-500 ml-2 mt-1"></i>
+                        <span>از {تاریخ} برای قرار دادن تاریخ استفاده کنید</span>
+                    </li>
+                    <li class="flex items-start">
+                        <i class="fas fa-check text-teal-500 ml-2 mt-1"></i>
+                        <span>قالب‌ها در قسمت ارسال پیامک قابل انتخاب هستند</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="bg-gradient-to-br from-amber-50 to-orange-50 rounded-2xl p-6 shadow-lg">
+                <div class="flex items-center mb-4">
+                    <div class="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center ml-3">
+                        <i class="fas fa-exclamation-triangle text-amber-600 text-xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-bold text-gray-800">هشدارها</h3>
+                        <p class="text-sm text-gray-600">موارد مهم در مدیریت قالب‌ها</p>
+                    </div>
+                </div>
+                <ul class="space-y-3 text-sm text-gray-600">
+                    <li class="flex items-start">
+                        <i class="fas fa-times text-amber-500 ml-2 mt-1"></i>
+                        <span>حذف قالب‌ها غیرقابل بازگشت است</span>
+                    </li>
+                    <li class="flex items-start">
+                        <i class="fas fa-times text-amber-500 ml-2 mt-1"></i>
+                        <span>قالب‌های استفاده شده را حذف نکنید</span>
+                    </li>
+                    <li class="flex items-start">
+                        <i class="fas fa-times text-amber-500 ml-2 mt-1"></i>
+                        <span>از کاراکترهای خاص استفاده نکنید</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .line-clamp-2 {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+</style>

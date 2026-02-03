@@ -9,69 +9,118 @@
         .ToList();
 
     bool isPersian = Model.CurrentCulture == "fa";
+    bool isArabic = Model.CurrentCulture == "ar";
+    bool isRtl = isPersian || isArabic;
+
+    // متون بر اساس زبان
+    string companyName, companySlogan, popularProducts, productDetails, viewAllProducts, productsTitle;
+
+    switch (Model.CurrentCulture)
+    {
+        case "fa":
+            companyName = "آروین پلیمر";
+            companySlogan = "دانش بنیان فن آور";
+            popularProducts = "محصولات پرطرفدار";
+            productDetails = "جزئیات محصول";
+            viewAllProducts = "مشاهده همه محصولات";
+            productsTitle = "محصولات";
+            break;
+        case "ru":
+            companyName = "Арвин Полимер";
+            companySlogan = "Инновационные технологии";
+            popularProducts = "Популярные продукты";
+            productDetails = "Детали продукта";
+            viewAllProducts = "Посмотреть все продукты";
+            productsTitle = "Продукты";
+            break;
+        case "tr":
+            companyName = "Arvin Polimer";
+            companySlogan = "Yenilikçi Teknolojiler";
+            popularProducts = "Popüler Ürünler";
+            productDetails = "Ürün Detayları";
+            viewAllProducts = "Tüm Ürünleri Gör";
+            productsTitle = "Ürünler";
+            break;
+        case "ar":
+            companyName = "أربين بوليمر";
+            companySlogan = "التقنيات المبتكرة";
+            popularProducts = "المنتجات الشعبية";
+            productDetails = "تفاصيل المنتج";
+            viewAllProducts = "عرض جميع المنتجات";
+            productsTitle = "المنتجات";
+            break;
+        default: // انگلیسی
+            companyName = "Arvin Polymer";
+            companySlogan = "Knowledge-Based Innovator";
+            popularProducts = "Popular Products";
+            productDetails = "Product Details";
+            viewAllProducts = "View All Products";
+            productsTitle = "Products";
+            break;
+    }
 }
 
-<header class="sticky top-0 z-50 custom-blue shadow-lg border-b-4 border-custom-yellow">
+<header class="sticky top-0 z-50 custom-blue shadow-lg border-b-4 border-custom-yellow" dir="@(isRtl ? "rtl" : "ltr")">
     <nav class="container mx-auto px-4 py-4 flex justify-between items-center">
         <!-- Logo -->
         <a href="/@Model.CurrentCulture" class="text-custom-white text-2xl md:text-3xl font-bold flex items-center">
-            <div class="flex items-center justify-center h-12 md:h-16 ml-2">
+            <div class="flex items-center justify-center h-12 md:h-16 @(isRtl ? "mr-2" : "ml-2")">
                 <img src="~/image/companyLogo.png" alt="Logo" class="w-full h-full object-cover">
             </div>
-            @(isPersian ? "آروین پلیمر" : "Ervin Polymer")
-            <span class="text-xs md:text-sm mr-2 hidden md:block">
-                @(isPersian ? "دانش بنیان فن آور" : "")
+            @companyName
+            <span class="text-xs md:text-sm @(isRtl ? "ml-2" : "mr-2") hidden md:block">
+                @companySlogan
             </span>
         </a>
 
         <!-- Desktop Menu -->
-        <ul class="hidden md:flex space-x-4 lg:space-x-8 text-base lg:text-lg">
+        <ul class="hidden md:flex space-x-4 lg:space-x-8 text-base lg:text-lg @(isRtl ? "space-x-reverse" : "")">
             @foreach (var item in Model.Items)
             {
-                if (item.Title == "محصولات" || item.Title == "Products")
+                if (item.Title == productsTitle || item.Title.ToLower()=="product" )
                 {
                     <li class="relative group">
                         <a href="@item.Url" class="text-custom-white hover:text-custom-yellow transition duration-300 font-medium mx-2 lg:mx-3 flex items-center">
                             @item.Title
-                            <svg class="w-4 h-4 mr-1 transform group-hover:rotate-180 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-4 h-4 @(isRtl ? "mr-1" : "ml-1") transform group-hover:rotate-180 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                             </svg>
                         </a>
 
                         <!-- Mega Menu -->
-                        <div class="absolute left-1/2 transform -translate-x-1/2 mt-2 w-80 md:w-96 lg:w-[800px] bg-white shadow-xl rounded-lg overflow-hidden opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300">
+                        <div class="absolute @(isRtl ? "right-0" : "left-0") mt-2 w-80 md:w-96 lg:w-[800px] bg-white shadow-xl rounded-lg overflow-hidden opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
                             <div class="p-4 md:p-6">
-                                <h3 class="font-bold text-custom-dark-gray text-lg mb-4">@(isPersian ? "محصولات پرطرفدار" : "Popular Products")</h3>
+                                <h3 class="font-bold text-custom-dark-gray text-lg mb-4 @(isRtl ? "text-right" : "")">@popularProducts</h3>
 
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     @foreach (var product in products)
                                     {
                                         var translation = product.Translations.FirstOrDefault(t => t.Lang.Code.ToLower() == Model.CurrentCulture);
                                         <div class="bg-gray-50 rounded-lg p-4 hover:shadow-md transition-shadow duration-300">
-                                            <div class="flex items-start mb-3">
-                                                <div class="flex-shrink-0 w-12 h-12 bg-gray-200 rounded flex items-center justify-center mr-3">
+                                            <div class="flex items-start mb-3 @(isRtl ? "flex-row-reverse" : "")">
+                                                <div class="flex-shrink-0 w-12 h-12 bg-gray-200 rounded flex items-center justify-center @(isRtl ? "ml-3" : "mr-3")">
                                                     <i class="fas fa-box text-custom-blue"></i>
                                                 </div>
-                                                <div>
+                                                <div class="@(isRtl ? "text-right" : "")">
                                                     <h4 class="font-semibold text-custom-blue text-sm md:text-base">@(translation?.Title)</h4>
-                                                    <p class="text-xs text-gray-500 mt-1 line-clamp-2">
+                                                    <p class="text-xs text-gray-500 mt-1 line-clamp-2 @(isRtl ? "text-right" : "")">
                                                         @(translation?.Description?.Length > 60 ? translation.Description.Substring(0, 60) + "..." : translation?.Description)
                                                     </p>
                                                 </div>
                                             </div>
-                                            <a asp-controller="Home"
-                                               asp-action="ProductDetail"
-                                               asp-route-id="@product.Id"
+                                            <a asp-controller="Products"
+                                               asp-action="@product.seoWord.Split(',')[0].Trim()"
+                                               asp-route-culture="@Model.CurrentCulture"
                                                class="block w-full text-center px-4 py-2 custom-yellow text-custom-blue font-semibold rounded-full hover:opacity-90 transition duration-300 text-sm">
-                                                @(isPersian ? "جزئیات محصول" : "Product Details")
+                                                @productDetails
                                             </a>
                                         </div>
                                     }
                                 </div>
 
                                 <div class="mt-4 pt-4 border-t border-gray-200">
-                                    <a href="/@Model.CurrentCulture/#products" class="block text-center text-custom-yellow hover:underline font-medium">
-                                        @(isPersian ? "مشاهده همه محصولات →" : "View All Products →")
+                                    <a href="/@Model.CurrentCulture/#products" class="block text-center text-custom-yellow hover:underline font-medium @(isRtl ? "text-right" : "")">
+                                        @viewAllProducts @(isRtl ? "←" : "→")
                                     </a>
                                 </div>
                             </div>
@@ -90,11 +139,11 @@
         </ul>
 
         <!-- Language Switcher & Mobile Menu Toggle -->
-        <div class="flex items-center space-x-4 ltr">
+        <div class="flex  @(isRtl ? "space-x-reverse" : "")">
             <!-- Language Switcher -->
             <div class="relative group">
                 <button class="flex items-center text-custom-yellow hover:text-custom-white transition duration-300 p-2 rounded-md">
-                    <i class="fas fa-globe text-lg md:text-xl mr-2"></i>
+                    <i class="fas fa-globe text-lg md:text-xl "></i>
                     <span class="font-medium text-sm md:text-base">@(langs.FirstOrDefault(l => l.Code.ToLower() == ViewContext.RouteData.Values["culture"]?.ToString()?.ToLower())?.Name ?? "فارسی")</span>
                 </button>
                 <div class="absolute left-0 mt-2 w-32 bg-white rounded-md shadow-lg py-1 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300">
@@ -106,45 +155,54 @@
                         </a>
                     }
                 </div>
-            </div>
 
+                </div>
             <!-- Mobile Menu Toggle -->
-            <button id="mobile-menu-button" class="md:hidden text-custom-white p-2 rounded-md">
+            <button id="mobile-menu-button" class="md:hidden text-custom-white p-0 rounded-md">
                 <i class="fas fa-bars text-xl"></i>
             </button>
+
+
+
         </div>
+
+
+
     </nav>
 
     <!-- Mobile Menu -->
-    <div id="mobile-menu" class="hidden md:hidden custom-blue pb-4 px-4">
-        <ul class="flex flex-col space-y-3 text-lg">
+    <div id="mobile-menu" class="hidden md:hidden custom-blue pb-4 px-4" dir="@(isRtl ? "rtl" : "ltr")">
+        <ul class="flex flex-col space-y-3 text-lg @(isRtl ? "space-y-reverse" : "")">
             @foreach (var item in Model.Items)
             {
                 <li>
-                    <a href="@item.Url" class="text-custom-white hover:text-custom-yellow transition duration-300 block py-2 font-medium">
+                    <a href="@item.Url" class="text-custom-white hover:text-custom-yellow transition duration-300 block py-2 font-medium @(isRtl ? "text-right" : "")">
                         @item.Title
                     </a>
                 </li>
             }
         </ul>
 
-        <!-- Mobile Products -->
+        @* <!-- Mobile Products -->
         <div class="mt-4 pt-4 border-t border-custom-yellow/30">
-            <h3 class="text-custom-white font-bold mb-3">@(isPersian ? "محصولات" : "Products")</h3>
+            <h3 class="text-custom-white font-bold mb-3 @(isRtl ? "text-right" : "")">@productsTitle</h3>
             <div class="grid grid-cols-1 gap-3">
                 @foreach (var product in products.Take(4))
                 {
                     var translation = product.Translations.FirstOrDefault(t => t.Lang.Code.ToLower() == Model.CurrentCulture);
-                    <a asp-controller="Home" asp-action="ProductDetail" asp-route-id="@product.Id"
-                       class="bg-white/10 rounded-lg p-3 flex items-center hover:bg-white/20 transition duration-300">
-                        <div class="flex-shrink-0 w-10 h-10 bg-white/20 rounded flex items-center justify-center mr-3">
+                    <a asp-controller="Home"
+                       asp-action="ProductDetail"
+                       asp-route-id="@product.Id"
+                       asp-route-culture="@Model.CurrentCulture"
+                       class="bg-white/10 rounded-lg p-3 flex items-center hover:bg-white/20 transition duration-300 @(isRtl ? "flex-row-reverse" : "")">
+                        <div class="flex-shrink-0 w-10 h-10 bg-white/20 rounded flex items-center justify-center @(isRtl ? "ml-3" : "mr-3")">
                             <i class="fas fa-box text-custom-yellow"></i>
                         </div>
-                        <span class="text-custom-white text-sm">@(translation?.Title)</span>
+                        <span class="text-custom-white text-sm @(isRtl ? "text-right" : "")">@(translation?.Title)</span>
                     </a>
                 }
             </div>
-        </div>
+        </div> *@
     </div>
 </header>
 
@@ -161,6 +219,16 @@
                     }
                 });
             }
+
+            // Close mobile menu when clicking outside
+            document.addEventListener('click', function(event) {
+                const mobileMenu = document.getElementById('mobile-menu');
+                const mobileButton = document.getElementById('mobile-menu-button');
+
+                if (mobileMenu && !mobileMenu.contains(event.target) && !mobileButton.contains(event.target)) {
+                    mobileMenu.classList.add('hidden');
+                }
+            });
         });
     </script>
 
@@ -178,6 +246,15 @@
                 padding-left: 1rem;
                 padding-right: 1rem;
             }
+        }
+
+        /* بهبود جهت‌گیری برای زبان‌های RTL */
+        [dir="rtl"] .space-x-reverse > :not([hidden]) ~ :not([hidden]) {
+            --tw-space-x-reverse: 1;
+        }
+
+        [dir="rtl"] .space-y-reverse > :not([hidden]) ~ :not([hidden]) {
+            --tw-space-y-reverse: 1;
         }
     </style>
 }

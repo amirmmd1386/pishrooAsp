@@ -1,0 +1,682 @@
+﻿@* Views/GroupSms/Index.cshtml *@
+@using pishrooAsp.Models.GroupSms
+@model List<pishrooAsp.Models.GroupSms.GroupSmsCampaign>
+
+@{
+    ViewData["Title"] = "پیامک گروهی";
+    Layout = "_AdminLayout";
+}
+@Html.AntiForgeryToken()
+
+<div class="min-h-screen bg-gray-50">
+    <!-- هدر -->
+    <div class="bg-white border-b">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center py-6">
+                <div>
+                    <h1 class="text-2xl font-bold text-gray-900">پیامک گروهی</h1>
+                    <p class="text-gray-500 mt-1">ارسال و مدیریت پیامک‌های انبوه</p>
+                </div>
+                <div class="flex items-center space-x-4 space-x-reverse">
+                    <a asp-action="SendQuick" class="btn-primary flex items-center">
+                        <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                        </svg>
+                        ارسال سریع
+                    </a>
+                    <a asp-action="Create" class="btn-secondary flex items-center">
+                        <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                        </svg>
+                        کمپین جدید
+                    </a>
+                    <!-- در Index.cshtml دکمه را اینگونه اصلاح کنید: -->
+                    <button onclick="window.location.href='@Url.Action("PhoneGroups", "GroupSms")'"
+                            class="btn-secondary flex items-center">
+                        <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                        </svg>
+                        گروه‌های تلفن
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- آمار -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div class="bg-white rounded-xl border p-6">
+                <div class="flex items-center">
+                    <div class="p-3 bg-blue-50 rounded-lg">
+                        <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                        </svg>
+                    </div>
+                    <div class="mr-4">
+                        <p class="text-sm text-gray-500">کل کمپین‌ها</p>
+                        <p class="text-2xl font-bold text-gray-900">@Model.Count</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-xl border p-6">
+                <div class="flex items-center">
+                    <div class="p-3 bg-green-50 rounded-lg">
+                        <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </div>
+                    <div class="mr-4">
+                        <p class="text-sm text-gray-500">تکمیل شده</p>
+                        <p class="text-2xl font-bold text-gray-900">
+                            @Model.Where(c => c.Status == SmsStatus.Completed).Count()
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-xl border p-6">
+                <div class="flex items-center">
+                    <div class="p-3 bg-yellow-50 rounded-lg">
+                        <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </div>
+                    <div class="mr-4">
+                        <p class="text-sm text-gray-500">پیش‌نویس</p>
+                        <p class="text-2xl font-bold text-gray-900">
+                            @Model.Where(c => c.Status == SmsStatus.Draft).Count()
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-xl border p-6">
+                <div class="flex items-center">
+                    <div class="p-3 bg-purple-50 rounded-lg">
+                        <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                        </svg>
+                    </div>
+                    <div class="mr-4">
+                        <p class="text-sm text-gray-500">پیامک ارسالی</p>
+                        <p class="text-2xl font-bold text-gray-900">@Model.Sum(c => c.SentCount)</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- جستجو و فیلتر -->
+        <div class="bg-white rounded-xl border mb-6">
+            <div class="p-6 border-b">
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                    <div class="relative flex-1">
+                        <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                            <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
+                        </div>
+                        <input type="text"
+                               class="block w-full pr-10 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                               placeholder="جستجوی کمپین..." />
+                    </div>
+                    <div class="flex space-x-3 space-x-reverse">
+                        <select class="border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            <option>همه وضعیت‌ها</option>
+                            <option>پیش‌نویس</option>
+                            <option>تکمیل شده</option>
+                            <option>ناموفق</option>
+                        </select>
+                        <button class="border border-gray-300 rounded-lg px-4 py-2 hover:bg-gray-50">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- لیست کمپین‌ها -->
+            <div class="p-6">
+                @if (Model.Any())
+                {
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead>
+                                <tr>
+                                    <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">عنوان</th>
+                                    <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">وضعیت</th>
+                                    <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">تعداد</th>
+                                    <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">تاریخ</th>
+                                    <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">عملیات</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200">
+                                @foreach (var campaign in Model)
+                                {
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="px-6 py-4">
+                                            <div class="flex items-center">
+                                                <div class="ml-4">
+                                                    <div class="text-sm font-medium text-gray-900">@campaign.Title</div>
+                                                    <div class="text-sm text-gray-500 truncate max-w-xs">
+                                                        @if (campaign.Message.Length > 60)
+                                                        {
+                                                            @campaign.Message.Substring(0, 60)
+                                                            <text>...</text>
+                                                        }
+                                                        else
+                                                        {
+                                                            @campaign.Message
+                                                        }
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            @{
+                                                // استفاده از switch به جای دیکشنری داینامیک
+                                                var (badgeClass, badgeText) = campaign.Status switch
+                                                {
+                                                    SmsStatus.Draft => ("bg-gray-100 text-gray-800", "پیش‌نویس"),
+                                                    SmsStatus.Scheduled => ("bg-yellow-100 text-yellow-800", "زمان‌بندی"),
+                                                    SmsStatus.Sending => ("bg-blue-100 text-blue-800", "در حال ارسال"),
+                                                    SmsStatus.Completed => ("bg-green-100 text-green-800", "تکمیل شده"),
+                                                    SmsStatus.Failed => ("bg-red-100 text-red-800", "ناموفق"),
+                                                    _ => ("bg-gray-100 text-gray-800", "حذف شده")
+                                                };
+                                            }
+                                            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium @badgeClass">
+                                                @badgeText
+                                            </span>
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            <div class="text-sm text-gray-900">@campaign.SentCount</div>
+                                            <div class="text-sm text-gray-500">از @campaign.TotalCount</div>
+                                        </td>
+                                        <td class="px-6 py-4 text-sm text-gray-500">
+                                            @campaign.CreatedAt.ToString("yyyy/MM/dd")
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            <div class="flex space-x-2 space-x-reverse">
+                                                <a asp-action="Details" asp-route-id="@campaign.Id"
+                                                   class="text-blue-600 hover:text-blue-900">
+                                                    مشاهده
+                                                </a>
+                                                @if (campaign.Status == SmsStatus.Draft)
+                                                {
+                                                    <a href="#" onclick="sendCampaign(@campaign.Id)"
+                                                       class="text-green-600 hover:text-green-900">
+                                                        ارسال
+                                                    </a>
+                                                }
+                                                <a asp-action="Delete" asp-route-id="@campaign.Id"
+                                                   onclick="return confirm('آیا از حذف این کمپین مطمئن هستید؟')"
+                                                   class="text-red-600 hover:text-red-900">
+                                                    حذف
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <div class="text-center py-12">
+                        <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                        </svg>
+                        <h3 class="mt-4 text-lg font-medium text-gray-900">کمپینی یافت نشد</h3>
+                        <p class="mt-2 text-gray-500">هنوز هیچ کمپین پیامکی ایجاد نکرده‌اید.</p>
+                        <div class="mt-6">
+                            <a asp-action="Create" class="btn-primary">
+                                <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                                </svg>
+                                ایجاد کمپین جدید
+                            </a>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+    <!-- مودال اصلی گروه‌های تلفن -->
+    <div id="phoneGroupsModal" class="fixed inset-0 z-50 hidden">
+        <div class="fixed inset-0 bg-black bg-opacity-50"></div>
+        <div class="fixed inset-0 flex items-center justify-center p-4">
+            <div class="bg-white rounded-xl w-full max-w-2xl max-h-[90vh] overflow-hidden">
+                <!-- هدر مودال -->
+                <div class="border-b p-6">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-900">گروه‌های تلفن</h3>
+                            <p class="text-gray-500 mt-1">مدیریت و کپی گروه‌های شماره تلفن</p>
+                        </div>
+                        <div class="flex space-x-3 space-x-reverse">
+                            <button onclick="showCreateGroupForm()"
+                                    class="btn-primary flex items-center text-sm">
+                                <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                                </svg>
+                                گروه جدید
+                            </button>
+                            <button onclick="closePhoneGroupsModal()"
+                                    class="text-gray-500 hover:text-gray-700">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- محتوای مودال -->
+                <div class="p-6 overflow-y-auto max-h-[calc(90vh-120px)]">
+                    <div id="phoneGroupsContainer">
+                        <!-- گروه‌ها اینجا لود می‌شوند -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- مودال ایجاد گروه جدید -->
+    <div id="createGroupModal" class="fixed inset-0 z-[60] hidden">
+        <!-- ... ساختار مشابه مودال اصلی ... -->
+        <div class="fixed inset-0 bg-black bg-opacity-50"></div>
+        <div class="fixed inset-0 flex items-center justify-center p-4">
+            <div class="bg-white rounded-xl w-full max-w-md">
+                <div class="border-b p-6">
+                    <h3 class="text-xl font-bold text-gray-900">ایجاد گروه جدید</h3>
+                </div>
+                <form method="post" asp-action="CreatePhoneGroup" class="p-6">
+                    @Html.AntiForgeryToken()
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">نام گروه</label>
+                            <input type="text" name="Name" required
+                                   class="w-full border border-gray-300 rounded-lg px-3 py-2">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">توضیحات</label>
+                            <textarea name="Description"
+                                      class="w-full border border-gray-300 rounded-lg px-3 py-2"></textarea>
+                        </div>
+                        <div>
+                            <!-- در بخش دکمه‌های هدر، بعد از دکمه "کمپین جدید" -->
+                            <div class="flex items-center space-x-4 space-x-reverse">
+                                <a asp-action="SendQuick" class="btn-primary flex items-center">
+                                    <!-- ... کد قبلی ... -->
+                                </a>
+                                <a asp-action="Create" class="btn-secondary flex items-center">
+                                    <!-- ... کد قبلی ... -->
+                                </a>
+                                <button onclick="showPhoneGroupsModal()" class="btn-secondary flex items-center">
+                                    <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                                    </svg>
+                                    گروه‌های تلفن
+                                </button>
+                            </div>
+                            <div class="flex justify-between items-center mb-2">
+                                <label class="block text-sm font-medium text-gray-700">شماره‌ها</label>
+                                <button type="button" onclick="addPhoneNumberField('createNumbersContainer')"
+                                        class="text-blue-600 text-sm">
+                                    + افزودن شماره
+                                </button>
+                            </div>
+                            <div id="createNumbersContainer" class="space-y-3">
+                                <!-- شماره‌ها اینجا اضافه می‌شوند -->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex space-x-3 space-x-reverse mt-6">
+                        <button type="submit" class="btn-primary flex-1">ذخیره</button>
+                        <button type="button" onclick="document.getElementById('createGroupModal').classList.add('hidden')"
+                                class="btn-secondary flex-1">
+                            انصراف
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- مودال ویرایش گروه -->
+    <div id="editGroupModal" class="fixed inset-0 z-[60] hidden">
+        <!-- ساختار مشابه مودال ایجاد -->
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+
+@section Scripts {
+    <script>
+
+         function sendCampaign(id) {
+            if (confirm('آیا از ارسال این کمپین مطمئن هستید؟')) {
+                // ایجاد یک فرم مخفی
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = '@Url.Action("Send", "GroupSms")';
+
+                // اضافه کردن توکن امنیتی
+                const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+
+                const idInput = document.createElement('input');
+                idInput.type = 'hidden';
+                idInput.name = 'id';
+                idInput.value = id;
+
+                const tokenInput = document.createElement('input');
+                tokenInput.type = 'hidden';
+                tokenInput.name = '__RequestVerificationToken';
+                tokenInput.value = token;
+
+                form.appendChild(idInput);
+                form.appendChild(tokenInput);
+                document.body.appendChild(form);
+                form.submit();
+            }
+        }
+
+
+        // جستجوی کمپین‌ها
+        document.querySelector('input[type="text"]').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const rows = document.querySelectorAll('tbody tr');
+
+            rows.forEach(row => {
+                const title = row.querySelector('.text-gray-900').textContent.toLowerCase();
+                const message = row.querySelector('.text-gray-500').textContent.toLowerCase();
+
+                if (title.includes(searchTerm) || message.includes(searchTerm)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+
+        // فیلتر بر اساس وضعیت
+        document.querySelector('select').addEventListener('change', function(e) {
+            const filter = e.target.value;
+            const rows = document.querySelectorAll('tbody tr');
+
+            rows.forEach(row => {
+                const statusBadge = row.querySelector('.inline-flex').textContent.trim();
+
+                if (filter === 'همه وضعیت‌ها' || statusBadge.includes(filter)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+
+
+
+
+
+
+        // تابع برای نمایش مودال گروه‌های تلفن
+        function showPhoneGroupsModal() {
+            // بارگذاری گروه‌ها
+            loadPhoneGroups();
+            // نمایش مودال
+            document.getElementById('phoneGroupsModal').classList.remove('hidden');
+        }
+
+        // تابع برای بستن مودال
+        function closePhoneGroupsModal() {
+            document.getElementById('phoneGroupsModal').classList.add('hidden');
+        }
+
+        // بارگذاری گروه‌های تلفن
+        function loadPhoneGroups() {
+            fetch('@Url.Action("GetPhoneGroups", "GroupSms")')
+                .then(response => response.json())
+                .then(data => {
+                    const container = document.getElementById('phoneGroupsContainer');
+                    container.innerHTML = '';
+
+                    if (data.length === 0) {
+                        container.innerHTML = `
+                            <div class="text-center py-8">
+                                <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                                </svg>
+                                <h3 class="mt-4 text-lg font-medium text-gray-900">گروهی یافت نشد</h3>
+                                <p class="mt-2 text-gray-500">هنوز هیچ گروه تلفنی ایجاد نکرده‌اید.</p>
+                            </div>
+                        `;
+                        return;
+                    }
+
+                    data.forEach(group => {
+                        const groupElement = createGroupElement(group);
+                        container.appendChild(groupElement);
+                    });
+                });
+        }
+
+        // ایجاد المان HTML برای هر گروه
+        function createGroupElement(group) {
+            const div = document.createElement('div');
+            div.className = 'bg-gray-50 rounded-lg p-4 mb-4';
+            div.innerHTML = `
+                <div class="flex justify-between items-start mb-3">
+                    <div>
+                        <h4 class="font-medium text-gray-900">${group.name}</h4>
+                        <p class="text-sm text-gray-500 mt-1">${group.description || 'بدون توضیح'}</p>
+                    </div>
+                    <div class="flex space-x-2 space-x-reverse">
+                        <button onclick="editGroup(${group.id})" class="text-blue-600 hover:text-blue-900 p-1">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                            </svg>
+                        </button>
+                        <button onclick="deleteGroup(${group.id})" class="text-red-600 hover:text-red-900 p-1">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-sm text-gray-600">${group.phoneCount} شماره</span>
+                        <button onclick="toggleGroupNumbers(${group.id})" class="text-blue-600 text-sm">
+                            <span id="toggleText${group.id}">مشاهده شماره‌ها</span>
+                        </button>
+                    </div>
+                    <div id="groupNumbers${group.id}" class="hidden space-y-2 mt-2 max-h-60 overflow-y-auto">
+                        ${group.phoneNumbers.map(phone => `
+                            <div class="flex justify-between items-center bg-white p-2 rounded border">
+                                <div>
+                                    <span class="text-sm font-medium">${phone.name || 'بدون نام'}</span>
+                                    <span class="text-sm text-gray-500 mr-2">${phone.number}</span>
+                                </div>
+                                <span class="text-xs px-2 py-1 rounded-full ${phone.isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
+                                    ${phone.isActive ? 'فعال' : 'غیرفعال'}
+                                </span>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+                <div class="flex space-x-3 space-x-reverse">
+                    <button onclick="copyGroupNumbers(${group.id})"
+                            class="flex-1 bg-blue-50 text-blue-700 hover:bg-blue-100 py-2 px-4 rounded-lg text-sm font-medium transition">
+                        کپی شماره‌ها
+                    </button>
+                    <button onclick="useGroupForSms(${group.id})"
+                            class="flex-1 bg-green-50 text-green-700 hover:bg-green-100 py-2 px-4 rounded-lg text-sm font-medium transition">
+                        استفاده در پیامک
+                    </button>
+                </div>
+            `;
+            return div;
+        }
+
+        // نمایش/مخفی کردن شماره‌های هر گروه
+        function toggleGroupNumbers(groupId) {
+            const numbersDiv = document.getElementById(`groupNumbers${groupId}`);
+            const toggleText = document.getElementById(`toggleText${groupId}`);
+
+            if (numbersDiv.classList.contains('hidden')) {
+                numbersDiv.classList.remove('hidden');
+                toggleText.textContent = 'مخفی کردن شماره‌ها';
+            } else {
+                numbersDiv.classList.add('hidden');
+                toggleText.textContent = 'مشاهده شماره‌ها';
+            }
+        }
+
+        // کپی کردن شماره‌های یک گروه
+        async function copyGroupNumbers(groupId) {
+            try {
+                const response = await fetch(`@Url.Action("GetGroupNumbers", "GroupSms")?groupId=${groupId}`);
+                const data = await response.json();
+
+                const numbers = data.map(phone => phone.number).join('\n');
+
+                await navigator.clipboard.writeText(numbers);
+
+                // نمایش پیام موفقیت
+                showToast('شماره‌ها با موفقیت کپی شدند', 'success');
+            } catch (error) {
+                showToast('خطا در کپی شماره‌ها', 'error');
+            }
+        }
+
+        // استفاده از گروه برای ارسال پیامک
+        function useGroupForSms(groupId) {
+            // اینجا می‌توانید گروه را به فرم ارسال پیامک منتقل کنید
+            // یا مستقیم به صفحه ایجاد کمپین هدایت شوید
+            window.location.href = `@Url.Action("Create", "GroupSms")?groupId=${groupId}`;
+        }
+
+        // ویرایش گروه
+        function editGroup(groupId) {
+            // بارگذاری اطلاعات گروه و نمایش فرم ویرایش
+            loadGroupForEdit(groupId);
+            document.getElementById('editGroupModal').classList.remove('hidden');
+        }
+
+        // حذف گروه
+        async function deleteGroup(groupId) {
+            if (!confirm('آیا از حذف این گروه مطمئن هستید؟')) return;
+
+            try {
+                const response = await fetch(`@Url.Action("DeletePhoneGroup", "GroupSms")?id=${groupId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                    }
+                });
+
+                if (response.ok) {
+                    showToast('گروه با موفقیت حذف شد', 'success');
+                    loadPhoneGroups(); // بارگذاری مجدد لیست
+                } else {
+                    showToast('خطا در حذف گروه', 'error');
+                }
+            } catch (error) {
+                showToast('خطا در ارتباط با سرور', 'error');
+            }
+        }
+
+        // نمایش فرم ایجاد گروه جدید
+        function showCreateGroupForm() {
+            document.getElementById('createGroupModal').classList.remove('hidden');
+        }
+
+        // مدیریت شماره‌ها در فرم ویرایش/ایجاد
+        function addPhoneNumberField(containerId) {
+            const container = document.getElementById(containerId);
+            const index = container.children.length;
+
+            const div = document.createElement('div');
+            div.className = 'flex space-x-3 space-x-reverse mb-3';
+            div.innerHTML = `
+                <input type="text" name="phoneNumbers[${index}].Name"
+                       class="flex-1 border border-gray-300 rounded-lg px-3 py-2"
+                       placeholder="نام (اختیاری)">
+                <input type="text" name="phoneNumbers[${index}].Number"
+                       class="flex-1 border border-gray-300 rounded-lg px-3 py-2"
+                       placeholder="شماره تلفن" required>
+                <button type="button" onclick="this.parentElement.remove()"
+                        class="text-red-600 hover:text-red-900 p-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            `;
+            container.appendChild(div);
+        }
+
+        // تابع کمکی برای نمایش پیام‌ها
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.className = `fixed top-4 left-4 z-50 px-6 py-3 rounded-lg shadow-lg text-white ${
+                type === 'success' ? 'bg-green-500' : 'bg-red-500'
+            }`;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+
+            setTimeout(() => {
+                toast.remove();
+            }, 3000);
+        }
+
+        // بستن مودال‌ها با کلیک خارج
+        document.addEventListener('click', function(e) {
+            if (e.target.id === 'phoneGroupsModal') {
+                closePhoneGroupsModal();
+            }
+            if (e.target.id === 'editGroupModal') {
+                document.getElementById('editGroupModal').classList.add('hidden');
+            }
+            if (e.target.id === 'createGroupModal') {
+                document.getElementById('createGroupModal').classList.add('hidden');
+            }
+        });
+
+
+
+
+
+
+
+
+
+
+    </script>
+}

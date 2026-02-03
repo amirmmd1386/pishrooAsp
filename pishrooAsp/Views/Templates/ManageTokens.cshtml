@@ -1,0 +1,71 @@
+﻿@model List<pishrooAsp.Models.MessageTemplate.TemplateToken>
+
+@{
+    ViewData["Title"] = "مدیریت توکن‌ها";
+}
+
+<div class="max-w-4xl mx-auto p-6 space-y-6">
+
+    <h1 class="text-xl font-bold">
+        مدیریت توکن‌ها – @ViewBag.TemplateName
+    </h1>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="bg-green-100 text-green-700 p-3 rounded-lg">
+            @TempData["Success"]
+        </div>
+    }
+
+    <form asp-action="UpdateTokens" method="post"
+          class="bg-white p-6 rounded-xl shadow space-y-4">
+
+        <input type="hidden" name="templateId" value="@Model.First().TemplateId" />
+
+        @for (int i = 0; i < Model.Count; i++)
+        {
+            <input type="hidden" name="tokens[@i].Id" value="@Model[i].Id" />
+
+            <div class="border rounded-lg p-4 space-y-2">
+                <div class="font-semibold">
+                    {{@Model[i].TokenName}}
+                </div>
+
+                <div>
+                    <label class="text-sm">نام نمایشی</label>
+                    <input name="tokens[@i].DisplayName"
+                           value="@Model[i].DisplayName"
+                           class="border w-full rounded px-3 py-2" />
+                </div>
+
+                <div>
+                    <label class="text-sm">مقدار پیش‌فرض</label>
+                    <input name="tokens[@i].DefaultValue"
+                           value="@Model[i].DefaultValue"
+                           class="border w-full rounded px-3 py-2" />
+                </div>
+
+                <div>
+                    <label class="text-sm">توضیحات</label>
+                    <input name="tokens[@i].Description"
+                           value="@Model[i].Description"
+                           class="border w-full rounded px-3 py-2" />
+                </div>
+
+                <div class="flex items-center gap-2">
+                    <input type="checkbox"
+                           name="tokens[@i].IsRequired"
+                           value="true"
+                           @(Model[i].IsRequired ? "checked" : "") />
+                    <span class="text-sm">الزامی</span>
+                </div>
+            </div>
+        }
+
+        <div class="flex justify-end">
+            <button class="bg-blue-600 text-white px-6 py-2 rounded-lg">
+                ذخیره توکن‌ها
+            </button>
+        </div>
+    </form>
+</div>

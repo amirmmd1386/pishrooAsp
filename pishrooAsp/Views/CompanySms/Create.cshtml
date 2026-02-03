@@ -1,0 +1,84 @@
+﻿@{
+    var tokens = ViewBag.Tokens as List<string> ?? new List<string>();
+    var preview = ViewBag.TemplateBody as string ?? "";
+}
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+<div class="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 py-8 px-4">
+    <div class="max-w-2xl mx-auto">
+        <!-- هدر -->
+        <div class="text-center mb-10">
+            <div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full mb-4 shadow-lg">
+                <i class="fas fa-edit text-2xl text-white"></i>
+            </div>
+            <h1 class="text-3xl font-bold text-gray-800 mb-2">پر کردن اطلاعات پیامک</h1>
+            <p class="text-gray-600">مقادیر مورد نیاز را وارد کنید</p>
+        </div>
+
+        <!-- فرم اصلی -->
+        <div class="bg-white rounded-2xl shadow-xl p-8">
+            <form method="post" class="space-y-6">
+                <!-- فیلدهای توکن -->
+                @foreach (var token in tokens)
+                {
+                    <div class="space-y-2">
+                        <label class="block text-sm font-semibold text-gray-700">
+                            <i class="fas fa-pen ml-2 text-blue-500"></i>
+                            @token
+                        </label>
+                        <input name="Tokens[@token]"
+                               class="w-full border-2 border-gray-200 rounded-xl p-3 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 focus:outline-none transition duration-300"
+                               placeholder="مقدار @token را وارد کنید" />
+                    </div>
+                }
+
+                <!-- پیش‌نمایش -->
+                <div class="space-y-2 pt-6 border-t">
+                    <div class="flex items-center justify-between">
+                        <h3 class="text-lg font-bold text-gray-800">
+                            <i class="fas fa-eye ml-2 text-purple-500"></i>
+                            پیش‌نمایش پیامک
+                        </h3>
+                        <span class="text-sm text-gray-500">
+                            <i class="fas fa-info-circle ml-1"></i>
+                            @(preview.Length) کاراکتر
+                        </span>
+                    </div>
+                    <div id="preview" class="p-4 border-2 border-dashed border-gray-200 rounded-xl bg-gray-50 text-gray-700 min-h-[100px] leading-relaxed">
+                        @preview
+                    </div>
+                </div>
+
+                <!-- دکمه ارسال -->
+                <div class="pt-4">
+                    <button type="submit"
+                            class="w-full bg-gradient-to-r from-green-500 to-emerald-600 text-white py-3 rounded-xl font-bold text-lg hover:from-green-600 hover:to-emerald-700 transition-all duration-300 shadow-lg hover:shadow-xl flex items-center justify-center">
+                        <i class="fas fa-paper-plane ml-2"></i>
+                        ارسال پیامک
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const inputs = document.querySelectorAll('input[name^="Tokens"]');
+        const previewDiv = document.getElementById('preview');
+        const originalText = '@Html.Raw(preview.Replace("'", "\\'"))';
+
+        inputs.forEach(input => {
+            input.addEventListener('input', () => {
+                let text = originalText;
+                inputs.forEach(i => {
+                    const token = i.name.match(/\[(.*?)\]/)[1];
+                    const regex = new RegExp(`\\{${token}\\}`, 'g');
+                    text = text.replace(regex, i.value);
+                });
+                previewDiv.textContent = text;
+            });
+        });
+    });
+</script>

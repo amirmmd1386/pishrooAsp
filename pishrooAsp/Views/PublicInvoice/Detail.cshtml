@@ -1,0 +1,259 @@
+﻿@* Views/Invoice/Detail.cshtml *@
+@model pishrooAsp.ModelViewer.Invoices.TrackingViewModel
+@{
+    ViewData["Title"] = $"فاکتورهای کد {Model.TrackingCode}";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - آروین پلیمر</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <meta name="robots" content="noindex, follow">
+    <style>
+        .invoice-card {
+            transition: all 0.3s ease;
+            border-left: 4px solid;
+        }
+        .invoice-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-gray-50 to-blue-50 min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <!-- هدر -->
+        <div class="text-center mb-12">
+            <div class="inline-block p-4 bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl shadow-lg mb-6">
+                <i class="fas fa-file-invoice text-white text-5xl"></i>
+            </div>
+            <h1 class="text-4xl font-bold text-gray-800 mb-3">فاکتورهای مشتری</h1>
+            <div class="inline-flex items-center gap-3 bg-white px-6 py-3 rounded-full shadow-md">
+                <span class="text-gray-600">کد پیگیری:</span>
+                <code class="text-2xl font-bold text-blue-600 font-mono">@Model.TrackingCode</code>
+                <span class="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-semibold">
+                    @Model.Invoices.Count فاکتور
+                </span>
+            </div>
+        </div>
+
+        <!-- کارت اصلی -->
+        <div class="max-w-4xl mx-auto bg-white rounded-3xl shadow-2xl overflow-hidden">
+            <!-- اطلاعات مشتری -->
+            @if (Model.Invoices.Any())
+            {
+                var firstInvoice = Model.Invoices.First();
+                <div class="bg-gradient-to-r from-blue-500 to-blue-600 p-8 text-white">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+                        <div>
+                            <h2 class="text-2xl font-bold mb-2">@firstInvoice.CustomerName</h2>
+                            <div class="flex flex-wrap gap-4">
+                                <div class="flex items-center gap-2">
+                                    <i class="fas fa-phone"></i>
+                                    <span class="font-mono">@firstInvoice.CustomerPhone</span>
+                                </div>
+                               
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-5xl font-bold">@Model.Invoices.Count</div>
+                            <p class="text-blue-100">تعداد فاکتورها</p>
+                        </div>
+                    </div>
+                </div>
+            }
+
+            <!-- لیست فاکتورها -->
+            <div class="p-6 md:p-8">
+                <div class="mb-6">
+                    <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                        <i class="fas fa-list text-blue-600"></i>
+                        لیست فاکتورها
+                    </h3>
+                    @if (!Model.Invoices.Any())
+                    {
+                        <div class="text-center py-12">
+                            <i class="fas fa-inbox text-gray-400 text-6xl mb-4"></i>
+                            <p class="text-gray-600">فاکتوری یافت نشد</p>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="space-y-4">
+                            @foreach (var invoice in Model.Invoices)
+                            {
+                                <div class="invoice-card bg-white border-l-4 border-blue-500 rounded-xl p-6 shadow-md hover:shadow-lg">
+                                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                                        <div class="flex-1">
+                                            <div class="flex items-center gap-3 mb-3">
+                                                <div class="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-semibold">
+                                                    @invoice.InvoiceDate.ToString("yyyy/MM/dd")
+                                                </div>
+                                                <div class="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-semibold">
+                                                    @invoice.Amount.ToString("N0") تومان
+                                                </div>
+                                            </div>
+
+                                            @if (!string.IsNullOrEmpty(invoice.Description))
+                                            {
+                                                <p class="text-gray-700 mb-2">
+                                                    <i class="fas fa-sticky-note text-gray-400 ml-2"></i>
+                                                    @invoice.Description
+                                                </p>
+                                            }
+
+                                            <div class="text-sm text-gray-500 mt-2">
+                                                <i class="fas fa-hashtag ml-1"></i>
+                                                شناسه فاکتور:
+                                                <span class="font-mono text-gray-700">@invoice.Id</span>
+                                            </div>
+                                        </div>
+
+                                        <div class="flex flex-col gap-3 min-w-[180px]">
+                                            <a href="/invoice/download/@invoice.Id?trackingCode=@invoice.TrackingCode"
+                                               class="px-4 py-2 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white rounded-lg text-center transition-all duration-300 transform hover:scale-105">
+                                                <i class="fas fa-download ml-2"></i>
+                                                دانلود فاکتور
+                                            </a>
+
+                                            <a href="/invoice/view/@invoice.Id?trackingCode=@invoice.TrackingCode" target="_blank"
+                                               class="px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded-lg text-center transition-all duration-300 transform hover:scale-105">
+                                                <i class="fas fa-eye ml-2"></i>
+                                                مشاهده
+                                            </a>
+                                        </div>
+                                    </div>
+
+                                    <!-- اطلاعات اضافی -->
+                                    <div class="mt-4 pt-4 border-t border-gray-100 text-sm text-gray-600">
+                                        <div class="flex flex-wrap gap-4">
+                                            <div class="flex items-center gap-1">
+                                                <i class="fas fa-file-alt"></i>
+                                                <span>نام فایل:</span>
+                                                <span class="font-mono text-gray-700">@invoice.OriginalFileName</span>
+                                            </div>
+                                            <div class="flex items-center gap-1">
+                                                <i class="fas fa-calendar"></i>
+                                                <span>تاریخ ایجاد:</span>
+                                                <span class="text-gray-700">@invoice.InvoiceDate.ToString("HH:mm")</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
+
+                <!-- جمع کل -->
+                @if (Model.Invoices.Any())
+                {
+                    <div class="mt-8 p-6 bg-gradient-to-r from-green-50 to-emerald-100 rounded-2xl">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <h4 class="text-lg font-bold text-gray-800">جمع کل مبالغ</h4>
+                                <p class="text-gray-600 text-sm">مجموع تمامی فاکتورهای این کد پیگیری</p>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-3xl font-bold text-green-700">
+                                    @Model.Invoices.Sum(i => i.Amount).ToString("N0") تومان
+                                </div>
+                                <div class="text-sm text-gray-600">
+                                    @Model.Invoices.Count فاکتور
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+
+                <!-- دکمه‌های اقدام -->
+                <div class="mt-8 flex flex-wrap gap-4 justify-center">
+                    <button onclick="window.print()"
+                            class="px-6 py-3 bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white rounded-lg flex items-center gap-2">
+                        <i class="fas fa-print"></i>
+                        پرینت لیست
+                    </button>
+
+                    <button onclick="sharePage()"
+                            class="px-6 py-3 bg-gradient-to-r from-indigo-500 to-indigo-600 hover:from-indigo-600 hover:to-indigo-700 text-white rounded-lg flex items-center gap-2">
+                        <i class="fas fa-share-alt"></i>
+                        اشتراک گذاری
+                    </button>
+
+                    <a href="tel:@(Model.Invoices.FirstOrDefault()?.CustomerPhone)"
+                       class="px-6 py-3 bg-gradient-to-r from-teal-500 to-teal-600 hover:from-teal-600 hover:to-teal-700 text-white rounded-lg flex items-center gap-2">
+                        <i class="fas fa-phone"></i>
+                        تماس با مشتری
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- اطلاعات فنی -->
+        <div class="mt-8 text-center text-gray-500 text-sm">
+            <p>
+                <i class="fas fa-info-circle ml-1"></i>
+                این صفحه تنها با کد پیگیری
+                <code class="mx-2 bg-gray-200 px-2 py-1 rounded">@Model.TrackingCode</code>
+                قابل دسترسی است
+            </p>
+            <p class="mt-2">
+                <i class="fas fa-clock ml-1"></i>
+                آخرین بروزرسانی: @DateTime.Now.ToString("yyyy/MM/dd HH:mm")
+            </p>
+        </div>
+    </div>
+
+    <script>
+        function sharePage() {
+            const url = window.location.href;
+            const text = `فاکتورهای آروین پلیمر\nکد پیگیری: @Model.TrackingCode\nتعداد فاکتورها: @Model.Invoices.Count\nمجموع مبالغ: @Model.Invoices.Sum(i => i.Amount).ToString("N0") تومان\nلینک: ${url}`;
+
+            if (navigator.share) {
+                navigator.share({
+                    title: 'فاکتورهای آروین پلیمر',
+                    text: text,
+                    url: url
+                });
+            } else {
+                navigator.clipboard.writeText(url);
+                alert('✅ لینک صفحه کپی شد!');
+            }
+        }
+
+        // انیمیشن برای کارت‌ها
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.invoice-card');
+            cards.forEach((card, index) => {
+                card.style.animationDelay = `${index * 100}ms`;
+                card.classList.add('animate-fadeInUp');
+            });
+        });
+
+        // اضافه کردن انیمیشن CSS
+        const style = document.createElement('style');
+        style.textContent = `
+            @@keyframes fadeInUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(20px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+            .animate-fadeInUp {
+                animation: fadeInUp 0.5s ease-out forwards;
+                opacity: 0;
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

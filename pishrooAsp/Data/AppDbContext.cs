@@ -1,10 +1,14 @@
 ﻿// Data/AppDbContext.cs
 using Microsoft.EntityFrameworkCore;
 using pishrooAsp.Models;
+using pishrooAsp.Models.GroupSms;
+using pishrooAsp.Models.Invoice;
+using pishrooAsp.Models.MessageTemplate;
 using pishrooAsp.Models.Newses;
 using pishrooAsp.Models.ProductRequest;
 using pishrooAsp.Models.Products;
 using pishrooAsp.Models.Slider;
+using pishrooAsp.Models.Sms;
 using pishrooAsp.Models.WhyUss;
 
 namespace pishrooAsp.Data
@@ -35,6 +39,29 @@ namespace pishrooAsp.Data
 
 		public DbSet<message> Message { get; set; }
 		public DbSet<VisitLog> VisitLogs { get; set; }
+
+		public DbSet<GroupSmsCampaign> GroupSmsCampaigns { get; set; }
+		public DbSet<GroupSmsLog> GroupSmsLogs { get; set; }
+
+
+		//public DbSet<Company> Companies { get; set; }
+		public DbSet<MessageTemplate> MessageTemplates { get; set; }
+		public DbSet<TemplateToken> TemplateTokens { get; set; }
+		public DbSet<SentMessage> SentMessages { get; set; }
+
+
+		public DbSet<Company> Companies { get; set; }
+		public DbSet<SmsTemplate> SmsTemplates { get; set; }
+		public DbSet<CompanySmsLog> CompanySmsLogs { get; set; }
+
+
+		public DbSet<User> Users { get; set; }
+		public DbSet<UserLoginLog> UserLoginLogs { get; set; }
+		public DbSet<PhoneGroup> PhoneGroups { get; set; }
+		public DbSet<PhoneNumber> PhoneNumber { get; set; }
+		public DbSet<Invoice> Invoices { get; set; }
+
+
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
 			base.OnModelCreating(modelBuilder);
@@ -92,6 +119,65 @@ namespace pishrooAsp.Data
 				entity.Property(e => e.FilePath).HasMaxLength(500);
 				entity.Property(e => e.UploadDate).HasDefaultValueSql("GETDATE()");
 			});
+
+			modelBuilder.Entity<GroupSmsCampaign>()
+		   .Property(c => c.Status)
+		   .HasConversion<int>();
+
+			modelBuilder.Entity<GroupSmsCampaign>()
+				.HasMany(c => c.Logs)
+				.WithOne(l => l.Campaign)
+				.HasForeignKey(l => l.CampaignId)
+				.OnDelete(DeleteBehavior.Cascade);
+
+			// Company - unique name
+		
+
+			// MessageTemplate - Company relation (ON DELETE CASCADE)
+			modelBuilder.Entity<MessageTemplate>()
+				.HasOne(m => m.Company)
+				.WithMany(c => c.Templates)
+				.HasForeignKey(m => m.CompanyId)
+				.OnDelete(DeleteBehavior.Cascade);
+
+			// **SentMessage - Company relation (ON DELETE NO ACTION)**
+			modelBuilder.Entity<SentMessage>()
+				.HasOne(s => s.Company)
+				.WithMany(c => c.SentMessages)
+				.HasForeignKey(s => s.CompanyId)
+				.OnDelete(DeleteBehavior.NoAction);
+
+			// **SentMessage - Template relation (ON DELETE NO ACTION)**
+			modelBuilder.Entity<SentMessage>()
+				.HasOne(s => s.Template)
+				.WithMany()
+				.HasForeignKey(s => s.TemplateId)
+				.OnDelete(DeleteBehavior.NoAction);
+
+			// Configure string lengths
+			modelBuilder.Entity<SentMessage>(entity =>
+			{
+				entity.Property(e => e.Recipient).HasMaxLength(200);
+				entity.Property(e => e.Status).HasMaxLength(50);
+				entity.Property(e => e.MessageType).HasMaxLength(50);
+				entity.Property(e => e.UsedTokensJson).HasDefaultValue("{}");
+			});
+
+
+
+			// تنظیمات TemplateToken
+			modelBuilder.Entity<TemplateToken>(entity =>
+			{
+				entity.HasKey(e => e.Id);
+
+				// رابطه با Template
+				entity.HasOne(e => e.Template)
+					.WithMany(t => t.Tokens)
+					.HasForeignKey(e => e.TemplateId)
+					.OnDelete(DeleteBehavior.Cascade);
+			});
+
+
 		}
 	}
 }

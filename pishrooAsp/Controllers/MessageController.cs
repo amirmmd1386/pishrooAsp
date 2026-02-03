@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace pishrooAsp.Controllers
 {
-	[AdminAuthFilter]
+	[SmartAuthFilter]
 	public class MessageController : Controller
 	{
 		private readonly AppDbContext _context;
@@ -18,14 +18,14 @@ namespace pishrooAsp.Controllers
 		}
 
 		// GET: Message
-		[AdminAuthFilter]
+		[SmartAuthFilter]
 		public async Task<IActionResult> Index()
 		{
 			return View(await _context.Message.ToListAsync());
 		}
 
 		// GET: Message/Details/5
-		[AdminAuthFilter]
+		[SmartAuthFilter]
 		public async Task<IActionResult> Details(int? id)
 		{
 			if (id == null)

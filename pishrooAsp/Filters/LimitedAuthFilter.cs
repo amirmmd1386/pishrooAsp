@@ -16,7 +16,9 @@ public class LimitedAuthFilter : ActionFilterAttribute
 			return;
 		}
 
-		if (!context.HttpContext.Request.Cookies.ContainsKey("LimitedAuth"))
+		// هم کوکی AdminAuth و هم LimitedAuth قابل قبول هستند
+		if (!context.HttpContext.Request.Cookies.ContainsKey("AdminAuth") &&
+			!context.HttpContext.Request.Cookies.ContainsKey("LimitedAuth"))
 		{
 			context.Result = new RedirectToActionResult("Login", "Auth", null);
 			return;

@@ -1,5 +1,4 @@
-﻿using pishrooAsp.Migrations;
-using pishrooAsp.Models.Newses;
+﻿using pishrooAsp.Models.Newses;
 using System.ComponentModel.DataAnnotations;
 
 namespace pishrooAsp.Models.WhyUss

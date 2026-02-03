@@ -1,0 +1,44 @@
+﻿@model pishrooAsp.Models.MessageTemplate.MessageTemplate
+
+<div class="max-w-3xl mx-auto p-6">
+    <h1 class="text-xl font-bold mb-6">ویرایش قالب</h1>
+
+    <form asp-action="Edit" method="post"
+          class="bg-white p-6 rounded-xl shadow space-y-4">
+
+        <input type="hidden" asp-for="Id" />
+        <input type="hidden" asp-for="CompanyId" />
+
+        <div>
+            <label>نام قالب</label>
+            <input asp-for="Name" class="border w-full rounded px-3 py-2" />
+        </div>
+
+        <div>
+            <label>دسته‌بندی</label>
+            <input asp-for="Category" class="border w-full rounded px-3 py-2" />
+        </div>
+
+        <div>
+            <label>متن قالب</label>
+            <textarea asp-for="TemplateText" rows="6"
+                      class="border w-full rounded px-3 py-2"></textarea>
+        </div>
+
+        <div>
+            <label>توضیحات</label>
+            <textarea asp-for="Description" rows="3"
+                      class="border w-full rounded px-3 py-2"></textarea>
+        </div>
+
+        <div class="flex justify-end gap-3">
+            <a asp-action="ByCompany" asp-route-companyId="@Model.CompanyId"
+               class="bg-gray-300 px-4 py-2 rounded">
+                بازگشت
+            </a>
+            <button class="bg-green-600 text-white px-4 py-2 rounded">
+                ذخیره تغییرات
+            </button>
+        </div>
+    </form>
+</div>

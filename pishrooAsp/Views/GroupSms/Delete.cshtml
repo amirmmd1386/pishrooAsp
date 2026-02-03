@@ -1,0 +1,46 @@
+﻿@* Views/GroupSms/Delete.cshtml *@
+@model pishrooAsp.Models.GroupSms.GroupSmsCampaign
+
+@{
+    ViewData["Title"] = "حذف کمپین";
+    Layout = "_AdminLayout";
+
+}
+
+<div class="container">
+    <h2>@ViewData["Title"]</h2>
+
+    <div class="alert alert-danger">
+        <h4>آیا از حذف این کمپین مطمئن هستید؟</h4>
+        <p>این عمل قابل بازگشت نیست!</p>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <h5>اطلاعات کمپین</h5>
+            <dl class="row">
+                <dt class="col-sm-3">عنوان:</dt>
+                <dd class="col-sm-9">@Model.Title</dd>
+
+                <dt class="col-sm-3">تعداد:</dt>
+                <dd class="col-sm-9">@Model.TotalCount</dd>
+
+                <dt class="col-sm-3">وضعیت:</dt>
+                <dd class="col-sm-9">@Model.Status</dd>
+
+                <dt class="col-sm-3">تاریخ ایجاد:</dt>
+                <dd class="col-sm-9">@Model.CreatedAt.ToString("yyyy/MM/dd")</dd>
+            </dl>
+
+            <form asp-action="Delete" method="post">
+                <input type="hidden" asp-for="Id" />
+                <div class="mt-4">
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fas fa-trash"></i> حذف
+                    </button>
+                    <a asp-action="Index" class="btn btn-secondary">لغو</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

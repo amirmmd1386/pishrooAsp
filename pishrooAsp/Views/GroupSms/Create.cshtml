@@ -1,0 +1,128 @@
+﻿@* Views/GroupSms/Create.cshtml *@
+@model pishrooAsp.Models.GroupSms.GroupSmsCampaign
+
+@{
+    ViewData["Title"] = "ایجاد کمپین جدید";
+    Layout = "_AdminLayout";
+}
+
+<div class="min-h-screen bg-gray-50">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="mb-8">
+            <a asp-action="Index" class="text-blue-600 hover:text-blue-900 flex items-center">
+                <svg class="w-5 h-5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+                بازگشت به لیست
+            </a>
+            <h1 class="text-2xl font-bold text-gray-900 mt-4">ایجاد کمپین جدید</h1>
+            <p class="text-gray-500 mt-2">اطلاعات کمپین پیامک گروهی را وارد کنید</p>
+        </div>
+
+        <div class="bg-white rounded-xl border shadow-sm">
+            <form asp-action="Create" method="post" class="p-6">
+                <div class="space-y-6">
+                    <!-- عنوان -->
+                    <div>
+                        <label asp-for="Title" class="block text-sm font-medium text-gray-700 mb-2">عنوان کمپین</label>
+                        <input asp-for="Title"
+                               class="block w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                               placeholder="عنوان برای شناسایی کمپین" />
+                        <span asp-validation-for="Title" class="text-red-500 text-sm mt-1"></span>
+                    </div>
+
+                    <!-- شماره‌ها -->
+                    <div>
+                        <label asp-for="Mobiles" class="block text-sm font-medium text-gray-700 mb-2">
+                            شماره موبایل‌ها
+                            <span class="text-gray-400 text-xs mr-2">(هر شماره در یک خط)</span>
+                        </label>
+                        <textarea asp-for="Mobiles"
+                                  rows="6"
+                                  class="block w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-mono text-sm"
+                                  placeholder="09123456789&#10;09129876543&#10;09127777777"></textarea>
+                        <span asp-validation-for="Mobiles" class="text-red-500 text-sm mt-1"></span>
+                        <p class="text-gray-500 text-sm mt-2">تعداد شماره‌ها: <span id="mobileCount">0</span></p>
+                    </div>
+
+                    <!-- متن پیام -->
+                    <div>
+                        <div class="flex justify-between items-center mb-2">
+                            <label asp-for="Message" class="block text-sm font-medium text-gray-700">متن پیامک</label>
+                            <span id="charCount" class="text-sm text-gray-500">0/500</span>
+                        </div>
+                        <textarea asp-for="Message"
+                                  rows="4"
+                                  class="block w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                  placeholder="متن پیامک را اینجا بنویسید..."></textarea>
+                        <span asp-validation-for="Message" class="text-red-500 text-sm mt-1"></span>
+                    </div>
+
+                    <!-- یادداشت -->
+                    <div>
+                        <label asp-for="Notes" class="block text-sm font-medium text-gray-700 mb-2">یادداشت (اختیاری)</label>
+                        <textarea asp-for="Notes"
+                                  rows="3"
+                                  class="block w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                  placeholder="یادداشت‌های اضافی"></textarea>
+                    </div>
+
+                    <!-- دکمه‌ها -->
+                    <div class="pt-6 border-t">
+                        <div class="flex justify-end space-x-4 space-x-reverse">
+                            <a asp-action="Index" class="btn-secondary">
+                                انصراف
+                            </a>
+                            <button type="submit" class="btn-primary">
+                                <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                </svg>
+                                ذخیره کمپین
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // شمارش کاراکترها
+        document.getElementById('Message').addEventListener('input', function(e) {
+            const length = e.target.value.length;
+            document.getElementById('charCount').textContent = length + '/500';
+
+            if (length > 500) {
+                document.getElementById('charCount').classList.add('text-red-500');
+            } else {
+                document.getElementById('charCount').classList.remove('text-red-500');
+            }
+        });
+
+        // شمارش شماره موبایل‌ها
+        document.getElementById('Mobiles').addEventListener('input', function(e) {
+            const lines = e.target.value.split('\n').filter(line => line.trim() !== '');
+            document.getElementById('mobileCount').textContent = lines.length;
+        });
+
+        // اعتبارسنجی شماره موبایل‌ها
+        document.querySelector('form').addEventListener('submit', function(e) {
+            const mobilesText = document.getElementById('Mobiles').value;
+            const mobiles = mobilesText.split('\n').map(m => m.trim()).filter(m => m);
+
+            const invalidMobiles = [];
+            mobiles.forEach(mobile => {
+                if (!/^09\d{9}$/.test(mobile)) {
+                    invalidMobiles.push(mobile);
+                }
+            });
+
+            if (invalidMobiles.length > 0) {
+                e.preventDefault();
+                alert('شماره‌های زیر نامعتبر هستند:\n' + invalidMobiles.join('\n'));
+            }
+        });
+    </script>
+}

@@ -15,7 +15,10 @@
 <script type="application/ld+json">
     @Html.Raw(ViewBag.WebsiteSchema)
 </script>
-   
+
+   <script type="application/ld+json">
+    @Html.Raw(ViewBag.localBusinessSchema)
+</script>
     <main>
    
 
@@ -33,8 +36,13 @@
         <div id="news">
         <section id="news-articles" class="py-16 bg-gray-50">
             <div class="container mx-auto px-4">
-            <h2 class="text-4xl font-bold text-center text-blue-800 mb-12">@(isPersian ? "آخرین اخبار و مقالات" : "Newest news and blogs")</h2>
-
+                <h2 class="text-4xl font-bold text-center text-blue-800 mb-12">
+                    @(ViewBag.lang == "fa" ? "آخرین اخبار و مقالات" :
+                                        ViewBag.lang == "en" ? "Newest news and blogs" :
+                                        ViewBag.lang == "ru" ? "Последние новости и статьи" :
+                                        ViewBag.lang == "tr" ? "Son Haberler ve Makaleler" :
+                                        ViewBag.lang == "ar" ? "آخر الأخبار والمقالات" : "Newest news and blogs")
+                </h2>
                 <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
                     <!-- خبر اصلی (ستون بزرگ) -->
                 @await Component.InvokeAsync("News")
@@ -51,7 +59,13 @@
         <!-- About Us & Why Choose Us Section -->
         <section id="about" class="py-16 custom-light-gray">
             <div class="container mx-auto px-4">
-                <h2 class="text-4xl font-bold text-center text-custom-blue mb-12">@(isPersian?"درباره ما":"About Us")</h2>
+            <h2 class="text-4xl font-bold text-center text-custom-blue mb-12">
+                @(ViewBag.lang == "fa" ? "درباره ما" :
+                                ViewBag.lang == "ru" ? "О нас" :
+                                ViewBag.lang == "tr" ? "Hakkımızda" :
+                                ViewBag.lang == "ar" ? "من نحن" :
+                                "About Us")
+            </h2>
 
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
                     <!-- About Us Card -->

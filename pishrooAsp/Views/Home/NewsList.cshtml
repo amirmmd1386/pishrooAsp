@@ -1,8 +1,140 @@
 ﻿@* Components/LastNews/Default.cshtml *@
 
-
-
 @model List<pishrooAsp.ModelViewer.NewsViewModelSecond>
+@{
+    var lang = ViewBag.Language as string ?? "fa";
+
+    // متون ترجمه شده
+    string lastNewsTitle = lang switch
+    {
+        "fa" => "آخرین اخبار و مقالات",
+        "en" => "Latest News & Articles",
+        "ru" => "Последние новости и статьи",
+        "tr" => "Son Haberler ve Makaleler",
+        "ar" => "آخر الأخبار والمقالات",
+        _ => "Latest News & Articles"
+    };
+
+    string lastNewsDesc = lang switch
+    {
+        "fa" => "تازه‌ترین اخبار و مطالب آموزشی از شرکت پبشرو آروین پلیمر",
+        "en" => "Latest news and educational content from Pishro Arvin Polymer",
+        "ru" => "Последние новости и учебные материалы от компании Пишро Арвин Полимер",
+        "tr" => "Pishro Arvin Polimer'den en son haberler ve eğitim içerikleri",
+        "ar" => "أحدث الأخبار والمحتوى التعليمي من شركة بيشرو أربين بوليمر",
+        _ => "Latest news and educational content from Pishro Arvin Polymer"
+    };
+
+    string homePage = lang switch
+    {
+        "fa" => "صفحه اصلی",
+        "en" => "Home",
+        "ru" => "Главная",
+        "tr" => "Ana Sayfa",
+        "ar" => "الصفحة الرئيسية",
+        _ => "Home"
+    };
+
+    string newsText = lang switch
+    {
+        "fa" => "اخبار",
+        "en" => "News",
+        "ru" => "Новости",
+        "tr" => "Haberler",
+        "ar" => "الأخبار",
+        _ => "News"
+    };
+
+    string hotLabel = lang switch
+    {
+        "fa" => "داغ ترین",
+        "en" => "Hot",
+        "ru" => "Горячее",
+        "tr" => "Sıcak",
+        "ar" => "ساخن",
+        _ => "Hot"
+    };
+
+    string views = lang switch
+    {
+        "fa" => "بازدید",
+        "en" => "views",
+        "ru" => "просмотров",
+        "tr" => "görüntüleme",
+        "ar" => "مشاهدة",
+        _ => "views"
+    };
+
+    string categoryLabel = lang switch
+    {
+        "fa" => "دسته‌بندی",
+        "en" => "Category",
+        "ru" => "Категория",
+        "tr" => "Kategori",
+        "ar" => "الفئة",
+        _ => "Category"
+    };
+
+    string authorLabel = lang switch
+    {
+        "fa" => "نویسنده",
+        "en" => "Author",
+        "ru" => "Автор",
+        "tr" => "Yazar",
+        "ar" => "المؤلف",
+        _ => "Author"
+    };
+
+    string readFull = lang switch
+    {
+        "fa" => "مطالعه کامل",
+        "en" => "Read Full",
+        "ru" => "Читать полностью",
+        "tr" => "Tamamını Oku",
+        "ar" => "قراءة كاملة",
+        _ => "Read Full"
+    };
+
+    string continueReading = lang switch
+    {
+        "fa" => "ادامه مطلب",
+        "en" => "Continue Reading",
+        "ru" => "Читать далее",
+        "tr" => "Devamını Oku",
+        "ar" => "تابع القراءة",
+        _ => "Continue Reading"
+    };
+
+    string noNewsTitle = lang switch
+    {
+        "fa" => "خبری برای نمایش وجود ندارد",
+        "en" => "No news to display",
+        "ru" => "Нет новостей для отображения",
+        "tr" => "Gösterilecek haber yok",
+        "ar" => "لا توجد أخبار لعرضها",
+        _ => "No news to display"
+    };
+
+    string noNewsDesc = lang switch
+    {
+        "fa" => "به زودی اخبار و مقالات جدید منتشر خواهد شد",
+        "en" => "New news and articles will be published soon",
+        "ru" => "Скоро будут опубликованы новые новости и статьи",
+        "tr" => "Yakında yeni haberler ve makaleler yayınlanacak",
+        "ar" => "سيتم نشر أخبار ومقالات جديدة قريبًا",
+        _ => "New news and articles will be published soon"
+    };
+
+    string reload = lang switch
+    {
+        "fa" => "بارگذاری مجدد",
+        "en" => "Reload",
+        "ru" => "Перезагрузить",
+        "tr" => "Yeniden Yükle",
+        "ar" => "إعادة تحميل",
+        _ => "Reload"
+    };
+}
 
 <section class="last-news-section py-16 bg-gradient-to-br from-gray-50 to-blue-50">
     <div class="container mx-auto px-4">
@@ -11,10 +143,49 @@
             <div class="inline-flex items-center justify-center w-16 h-16 bg-blue-600 rounded-full mb-4">
                 <i class="fas fa-newspaper text-2xl text-white"></i>
             </div>
-            <h2 class="text-4xl font-black text-blue-800 mb-4">آخرین اخبار و مقالات</h2>
+            <h2 class="text-4xl font-black text-blue-800 mb-4">@lastNewsTitle</h2>
             <div class="w-24 h-2 bg-green-500 rounded-full mx-auto mb-4"></div>
-            <p class="text-xl text-gray-600">تازه‌ترین اخبار و مطالب آموزشی از شهرک صنعتی شمس‌آباد</p>
+            <p class="text-xl text-gray-600">@lastNewsDesc</p>
         </div>
+
+        <nav class="mb-8" aria-label="breadcrumb">
+            <div class="relative">
+                <div class="absolute right-0 top-1/2 w-full h-0.5 bg-gradient-to-l from-blue-100 to-gray-100 transform -translate-y-1/2 z-0"></div>
+
+                <ol class="flex items-center space-x-3 space-x-reverse relative z-10">
+                    <!-- آیتم اول (خانه) -->
+                    <li>
+                        <a href="/@lang" class="group flex items-center transition-all duration-200">
+                            <span class="flex items-center justify-center w-8 h-8 rounded-full bg-blue-50 group-hover:bg-blue-100 transition-colors duration-200">
+                                <svg class="w-4 h-4 text-blue-600" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path>
+                                </svg>
+                            </span>
+                            <span class="mr-2 font-medium text-gray-700 group-hover:text-blue-600 transition-colors duration-200">@homePage</span>
+                        </a>
+                    </li>
+
+                    <!-- جداکننده -->
+                    <li class="flex items-center">
+                        <svg class="w-5 h-5 text-gray-300" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
+                        </svg>
+                    </li>
+
+                    <!-- آیتم دوم (اخبار) -->
+                    <li>
+                        <a href="/@lang/newses" class="group flex items-center transition-all duration-200">
+                            <span class="flex items-center justify-center w-8 h-8 rounded-full bg-blue-50 group-hover:bg-blue-100 transition-colors duration-200">
+                                <svg class="w-4 h-4 text-blue-600" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M7 3a1 1 0 000 2h6a1 1 0 100-2H7zM4 7a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zM2 11a2 2 0 012-2h12a2 2 0 012 2v4a2 2 0 01-2 2H4a2 2 0 01-2-2v-4z"></path>
+                                </svg>
+                            </span>
+                            <span class="mr-2 font-medium text-gray-700 group-hover:text-blue-600 transition-colors duration-200">@newsText</span>
+                        </a>
+                    </li>
+                </ol>
+            </div>
+        </nav>
 
         @if (Model.Any())
         {
@@ -26,17 +197,16 @@
                         <div class="relative overflow-hidden h-80 lg:h-full">
                             <img src="@Model.First().ImageUrl"
                                  alt="@Model.First().Title"
-                                 class="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
-                                 onerror="this.src='/images/default-news-large.jpg'">
+                                 class="w-full h-full object-cover hover:scale-105 transition-transform duration-700">
                             <div class="absolute top-4 right-4">
                                 <span class="bg-red-500 text-white px-3 py-1 rounded-full text-sm font-bold">
                                     <i class="fas fa-fire mr-1"></i>
-                                    داغ ترین
+                                    @hotLabel
                                 </span>
                             </div>
                             <div class="absolute bottom-4 right-4">
                                 <span class="bg-blue-600 text-white px-3 py-1 rounded-full text-sm font-bold">
-                                    @ViewBag.Language.ToUpper()
+                                    @lang.ToUpper()
                                 </span>
                             </div>
                         </div>
@@ -50,7 +220,7 @@
                                 </div>
                                 <div class="flex items-center ml-6">
                                     <i class="fas fa-eye ml-1"></i>
-                                    <span>@Model.First().ViewCount بازدید</span>
+                                    <span>@Model.First().ViewCount @views</span>
                                 </div>
                                 @if (!string.IsNullOrEmpty(Model.First().Category))
                                 {
@@ -70,16 +240,16 @@
                             </p>
 
                             <div class="flex items-center justify-between mt-auto">
-                                <a href="/@ViewBag.Language/news/@Model.First().Id"
+                                <a href="/@lang/news/@Model.First().Id/@Model.First().Title"
                                    class="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-3 rounded-xl font-semibold hover:from-blue-700 hover:to-purple-700 transition-all duration-300 flex items-center group">
-                                    <span>مطالعه کامل</span>
+                                    <span>@readFull</span>
                                     <i class="fas fa-arrow-left mr-3 group-hover:-translate-x-1 transition-transform"></i>
                                 </a>
 
                                 @if (!string.IsNullOrEmpty(Model.First().Author))
                                 {
                                     <div class="text-right">
-                                        <p class="text-sm text-gray-500">نویسنده</p>
+                                        <p class="text-sm text-gray-500">@authorLabel</p>
                                         <p class="font-semibold text-gray-700">@Model.First().Author</p>
                                     </div>
                                 }
@@ -98,11 +268,10 @@
                         <div class="relative overflow-hidden h-48">
                             <img src="@news.ImageUrl"
                                  alt="@news.Title"
-                                 class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                                 onerror="this.src='/images/default-news.jpg'">
+                                 class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
                             <div class="absolute top-3 right-3">
                                 <span class="bg-blue-600/90 text-white px-2 py-1 rounded-full text-xs font-bold backdrop-blur-sm">
-                                    @ViewBag.Language.ToUpper()
+                                    @lang.ToUpper()
                                 </span>
                             </div>
                         </div>
@@ -128,17 +297,15 @@
                                 @news.Summary
                             </p>
 
-                            <a href="/@ViewBag.Language/news/@news.Id"
+                            <a href="/@lang/news/@news.Id/@news.Title"
                                class="w-full bg-gray-100 hover:bg-blue-100 text-blue-600 py-2 px-4 rounded-lg text-sm font-semibold transition-all duration-300 flex items-center justify-center group/btn">
-                                <span>ادامه مطلب</span>
+                                <span>@continueReading</span>
                                 <i class="fas fa-arrow-left mr-2 group-hover/btn:-translate-x-1 transition-transform"></i>
                             </a>
                         </div>
                     </div>
                 }
             </div>
-
-          
         }
         else
         {
@@ -147,14 +314,54 @@
                 <div class="w-24 h-24 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
                     <i class="fas fa-newspaper text-3xl text-blue-600"></i>
                 </div>
-                <h3 class="text-2xl font-bold text-gray-700 mb-4">خبری برای نمایش وجود ندارد</h3>
-                <p class="text-gray-500 mb-6">به زودی اخبار و مقالات جدید منتشر خواهد شد</p>
+                <h3 class="text-2xl font-bold text-gray-700 mb-4">@noNewsTitle</h3>
+                <p class="text-gray-500 mb-6">@noNewsDesc</p>
                 <button class="bg-blue-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-blue-700 transition-all duration-300">
                     <i class="fas fa-sync-alt ml-2"></i>
-                    بارگذاری مجدد
+                    @reload
                 </button>
             </div>
         }
     </div>
 </section>
 
+<script type="application/ld+json">
+    {
+      "@@context": "https://schema.org",
+      "@@type": "NewsArticle",
+      "headline": "@Model.FirstOrDefault()?.Title",
+      "description": "@Model.FirstOrDefault()?.Summary",
+      "image": "@Model.FirstOrDefault()?.ImageUrl",
+      "datePublished": "@Model.FirstOrDefault()?.PublishDate.ToString("yyyy-MM-dd")",
+      "author": {
+        "@@type": "Person",
+        "name": "@Model.FirstOrDefault()?.Author"
+      },
+      "mainEntityOfPage": {
+        "@@type": "WebPage",
+        "@@id": "/@lang/news/@Model.FirstOrDefault()?.Id"
+      }
+    }
+</script>
+
+<!-- Breadcrumb Schema -->
+<script type="application/ld+json">
+    {
+      "@@context": "https://schema.org",
+      "@@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@@type": "ListItem",
+          "position": 1,
+          "name": "@homePage",
+          "item": "/@lang"
+        },
+        {
+          "@@type": "ListItem",
+          "position": 2,
+          "name": "@newsText",
+          "item": "/@lang/newses"
+        }
+      ]
+    }
+</script>

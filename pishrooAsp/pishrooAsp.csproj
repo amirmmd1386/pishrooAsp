@@ -51,6 +51,7 @@
     <Folder Include="Views\Shared\Components\textEditor\" />
     <Folder Include="wwwroot\Admin\css\" />
     <Folder Include="wwwroot\Admin\js\" />
+    <Folder Include="wwwroot\fonts\" />
     <Folder Include="wwwroot\uploads\editor\" />
   </ItemGroup>
 

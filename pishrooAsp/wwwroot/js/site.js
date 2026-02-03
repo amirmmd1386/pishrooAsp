@@ -108,20 +108,20 @@ document.addEventListener('DOMContentLoaded', function () {
     const langDropdown = document.getElementById('langDropdown');
     const chevronIcon = document.getElementById('chevronIcon');
 
-    langButton.addEventListener('click', function (e) {
-        e.stopPropagation(); // جلوگیری از بسته شدن منو هنگام کلیک روی دکمه
-        if (langDropdown.classList.contains('hidden')) {
-            langDropdown.classList.remove('hidden');
-            langDropdown.classList.remove('scale-y-0');
-            langDropdown.classList.add('scale-y-100');
-            chevronIcon.classList.add('rotate-180');
-        } else {
-            langDropdown.classList.add('hidden');
-            langDropdown.classList.remove('scale-y-100');
-            langDropdown.classList.add('scale-y-0');
-            chevronIcon.classList.remove('rotate-180');
-        }
-    });
+    //langButton.addEventListener('click', function (e) {
+    //    e.stopPropagation(); // جلوگیری از بسته شدن منو هنگام کلیک روی دکمه
+    //    if (langDropdown.classList.contains('hidden')) {
+    //        langDropdown.classList.remove('hidden');
+    //        langDropdown.classList.remove('scale-y-0');
+    //        langDropdown.classList.add('scale-y-100');
+    //        chevronIcon.classList.add('rotate-180');
+    //    } else {
+    //        langDropdown.classList.add('hidden');
+    //        langDropdown.classList.remove('scale-y-100');
+    //        langDropdown.classList.add('scale-y-0');
+    //        chevronIcon.classList.remove('rotate-180');
+    //    }
+    //});
 
     // بستن منو اگر جایی بیرون منو کلیک شد
     document.addEventListener('click', function () {
